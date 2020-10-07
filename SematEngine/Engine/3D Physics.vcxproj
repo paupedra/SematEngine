@@ -48,6 +48,7 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -83,6 +84,7 @@
     <ClInclude Include="Dependecies\imgui\imconfig.h" />
     <ClInclude Include="Dependecies\imgui\imgui.h" />
     <ClInclude Include="Dependecies\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Dependecies\imgui\imgui_impl_sdl.h" />
     <ClInclude Include="Dependecies\imgui\imgui_internal.h" />
     <ClInclude Include="Dependecies\imgui\imstb_rectpack.h" />
     <ClInclude Include="Dependecies\imgui\imstb_textedit.h" />
@@ -147,6 +149,7 @@
     <ClInclude Include="Dependecies\MathGeoLib\src\Time\Clock.h" />
     <ClInclude Include="Dependecies\mmgr\mmgr.h" />
     <ClInclude Include="Dependecies\mmgr\nommgr.h" />
+    <ClInclude Include="Editor.h" />
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Light.h" />
@@ -166,6 +169,7 @@
     <ClCompile Include="Dependecies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_draw.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Dependecies\imgui\imgui_impl_sdl.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Dependecies\MathGeoLib\src\Algorithm\Random\LCG.cpp" />
     <ClCompile Include="Dependecies\MathGeoLib\src\Geometry\AABB.cpp" />
@@ -198,6 +202,7 @@
     <ClCompile Include="Dependecies\MathGeoLib\src\Math\TransformOps.cpp" />
     <ClCompile Include="Dependecies\MathGeoLib\src\Time\Clock.cpp" />
     <ClCompile Include="Dependecies\mmgr\mmgr.cpp" />
+    <ClCompile Include="Editor.cpp" />
     <ClCompile Include="glmath.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="log.cpp" />

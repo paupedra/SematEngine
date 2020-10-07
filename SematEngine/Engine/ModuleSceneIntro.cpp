@@ -3,6 +3,9 @@
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
 
+#include "Dependecies/imgui/imgui.h"
+
+
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled)
 {
 }
@@ -19,26 +22,9 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
-	const int SnakeLength = 7;
-	const float StartingSize = 0.5f;
-	const float SizeIncrement = 0.2f;
-	const float BallDistance = 0.3f;
+	
 
-	float XPos = 0.f;
-	float Size = StartingSize;
-	for (int n = 0; n < SnakeLength; n++)
-	{
-		Sphere* s = new Sphere(Size);
-		primitives.PushBack(s);
-		s->SetPos(XPos, 10.f, 2.5f);
-
-		//TODO 2: Link all the spheres with your P2P constraints
-
-		XPos += Size + Size + SizeIncrement + BallDistance;
-		Size += SizeIncrement;
-	}
-
-	//TODO 4: Link some other spheres with your Hinge constraint
+	
 
 	return ret;
 }
@@ -64,6 +50,30 @@ void ModuleSceneIntro::DebugSpawnPrimitive(Primitive * p)
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+
+	ImGui::ShowDemoWindow();
+
+	//bool my_tool_active = true;
+	//ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
+	//if (ImGui::BeginMenuBar())
+	//{
+	//	if (ImGui::BeginMenu("File"))
+	//	{
+	//		if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+	//		if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+	//		if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
+	//		ImGui::EndMenu();
+	//	}
+	//	ImGui::EndMenuBar();
+	//}
+
+	
+	//ImGui::EndFrame();
+
+	//ImGui::End();
+	
+
+
 	Plane p(vec3(0, 1, 0));
 	p.axis = true;
 	p.Render();
@@ -83,6 +93,8 @@ update_status ModuleSceneIntro::PostUpdate(float dt)
 	{
 		primitives[n]->Render();
 	}
+
+	
 
 	return UPDATE_CONTINUE;
 }

@@ -300,6 +300,12 @@
     <ClInclude Include="Dependecies\imgui\imgui_impl_opengl3.h">
       <Filter>Dependencies\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imgui_impl_sdl.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor.h">
+      <Filter>Sources\Modules\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -448,6 +454,12 @@
     </ClCompile>
     <ClCompile Include="Dependecies\imgui\imgui_impl_opengl3.cpp">
       <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\imgui\imgui_impl_sdl.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor.cpp">
+      <Filter>Sources\Modules\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
