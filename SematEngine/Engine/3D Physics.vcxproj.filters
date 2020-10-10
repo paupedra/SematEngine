@@ -304,7 +304,7 @@
       <Filter>Dependencies\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Editor.h">
-      <Filter>Sources\Modules\Game</Filter>
+      <Filter>Sources\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -459,7 +459,7 @@
       <Filter>Dependencies\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Editor.cpp">
-      <Filter>Sources\Modules\Game</Filter>
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
