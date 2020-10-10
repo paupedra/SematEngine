@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Dependecies/Brofiler/Brofiler.h"
 
 Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 {
@@ -9,10 +10,7 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 	camera = new ModuleCamera3D();
 	editor = new Editor();
 
-	// The order of calls is very important!
-	// Modules will Init() Start() and Update in this order
 	// They will CleanUp() in reverse order
-
 	// Main Modules
 	AddModule(window);
 	AddModule(camera);
@@ -79,6 +77,7 @@ update_status Application::Update()
 	
 	std::vector<Module*>::iterator item = modules.begin();
 	
+	BROFILER_CATEGORY("Engine PreUpdate", Profiler::Color::Yellow)
 	for(; item != modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
 		ret = (*item)->PreUpdate(dt);
@@ -86,6 +85,7 @@ update_status Application::Update()
 
 	item = modules.begin();
 
+	BROFILER_CATEGORY("Engine Update", Profiler::Color::Blue)
 	for(;item != modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
 		ret = (*item)->Update(dt);
@@ -93,12 +93,14 @@ update_status Application::Update()
 
 	item = modules.begin();
 
+	BROFILER_CATEGORY("Engine PostUpdate", Profiler::Color::Green)
 	for(;item != modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
 		ret = (*item)->PostUpdate(dt);
 	}
 
 	FinishUpdate();
+
 	return ret;
 }
 

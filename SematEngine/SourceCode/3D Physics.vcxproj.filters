@@ -46,6 +46,12 @@
     <Filter Include="Dependencies\imgui">
       <UniqueIdentifier>{b4c7e0c9-3195-4ae8-bfb1-82636a21cb82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\parson">
+      <UniqueIdentifier>{4bbf7327-aa0b-4be9-9996-6e3ca98d4d35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\Brofiler">
+      <UniqueIdentifier>{837ee310-d02d-4171-ba7c-826b04e31407}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -306,6 +312,9 @@
     <ClInclude Include="Editor.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Dependecies\parson\parson.h">
+      <Filter>Dependencies\parson</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -460,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="Editor.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\parson\parson.c">
+      <Filter>Dependencies\parson</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
