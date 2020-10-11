@@ -27,6 +27,8 @@ private:
 
 	Timer	ms_timer;
 	float	dt;
+	float	frame_cap;
+	int		frame_count;
 	std::vector<Module*> modules;
 
 public:

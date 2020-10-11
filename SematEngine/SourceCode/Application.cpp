@@ -67,6 +67,17 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+
+	//Time::Update();
+	float frame_ms = ms_timer.Read();
+	
+	/*if (frame_ms > 0 && frame_ms < 1000.f / frame_cap)
+	{
+		SDL_Delay((1000.f / frame_cap) - frame_ms);
+	}*/
+
+	frame_count++;
+
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -85,7 +96,7 @@ update_status Application::Update()
 
 	item = modules.begin();
 
-	BROFILER_CATEGORY("Engine Update", Profiler::Color::Blue)
+	BROFILER_CATEGORY("Engine Update", Profiler::Color::Green)
 	for(;item != modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
 		ret = (*item)->Update(dt);
@@ -93,12 +104,13 @@ update_status Application::Update()
 
 	item = modules.begin();
 
-	BROFILER_CATEGORY("Engine PostUpdate", Profiler::Color::Green)
+	BROFILER_CATEGORY("Engine PostUpdate", Profiler::Color::Purple)
 	for(;item != modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
 		ret = (*item)->PostUpdate(dt);
 	}
 
+	BROFILER_CATEGORY("Sleep", Profiler::Color::Blue)
 	FinishUpdate();
 
 	return ret;
