@@ -51,7 +51,7 @@ void ModuleSceneIntro::DebugSpawnPrimitive(Primitive * p)
 update_status ModuleSceneIntro::Update(float dt)
 {
 
-	ImGui::ShowDemoWindow();
+	
 
 	//bool my_tool_active = true;
 	//ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
@@ -67,6 +67,12 @@ update_status ModuleSceneIntro::Update(float dt)
 	//	ImGui::EndMenuBar();
 	//}
 
+	//ImGui::End();
+
+	/*if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	{
+		my_tool_active = !my_tool_active;
+	}*/
 	
 	//ImGui::EndFrame();
 

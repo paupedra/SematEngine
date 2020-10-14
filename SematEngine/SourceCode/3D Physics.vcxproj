@@ -153,6 +153,7 @@
     <ClInclude Include="Editor.h" />
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="I_Mesh.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleCamera3D.h" />
@@ -162,6 +163,9 @@
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="w_Configuration.h" />
+    <ClInclude Include="w_Console.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -206,6 +210,7 @@
     <ClCompile Include="Dependecies\parson\parson.c" />
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="glmath.cpp" />
+    <ClCompile Include="I_Mesh.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -216,6 +221,9 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="w_Configuration.cpp" />
+    <ClCompile Include="w_Console.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependecies\MathGeoLib\src\Geometry\KDTree.inl" />

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "Globals.h"
 #include "Timer.h"
 #include "Module.h"
@@ -30,6 +31,7 @@ private:
 	float	frame_cap;
 	int		frame_count;
 	std::vector<Module*> modules;
+	std::string title;
 
 public:
 
@@ -39,6 +41,9 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	const char* GetTitle() const;
+	void SetTitle(const char* title);
 
 private:
 

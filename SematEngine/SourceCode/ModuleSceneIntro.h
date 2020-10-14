@@ -22,4 +22,6 @@ private:
 	void DebugSpawnPrimitive(Primitive* p);
 
 	p2DynArray<Primitive*> primitives;
+
+
 };

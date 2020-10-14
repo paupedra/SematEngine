@@ -22,6 +22,8 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 
 	// Renderer last!
 	AddModule(renderer3D);
+
+	title = "Semat Engine";
 }
 
 Application::~Application()
@@ -44,6 +46,8 @@ bool Application::Init()
 	for (; item != modules.end() && ret == true;++item) {
 		ret = (*item)->Init();
 	}
+
+	SetTitle("Semat Engine");
 
 	// After all Init calls we call Start() in all modules
 	LOG("Application Start --------------");
@@ -125,6 +129,17 @@ bool Application::CleanUp()
 		ret = (*item)->CleanUp();
 	}
 	return ret;
+}
+
+const char* Application::GetTitle() const
+{
+	return title.c_str();
+}
+
+void Application::SetTitle(const char* _title)
+{
+	title = _title;
+	App->window->SetTitle(_title);
 }
 
 void Application::AddModule(Module* mod)

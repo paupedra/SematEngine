@@ -8,10 +8,20 @@
 #include "Editor.h"
 #include "Dependecies/Brofiler/Brofiler.h"
 
+#include <Windows.h>
+
+#include "Dependecies/imgui/imgui.h"
+#include "Dependecies/imgui/imgui_internal.h"
+#include "Dependecies/imgui/imgui_impl_sdl.h"
+#include "Dependecies/imgui/imgui_impl_opengl3.h"
+
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "Dependecies/Glew/libx86/glew32.lib")
 //#pragma comment (lib, "Dependecies/Glew/libx86/glew32s.lib")
+
+#include "I_Mesh.h"
+#include <vector>
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
@@ -109,6 +119,28 @@ bool ModuleRenderer3D::Init()
 		ret = false;
 	}
 
+	//uint my_id;
+
+	//glGenBuffers(1, (GLuint*)&my_id);
+	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
+
+	/*uint my_indices = 0;
+	glGenBuffers(1, (GLuint*)&(my_indices));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);*/
+
+	Importer::MeshImp::Import("Assets/Mesh/warrior/warrior.FBX");
+
+	
+
+	/*glGenBuffers(1, (GLuint*)&meshes[0]->buffers[Mesh::vertex]);
+	glBindBuffer(GL_ARRAY_BUFFER, meshes[0]->buffers[Mesh::vertex]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * meshes[0]->buffersSize[Mesh::vertex] * 3, meshes[0]->vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*)&meshes[0]->buffers[Mesh::index]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[0]->buffers[Mesh::index]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * meshes[0]->buffersSize[Mesh::index], meshes[0]->indices, GL_STATIC_DRAW);*/
+
 	return ret;
 }
 
@@ -134,6 +166,22 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glVertexPointer(3, GL_FLOAT, 0, NULL);
+	//glDrawArrays(GL_TRIANGLES, 0, 36);
+	//glDisableClientState(GL_VERTEX_ARRAY);
+
+	std::vector<Mesh*>::iterator item = meshes.begin();
+
+	for (; item != meshes.end() ;++item)
+	{
+		DrawMesh( (*item) );
+	}
+
+	//DrawMesh(meshes[0]);
+	
+
 	BROFILER_CATEGORY("Draw imgui", Profiler::Color::Azure)
 	App->editor->Draw();
 
@@ -165,4 +213,21 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+void ModuleRenderer3D::DrawMesh(Mesh* mesh)
+{
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * mesh->num_index, mesh->index, GL_STATIC_DRAW);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::vertex]);
+
+	glVertexPointer(3, GL_FLOAT, 0, mesh->vertices);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[Mesh::index]);
+
+	glDrawElements(GL_TRIANGLES, mesh->buffersSize[Mesh::index], GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }

@@ -1,24 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{8b7ed093-66ce-4096-96d2-fbb9faa4bf52}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Modules">
-      <UniqueIdentifier>{7b418be2-1631-4a31-9ef2-8a8b234a7339}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Containers">
-      <UniqueIdentifier>{afc36133-f401-499a-aa33-0da1e500fb52}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Tools">
-      <UniqueIdentifier>{7e4dfaf7-022c-4f7d-92aa-f3b3fa9d6248}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Helpers">
-      <UniqueIdentifier>{121f8e6b-df36-4ab0-be0d-601ddfc9e503}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Modules\Game">
-      <UniqueIdentifier>{83f46af7-e02f-40c0-9e56-41d76082527b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Dependencies">
       <UniqueIdentifier>{07fab71b-6ca7-4baa-86c2-e00724b934e8}</UniqueIdentifier>
     </Filter>
@@ -49,49 +31,73 @@
     <Filter Include="Dependencies\parson">
       <UniqueIdentifier>{4bbf7327-aa0b-4be9-9996-6e3ca98d4d35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dependencies\Brofiler">
-      <UniqueIdentifier>{837ee310-d02d-4171-ba7c-826b04e31407}</UniqueIdentifier>
+    <Filter Include="Source Code">
+      <UniqueIdentifier>{8b7ed093-66ce-4096-96d2-fbb9faa4bf52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Modules">
+      <UniqueIdentifier>{7b418be2-1631-4a31-9ef2-8a8b234a7339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Modules\Game">
+      <UniqueIdentifier>{83f46af7-e02f-40c0-9e56-41d76082527b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Containers">
+      <UniqueIdentifier>{afc36133-f401-499a-aa33-0da1e500fb52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Tools">
+      <UniqueIdentifier>{7e4dfaf7-022c-4f7d-92aa-f3b3fa9d6248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Helpers">
+      <UniqueIdentifier>{121f8e6b-df36-4ab0-be0d-601ddfc9e503}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Editor">
+      <UniqueIdentifier>{6bc13780-da9e-4adc-9d6d-96e395f4f278}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Editor\Windows">
+      <UniqueIdentifier>{afeedb19-a181-47d3-a0cd-277982cdf86f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Importer">
+      <UniqueIdentifier>{8a6360e1-26aa-4be1-82ea-a2af2793a527}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleRenderer3D.h">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleInput.h">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleCamera3D.h">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleSceneIntro.h">
-      <Filter>Sources\Modules\Game</Filter>
+      <Filter>Source Code\Modules\Game</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
-      <Filter>Sources</Filter>
+      <Filter>Source Code</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h">
-      <Filter>Sources</Filter>
+      <Filter>Source Code</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>Sources\Tools</Filter>
+      <Filter>Source Code\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
-      <Filter>Sources\Helpers</Filter>
+      <Filter>Source Code\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Primitive.h">
-      <Filter>Sources\Helpers</Filter>
+      <Filter>Source Code\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
-      <Filter>Sources\Containers</Filter>
+      <Filter>Source Code\Containers</Filter>
     </ClInclude>
     <ClInclude Include="glmath.h">
-      <Filter>Sources\Containers</Filter>
+      <Filter>Source Code\Containers</Filter>
     </ClInclude>
     <ClInclude Include="Dependecies\Glew\include\eglew.h">
       <Filter>Dependencies\Glew</Filter>
@@ -310,51 +316,63 @@
       <Filter>Dependencies\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Editor.h">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="Dependecies\parson\parson.h">
       <Filter>Dependencies\parson</Filter>
     </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Source Code\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="w_Configuration.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="w_Console.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="I_Mesh.h">
+      <Filter>Source Code\Importer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleRenderer3D.cpp">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleInput.cpp">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleCamera3D.cpp">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleSceneIntro.cpp">
-      <Filter>Sources\Modules\Game</Filter>
+      <Filter>Source Code\Modules\Game</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source Code</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source Code</Filter>
     </ClCompile>
     <ClCompile Include="log.cpp">
-      <Filter>Sources\Tools</Filter>
+      <Filter>Source Code\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>Sources\Tools</Filter>
+      <Filter>Source Code\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
-      <Filter>Sources\Helpers</Filter>
+      <Filter>Source Code\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
-      <Filter>Sources\Helpers</Filter>
+      <Filter>Source Code\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
-      <Filter>Sources\Containers</Filter>
+      <Filter>Source Code\Containers</Filter>
     </ClCompile>
     <ClCompile Include="glmath.cpp">
-      <Filter>Sources\Containers</Filter>
+      <Filter>Source Code\Containers</Filter>
     </ClCompile>
     <ClCompile Include="Dependecies\MathGeoLib\src\Time\Clock.cpp">
       <Filter>Dependencies\MathGeoLib\Time</Filter>
@@ -468,10 +486,22 @@
       <Filter>Dependencies\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Editor.cpp">
-      <Filter>Sources\Modules</Filter>
+      <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="Dependecies\parson\parson.c">
       <Filter>Dependencies\parson</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Code\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="w_Configuration.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="w_Console.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="I_Mesh.cpp">
+      <Filter>Source Code\Importer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

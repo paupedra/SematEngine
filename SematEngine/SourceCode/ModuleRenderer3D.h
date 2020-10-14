@@ -4,6 +4,7 @@
 #include "glmath.h"
 #include "Light.h"
 
+struct Mesh;
 
 
 #define MAX_LIGHTS 8
@@ -20,10 +21,17 @@ public:
 	bool CleanUp();
 
 	void OnResize(int width, int height);
+	
+	void DrawMesh(Mesh* mesh);
 
 public:
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ProjectionMatrix;
+
+	uint my_id;
+	 //108 for cube
+
+	std::vector<Mesh*> meshes;
 };
