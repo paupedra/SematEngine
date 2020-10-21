@@ -1,4 +1,3 @@
-
 #include "Globals.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
@@ -58,7 +57,6 @@ void Primitive::Render() const
 
 		glLineWidth(1.0f);
 	}
-
 
 	glColor3f(color.r, color.g, color.b);
 

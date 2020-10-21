@@ -1,6 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleWindow.h"
+#include "ModuleCamera3D.h"
+
 #include "Dependecies/Glew/include/glew.h"
 #include "Dependecies/SDL/include/SDL_opengl.h" 
 #include <gl/GL.h>
@@ -25,6 +28,7 @@
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
+	cullFace = true;
 }
 
 // Destructor
@@ -104,11 +108,13 @@ bool ModuleRenderer3D::Init()
 		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 		
+		glEnable(GL_LINE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		lights[0].Active(true);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
+
 	}
 
 	// Projection matrix for
@@ -119,27 +125,11 @@ bool ModuleRenderer3D::Init()
 		ret = false;
 	}
 
-	//uint my_id;
-
-	//glGenBuffers(1, (GLuint*)&my_id);
-	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
-
-	/*uint my_indices = 0;
-	glGenBuffers(1, (GLuint*)&(my_indices));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);*/
-
 	Importer::MeshImp::Import("Assets/Mesh/warrior/warrior.FBX");
 
-	
+	//Importer::MeshImp::Import("Assets/Mesh/BakerHouse/BakerHouse.FBX",&currentId);
 
-	/*glGenBuffers(1, (GLuint*)&meshes[0]->buffers[Mesh::vertex]);
-	glBindBuffer(GL_ARRAY_BUFFER, meshes[0]->buffers[Mesh::vertex]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * meshes[0]->buffersSize[Mesh::vertex] * 3, meshes[0]->vertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*)&meshes[0]->buffers[Mesh::index]);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[0]->buffers[Mesh::index]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * meshes[0]->buffersSize[Mesh::index], meshes[0]->indices, GL_STATIC_DRAW);*/
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	return ret;
 }
@@ -160,6 +150,9 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
+	//File dropping
+	FileDropCheck();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -167,17 +160,14 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glVertexPointer(3, GL_FLOAT, 0, NULL);
-	//glDrawArrays(GL_TRIANGLES, 0, 36);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-
 	std::vector<Mesh*>::iterator item = meshes.begin();
 
 	for (; item != meshes.end() ;++item)
 	{
 		DrawMesh( (*item) );
 	}
+
+	DrawCube();
 
 	//DrawMesh(meshes[0]);
 	
@@ -201,7 +191,6 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
-
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -217,17 +206,129 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 void ModuleRenderer3D::DrawMesh(Mesh* mesh)
 {
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * mesh->num_index, mesh->index, GL_STATIC_DRAW);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
+
+
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::vertex]);
 
-	glVertexPointer(3, GL_FLOAT, 0, mesh->vertices);
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[Mesh::index]);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[Mesh::index]);
+	
 	glDrawElements(GL_TRIANGLES, mesh->buffersSize[Mesh::index], GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
+{
+	//Vertex buffer
+	glGenBuffers(1, (GLuint*)&(newMesh->buffersId[Mesh::vertex]));
+	glBindBuffer(GL_ARRAY_BUFFER, newMesh->buffersId[Mesh::vertex]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * newMesh->buffersSize[Mesh::vertex] * 3, &newMesh->vertices[0], GL_STATIC_DRAW);
+
+
+	if (newMesh->indices != nullptr)
+	{
+		//Index buffer
+		glGenBuffers(1, (GLuint*)&(newMesh->buffersId[Mesh::index]));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newMesh->buffersId[Mesh::index]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * newMesh->buffersSize[Mesh::index], &newMesh->indices[0], GL_STATIC_DRAW);
+	}
+}
+
+void ModuleRenderer3D::FileDropCheck()
+{
+	//SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+	
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case (SDL_DROPFILE):
+
+			Importer::MeshImp::Import(event.drop.file);
+
+			LOG("Mesh imported");
+
+			break;
+		}
+	}
+}
+
+void ModuleRenderer3D::SwitchCullFace()
+{
+	if (cullFace)
+	
+		glEnable(GL_CULL_FACE);
+	else
+		glDisable(GL_CULL_FACE);
+}
+
+void ModuleRenderer3D::DrawCube()
+{
+	uint my_id = 0;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	float cube_vertex_coords[108] =
+	{
+		0.0f, 0.0f, 0.0f,        //ABC
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+
+		0.0f, 0.0f, 0.0f,        //ACD
+		1.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+
+		1.0f, 0.0f, 0.0f,        //BFC
+		1.0f, 0.0f, -1.0f,
+		1.0f, 1.0f, 0.0f,
+
+		1.0f, 1.0f, 0.0f,        //CFH
+		1.0f, 0.0f, -1.0f,
+		1.0f, 1.0f, -1.0f,
+
+		1.0f, 1.0f, 0.0f,        //CHG
+		1.0f, 1.0f, -1.0f,
+		0.0f, 1.0f, -1.0f,
+
+		1.0f, 1.0f, 0.0f,        //CGD
+		0.0f, 1.0f, -1.0f,
+		0.0f, 1.0f, 0.0f,
+
+		0.0f, 1.0f, 0.0f,        //DGE
+		0.0f, 1.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+
+		0.0f, 1.0f, 0.0f,        //DEA
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, 0.0f,
+
+		0.0f, 0.0f, 0.0f,        //AEB
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, 0.0f,
+
+		1.0f, 0.0f, 0.0f,        //BEF
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, -1.0f,
+
+		0.0f, 0.0f, -1.0f,        //EHF
+		1.0f, 1.0f, -1.0f,
+		1.0f, 0.0f, -1.0f,
+
+		0.0f, 0.0f, -1.0f,        //EGH
+		0.0f, 1.0f, -1.0f,
+		1.0f, 1.0f, -1.0f
+	};
+
+	glGenBuffers(1, (GLuint*)&my_id);
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, cube_vertex_coords, GL_STATIC_DRAW);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 }

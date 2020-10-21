@@ -24,14 +24,24 @@ public:
 	
 	void DrawMesh(Mesh* mesh);
 
+	void GenerateBuffers(Mesh* newMesh);
+
+	void FileDropCheck();
+
+	void DrawCube();
+
+	void SwitchCullFace();
+
 public:
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ProjectionMatrix;
 
-	uint my_id;
-	 //108 for cube
+	uint currentId;
 
 	std::vector<Mesh*> meshes;
+
+	bool cullFace;
+	
 };

@@ -1,14 +1,13 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleCamera3D.h"
 #include "Primitive.h"
 
 #include "Dependecies/imgui/imgui.h"
 
-
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled)
-{
-}
+{}
 
 ModuleSceneIntro::~ModuleSceneIntro()
 {}
@@ -23,9 +22,10 @@ bool ModuleSceneIntro::Start()
 	App->camera->LookAt(vec3(0, 0, 0));
 
 	
-
+	Sphere* s = new Sphere(5);
+	s->SetPos(0.f, 0.f, 0.f);
+	primitives.PushBack(s);
 	
-
 	return ret;
 }
 
@@ -51,35 +51,6 @@ void ModuleSceneIntro::DebugSpawnPrimitive(Primitive * p)
 update_status ModuleSceneIntro::Update(float dt)
 {
 
-	
-
-	//bool my_tool_active = true;
-	//ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
-	//if (ImGui::BeginMenuBar())
-	//{
-	//	if (ImGui::BeginMenu("File"))
-	//	{
-	//		if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-	//		if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-	//		if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
-	//		ImGui::EndMenu();
-	//	}
-	//	ImGui::EndMenuBar();
-	//}
-
-	//ImGui::End();
-
-	/*if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
-	{
-		my_tool_active = !my_tool_active;
-	}*/
-	
-	//ImGui::EndFrame();
-
-	//ImGui::End();
-	
-
-
 	Plane p(vec3(0, 1, 0));
 	p.axis = true;
 	p.Render();
@@ -99,8 +70,6 @@ update_status ModuleSceneIntro::PostUpdate(float dt)
 	{
 		primitives[n]->Render();
 	}
-
-	
 
 	return UPDATE_CONTINUE;
 }

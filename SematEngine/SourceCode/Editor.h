@@ -6,6 +6,7 @@
 class Window;
 class w_Console;
 class w_Configuration;
+class w_About;
 
 class Editor : public Module
 {
@@ -19,7 +20,10 @@ public:
 
 	void Draw();
 
-	void AddWindow(Window* _window);
+	void AddWindow(Window* window);
+
+	void UpdateConfigFPS(int fps);
+	void UpdateConfigMS(int ms);
 
 private:
 
@@ -27,7 +31,8 @@ private:
 
 public:
 
-	w_Console* console;
-	w_Configuration* configuration;
+	w_Console* console = nullptr;
+	w_Configuration* configuration = nullptr;
+	w_About* about = nullptr;
 
 };

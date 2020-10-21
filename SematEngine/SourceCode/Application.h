@@ -5,12 +5,13 @@
 #include "Globals.h"
 #include "Timer.h"
 #include "Module.h"
-#include "ModuleWindow.h"
-#include "ModuleInput.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleCamera3D.h"
-#include "Editor.h"
+
+class ModuleWindow;
+class ModuleInput;
+class ModuleSceneIntro;
+class ModuleRenderer3D;
+class ModuleCamera3D;
+class Editor;
 
 class Application
 {
@@ -24,12 +25,19 @@ public:
 
 	bool debug;
 	bool renderPrimitives;
+	bool vsync;
+
 private:
 
-	Timer	ms_timer;
+	Timer	frame_timer;
+	Timer	seconds_timer;
+	uint	frame_cap_ms;
 	float	dt;
 	float	frame_cap;
 	int		frame_count;
+
+	bool wantToExit;
+
 	std::vector<Module*> modules;
 	std::string title;
 
@@ -42,8 +50,16 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	const char* GetTitle() const;
 	void SetTitle(const char* title);
+	void SetFrameCap(int cap);
+	void SwitchVsync();
+
+	void ExitApp();
+	void OpenLink(const char* link);
+	const char* ReadTxt(const char* path);
+
+	const char* GetTitle() const;
+	float GetFrameCap() const;
 
 private:
 

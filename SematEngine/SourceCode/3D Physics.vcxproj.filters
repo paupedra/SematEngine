@@ -58,6 +58,12 @@
     <Filter Include="Source Code\Importer">
       <UniqueIdentifier>{8a6360e1-26aa-4be1-82ea-a2af2793a527}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Code\GameObject">
+      <UniqueIdentifier>{35065458-471a-4cfc-b0fc-ef34af551d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\GameObject\Components">
+      <UniqueIdentifier>{98137545-9360-4ab5-8bfc-07f7fd3843fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -333,6 +339,15 @@
     <ClInclude Include="I_Mesh.h">
       <Filter>Source Code\Importer</Filter>
     </ClInclude>
+    <ClInclude Include="w_About.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source Code\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Source Code\GameObject\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -502,6 +517,15 @@
     </ClCompile>
     <ClCompile Include="I_Mesh.cpp">
       <Filter>Source Code\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="w_About.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Code\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source Code\GameObject\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

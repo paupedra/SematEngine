@@ -1,4 +1,11 @@
 #include "Application.h"
+#include "ModuleCamera3D.h"
+#include "ModuleInput.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleSceneIntro.h"
+#include "ModuleWindow.h"
+#include "Editor.h"
+
 #include "Dependecies/Brofiler/Brofiler.h"
 
 Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
@@ -24,6 +31,7 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 	AddModule(renderer3D);
 
 	title = "Semat Engine";
+	wantToExit = false;
 }
 
 Application::~Application()
@@ -57,28 +65,43 @@ bool Application::Init()
 		ret = (*item)->Start();
 	}
 	
-	ms_timer.Start();
+	frame_timer.Start();
+	seconds_timer.Start();
+	frame_cap = 120;
+
+	vsync = VSYNC;
+
 	return ret;
 }
 
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	dt = (float)ms_timer.Read() / 1000.0f;
-	ms_timer.Start();
+	dt = (float)frame_timer.Read() / 1000.0f;
+	frame_timer.Start();
 }
 
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
-
-	//Time::Update();
-	float frame_ms = ms_timer.Read();
 	
-	/*if (frame_ms > 0 && frame_ms < 1000.f / frame_cap)
+	frame_cap_ms = 1000 / frame_cap;
+	uint current_frame_ms = frame_timer.Read();
+
+	if ( !vsync && current_frame_ms < frame_cap_ms)						
 	{
-		SDL_Delay((1000.f / frame_cap) - frame_ms);
-	}*/
+		SDL_Delay(frame_cap_ms - current_frame_ms);
+	}
+
+	App->editor->UpdateConfigMS(frame_timer.Read());
+
+	if (seconds_timer.Read() >= 1000)
+	{
+		seconds_timer.Start();
+		App->editor->UpdateConfigFPS(frame_count);
+
+		frame_count = 0;
+	}
 
 	frame_count++;
 
@@ -117,6 +140,9 @@ update_status Application::Update()
 	BROFILER_CATEGORY("Sleep", Profiler::Color::Blue)
 	FinishUpdate();
 
+	if (wantToExit)
+		ret = update_status::UPDATE_STOP;
+
 	return ret;
 }
 
@@ -136,10 +162,60 @@ const char* Application::GetTitle() const
 	return title.c_str();
 }
 
+float Application::GetFrameCap() const
+{
+	return frame_cap;
+}
+
+void Application::SwitchVsync()
+{
+	if (vsync)
+		SDL_GL_SetSwapInterval(1);
+	else
+		SDL_GL_SetSwapInterval(0);
+}
+
 void Application::SetTitle(const char* _title)
 {
 	title = _title;
 	App->window->SetTitle(_title);
+}
+
+void Application::SetFrameCap(int cap)
+{
+	frame_cap = cap;
+}
+
+void Application::ExitApp()
+{
+	wantToExit = true;
+}
+
+void Application::OpenLink(const char* link)
+{
+	ShellExecute(NULL, "open", link, NULL, NULL, SW_SHOWNORMAL);
+}
+
+const char* Application::ReadTxt(const char* path)
+{
+	/*FILE* file;
+	char str[500];
+
+	file = fopen(path, "r");
+
+	if (file == NULL) {
+		printf("Could not open file %s", path);
+		return "error";
+	}
+	
+	for (int i = 0; fgets(str[i], sizeof str[i], file) != NULL; i++) 
+	{
+		LOG("string? %s",str);
+	}
+		
+	fclose(file);*/
+
+	return "0";
 }
 
 void Application::AddModule(Module* mod)

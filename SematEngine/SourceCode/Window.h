@@ -17,4 +17,4 @@ public:
 	bool active;
 };
 
-#endif //__DOCK_DATA_H__
+#endif //__WINDOW__

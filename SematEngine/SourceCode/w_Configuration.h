@@ -11,6 +11,12 @@ public:
 
 	void Draw() override;
 
+	void UpdateFPS(int _FPS);
+	void UpdateMS(int _ms);
+
 private:
 
+	float FPS[20];
+	float MS[20];
+	int fps;
 };

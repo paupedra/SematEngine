@@ -1,5 +1,6 @@
 #pragma once
 #include "Application.h"
+#include "Editor.h"
 #include "Globals.h"
 #include "w_Console.h"
 

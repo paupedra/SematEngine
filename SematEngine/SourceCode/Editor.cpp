@@ -1,6 +1,8 @@
 #include "Globals.h"
 #include "Editor.h"
 #include "Application.h"
+#include "ModuleWindow.h"
+#include "ModuleRenderer3D.h"
 
 #include <Windows.h>
 #include "Dependecies/Glew/include/glew.h" // extension lib
@@ -17,14 +19,17 @@
 
 #include "w_Configuration.h"
 #include "w_Console.h"
+#include "w_About.h"
 
 Editor::Editor(bool start_enabled) : Module(start_enabled)
 {
-	configuration = new w_Configuration(true);
-	console = new w_Console(true);
+	configuration = new w_Configuration(false);
+	console = new w_Console(false);
+	about = new w_About(false);
 
 	AddWindow(configuration);
 	AddWindow(console);
+	AddWindow(about);
 }
 
 Editor::~Editor()
@@ -78,25 +83,37 @@ void Editor::Draw()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("Save")) {  }
+			if (ImGui::MenuItem("Load")) {  }
+			if (ImGui::MenuItem("Exit")) { App->ExitApp(); }
+
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Window"))
+		if (ImGui::BeginMenu("Windows"))
 		{
-			if (ImGui::MenuItem("Console","fill de puta",console->active)) { console->SetActive(); }
-			if (ImGui::MenuItem("Configuration", "fill de puta 2", configuration->active)) { configuration->SetActive(); }
+			if (ImGui::MenuItem("Console"," ",console->active)) { console->SetActive(); }
+			if (ImGui::MenuItem("Configuration", " ", configuration->active)) { configuration->SetActive(); }
 
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
 		{
 			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			if (ImGui::MenuItem("Redo", "CTRL+Y")) {}  // Disabled item
 			ImGui::Separator();
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("About", " ", about->active)) { about->SetActive(); }
+
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 
@@ -110,7 +127,17 @@ void Editor::Draw()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Editor::AddWindow(Window* _window)
+void Editor::AddWindow(Window* window)
 {
-	windows.push_back(_window);
+	windows.push_back(window);
+}
+
+void Editor::UpdateConfigFPS(int fps)
+{
+	configuration->UpdateFPS(fps);
+}
+
+void Editor::UpdateConfigMS(int ms)
+{
+	configuration->UpdateMS(ms);
 }

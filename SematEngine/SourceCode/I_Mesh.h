@@ -19,9 +19,6 @@ struct Mesh
 
 	uint* indices = nullptr;
 	float* vertices = nullptr;
-
-	//uint buffer;
-
 };
 
 namespace Importer
