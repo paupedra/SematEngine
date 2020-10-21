@@ -1,9 +1,10 @@
 #pragma once
 #include "Module.h"
-#include "p2DynArray.h"
 #include "Globals.h"
+#include <vector>
 
 class Primitive;
+class GameObject;
 
 class ModuleSceneIntro : public Module
 {
@@ -18,10 +19,7 @@ public:
 	bool CleanUp();
 
 private:
-	void HandleDebugInput();
-	void DebugSpawnPrimitive(Primitive* p);
 
-	p2DynArray<Primitive*> primitives;
-
+	std::vector<GameObject*> gameObjects;
 
 };

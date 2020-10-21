@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include "Dependecies/mmgr/mmgr.h"
+
 w_Configuration::w_Configuration(bool _active) : Window(_active)
 {
 
@@ -87,5 +89,10 @@ void w_Configuration::UpdateMS(int _ms)
 	}
 
 	MS[19] = _ms;
+
+}
+
+void w_Configuration::CleanUp()
+{
 
 }

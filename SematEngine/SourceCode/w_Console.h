@@ -14,6 +14,8 @@ public:
 
 	void AddLog(char* text);
 
+	void CleanUp() override;
+
 private:
 
 	std::vector<char*> logs;

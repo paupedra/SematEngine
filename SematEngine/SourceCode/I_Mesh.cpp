@@ -10,6 +10,8 @@
 
 #pragma comment (lib, "Dependecies/Assimp/libx86/assimp.lib")
 
+#include "Dependecies/mmgr/mmgr.h"
+
 void Importer::MeshImp::Import(const char* file)
 {
 	const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality);
@@ -41,11 +43,6 @@ void Importer::MeshImp::Import(const char* file)
                         memcpy(&newMesh->indices[f * 3], scene->mMeshes[i]->mFaces[f].mIndices, 3 * sizeof(uint));
                     }
                 }
-            }
-
-            if (scene->mMeshes[i]->HasNormals())
-            {
-
             }
 
             App->renderer3D->GenerateBuffers(newMesh);

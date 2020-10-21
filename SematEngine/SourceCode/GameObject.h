@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+class Component;
+
 class GameObject
 {
 public:
@@ -21,6 +23,7 @@ public:
 private:
 	bool active;
 	std::string name;
-	//std::vector<Component> 
+	std::vector<Component*> components;
 };
+
 #endif //__GAMEOBJECT__

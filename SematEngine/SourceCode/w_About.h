@@ -12,6 +12,8 @@ public:
 
 	void Draw() override;
 
+	void CleanUp() override;
+
 private:
 
 	const char* licenseString;

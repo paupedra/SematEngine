@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Component.h"
 
 GameObject::GameObject()
 {
@@ -11,6 +12,11 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
+	std::vector<Component*>::iterator item = components.begin();
+	for (; item != components.end(); ++item)
+	{
+		(*item)->Update();
+	}
 
 }
 

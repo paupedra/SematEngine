@@ -4,6 +4,8 @@
 
 #include "Dependecies/imgui/imgui.h"
 
+#include "Dependecies/mmgr/mmgr.h"
+
 w_About::w_About(bool _active) : Window(_active)
 {
 	//licenseString = App->ReadTxt("../../LICENSE.txt");
@@ -42,4 +44,9 @@ void w_About::Draw()
 
 		ImGui::End();
 	}
+}
+
+void w_About::CleanUp()
+{
+
 }

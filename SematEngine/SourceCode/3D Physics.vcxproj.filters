@@ -37,9 +37,6 @@
     <Filter Include="Source Code\Modules">
       <UniqueIdentifier>{7b418be2-1631-4a31-9ef2-8a8b234a7339}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Code\Modules\Game">
-      <UniqueIdentifier>{83f46af7-e02f-40c0-9e56-41d76082527b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Code\Containers">
       <UniqueIdentifier>{afc36133-f401-499a-aa33-0da1e500fb52}</UniqueIdentifier>
     </Filter>
@@ -64,6 +61,9 @@
     <Filter Include="Source Code\GameObject\Components">
       <UniqueIdentifier>{98137545-9360-4ab5-8bfc-07f7fd3843fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Code\Modules\Scenes">
+      <UniqueIdentifier>{83f46af7-e02f-40c0-9e56-41d76082527b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -82,7 +82,7 @@
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleSceneIntro.h">
-      <Filter>Source Code\Modules\Game</Filter>
+      <Filter>Source Code\Modules\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Source Code</Filter>
@@ -346,6 +346,9 @@
       <Filter>Source Code\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
+      <Filter>Source Code\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentMesh.h">
       <Filter>Source Code\GameObject\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -363,7 +366,7 @@
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleSceneIntro.cpp">
-      <Filter>Source Code\Modules\Game</Filter>
+      <Filter>Source Code\Modules\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Source Code</Filter>
@@ -525,6 +528,9 @@
       <Filter>Source Code\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
+      <Filter>Source Code\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentMesh.cpp">
       <Filter>Source Code\GameObject\Components</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,7 +4,11 @@
 #include "ModuleCamera3D.h"
 #include "Primitive.h"
 
+#include "GameObject.h"
+
 #include "Dependecies/imgui/imgui.h"
+
+#include "Dependecies/mmgr/mmgr.h"
 
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled)
 {}
@@ -20,11 +24,6 @@ bool ModuleSceneIntro::Start()
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
-
-	
-	Sphere* s = new Sphere(5);
-	s->SetPos(0.f, 0.f, 0.f);
-	primitives.PushBack(s);
 	
 	return ret;
 }
@@ -37,39 +36,25 @@ bool ModuleSceneIntro::CleanUp()
 	return true;
 }
 
-void ModuleSceneIntro::HandleDebugInput()
-{
-	
-}
-
-void ModuleSceneIntro::DebugSpawnPrimitive(Primitive * p)
-{
-
-}
-
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
-
 	Plane p(vec3(0, 1, 0));
 	p.axis = true;
 	p.Render();
 
-	if (App->debug == true)
-		HandleDebugInput();
-
-	for (uint n = 0; n < primitives.Count(); n++)
-		primitives[n]->Update();
+	//Update GameObjects in scene
+	std::vector<GameObject*>::iterator item = gameObjects.begin();
+	for (; item != gameObjects.end(); ++item)
+	{
+		(*item)->Update();
+	}
 
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleSceneIntro::PostUpdate(float dt)
 {
-	for (uint n = 0; n < primitives.Count(); n++)
-	{
-		primitives[n]->Render();
-	}
 
 	return UPDATE_CONTINUE;
 }

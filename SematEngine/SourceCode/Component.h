@@ -1,3 +1,5 @@
+#ifndef __COMPONENT__
+#define __COMPONENT__
 
 class GameObject;
 
@@ -14,13 +16,13 @@ public:
 	Component();
 	~Component();
 
-	void Update();
+	virtual void Update() = 0;
 
 	void Enable();
 	void Disable();
 
 	bool IsActive();
-	type GetType;
+	type GetType();
 
 
 private:
@@ -28,3 +30,4 @@ private:
 	type type;
 	GameObject* owner;
 };
+#endif //__COMPONENT__

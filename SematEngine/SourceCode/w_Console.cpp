@@ -3,6 +3,8 @@
 
 #include "Dependecies/imgui/imgui.h"
 
+#include "Dependecies/mmgr/mmgr.h"
+
 w_Console::w_Console(bool _active) : Window(_active)
 {
 	scrollToBottom = false;
@@ -40,4 +42,9 @@ void w_Console::AddLog(char* text)
 {
 	logs.push_back(text);
 	scrollToBottom = true;
+}
+
+void w_Console::CleanUp()
+{
+
 }

@@ -79,6 +79,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="Dependecies\Glew\include\eglew.h" />
     <ClInclude Include="Dependecies\Glew\include\glew.h" />
     <ClInclude Include="Dependecies\Glew\include\glxew.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_draw.cpp" />

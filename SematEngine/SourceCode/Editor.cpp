@@ -21,6 +21,8 @@
 #include "w_Console.h"
 #include "w_About.h"
 
+#include "Dependecies/mmgr/mmgr.h"
+
 Editor::Editor(bool start_enabled) : Module(start_enabled)
 {
 	configuration = new w_Configuration(false);
@@ -60,6 +62,14 @@ update_status Editor::PreUpdate(float dt)
 bool Editor::CleanUp()
 {
 	LOG("CleanUp Editor");
+
+	std::vector<Window*>::iterator item = windows.begin();
+	for (item; item != windows.end(); ++item)
+		(*item)->CleanUp();
+
+	delete console;
+	delete configuration;
+	delete about;
 
 	return true;
 }

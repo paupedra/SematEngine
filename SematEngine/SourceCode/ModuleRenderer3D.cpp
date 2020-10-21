@@ -26,6 +26,8 @@
 #include "I_Mesh.h"
 #include <vector>
 
+#include "Dependecies/mmgr/mmgr.h"
+
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
 	cullFace = true;

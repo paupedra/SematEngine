@@ -13,6 +13,8 @@ public:
 
 	bool IsActive() const;
 
+	virtual void CleanUp() = 0;
+
 public:
 	bool active;
 };

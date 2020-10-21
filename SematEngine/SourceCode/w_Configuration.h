@@ -14,6 +14,8 @@ public:
 	void UpdateFPS(int _FPS);
 	void UpdateMS(int _ms);
 
+	void CleanUp() override;
+
 private:
 
 	float FPS[20];
