@@ -55,12 +55,14 @@ void PrintToConsole(MathLogChannel channel, const char *str);
 #define STRINGIZE(x) STRINGIZE_HELPER(x)
 #define WARNING(desc) message(__FILE__ "(" STRINGIZE(__LINE__) ") : warning: " #desc)
 
+//#define LOGGING_SUPPORT_DISABLED
+
 #ifndef LOGGING_SUPPORT_DISABLED
 
 #define LOGI(...) PrintToConsoleVariadic(MathLogInfo, __VA_ARGS__)
 #define LOGW(...) PrintToConsoleVariadic(MathLogWarning, __VA_ARGS__)
 #define LOGE(...) PrintToConsoleVariadic(MathLogError, __VA_ARGS__)
-#define LOG(channel, ...) PrintToConsoleVariadic(channel, __VA_ARGS__)
+//#define LOG(channel, ...) PrintToConsoleVariadic(channel, __VA_ARGS__)
 
 #else
 

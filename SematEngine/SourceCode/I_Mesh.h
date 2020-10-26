@@ -1,5 +1,5 @@
-#ifndef __MODULE_MESHES_H__
-#define __MODULE_MESHES_H__
+#ifndef __MESHIMP__
+#define __MESHIMG__
 
 #include "Globals.h"
 
@@ -11,6 +11,7 @@ struct Mesh
 	{
 		index,
 		vertex,
+		normal,
 		maxBuffers
 	};
 
@@ -19,6 +20,7 @@ struct Mesh
 
 	uint* indices = nullptr;
 	float* vertices = nullptr;
+	float* normals = nullptr;
 };
 
 namespace Importer
@@ -29,4 +31,4 @@ namespace Importer
 	}
 }
 
-#endif //__MODULE_MESHES_H__
+#endif //__MESHIMP__

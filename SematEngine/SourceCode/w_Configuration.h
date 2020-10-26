@@ -1,5 +1,5 @@
 
-#include "Window.h"
+class Window;
 
 
 class w_Configuration : public Window
@@ -21,4 +21,6 @@ private:
 	float FPS[20];
 	float MS[20];
 	int fps;
+
+	char* inputs[100];
 };

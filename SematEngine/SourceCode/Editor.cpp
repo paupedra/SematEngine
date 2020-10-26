@@ -16,10 +16,12 @@
 #include "Dependecies/imgui/imgui_impl_opengl3.h"
 
 #include "Window.h"
-
-#include "w_Configuration.h"
 #include "w_Console.h"
+#include "w_Configuration.h"
 #include "w_About.h"
+#include "w_Hierarchy.h"
+#include "w_Inspector.h"
+
 
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -28,10 +30,14 @@ Editor::Editor(bool start_enabled) : Module(start_enabled)
 	configuration = new w_Configuration(false);
 	console = new w_Console(false);
 	about = new w_About(false);
+	hierarchy = new w_Hierarchy(false);
+	inspector = new w_Inspector(false);
 
 	AddWindow(configuration);
 	AddWindow(console);
 	AddWindow(about);
+	AddWindow(hierarchy);
+	AddWindow(inspector);
 }
 
 Editor::~Editor()
@@ -67,9 +73,9 @@ bool Editor::CleanUp()
 	for (item; item != windows.end(); ++item)
 		(*item)->CleanUp();
 
-	delete console;
-	delete configuration;
-	delete about;
+	//delete console;
+	//delete configuration;
+	//delete about;
 
 	return true;
 }
@@ -89,6 +95,8 @@ void Editor::Draw()
 
 	ImGui::EndMainMenuBar();*/
 
+	//ImGui::ShowDemoWindow();
+
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -103,6 +111,8 @@ void Editor::Draw()
 		{
 			if (ImGui::MenuItem("Console"," ",console->active)) { console->SetActive(); }
 			if (ImGui::MenuItem("Configuration", " ", configuration->active)) { configuration->SetActive(); }
+			if (ImGui::MenuItem("Hierarchy", " ", hierarchy->active)) { hierarchy->SetActive(); }
+			if (ImGui::MenuItem("Inspector", " ", inspector->active)) { inspector->SetActive(); }
 
 			ImGui::EndMenu();
 		}
@@ -150,4 +160,8 @@ void Editor::UpdateConfigFPS(int fps)
 void Editor::UpdateConfigMS(int ms)
 {
 	configuration->UpdateMS(ms);
+}
+void Editor::AddLog(char* text)
+{
+	console->AddLog(text);
 }

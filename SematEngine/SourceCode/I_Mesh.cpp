@@ -1,3 +1,4 @@
+
 #include "I_Mesh.h"
 
 #include "Application.h"
@@ -43,6 +44,13 @@ void Importer::MeshImp::Import(const char* file)
                         memcpy(&newMesh->indices[f * 3], scene->mMeshes[i]->mFaces[f].mIndices, 3 * sizeof(uint));
                     }
                 }
+            }
+
+            if (scene->mMeshes[i]->HasNormals())
+            {
+                newMesh->buffersSize[Mesh::normal] = scene->mMeshes[i]->mNumVertices;
+                newMesh->normals = new float[newMesh->buffersSize[Mesh::normal] * 3];
+                memcpy(newMesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * newMesh->buffersSize[Mesh::normal] * 3);
             }
 
             App->renderer3D->GenerateBuffers(newMesh);

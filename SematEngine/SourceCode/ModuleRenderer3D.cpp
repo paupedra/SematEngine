@@ -1,8 +1,10 @@
+#include "I_Mesh.h"
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera3D.h"
+
+
 
 #include "Dependecies/Glew/include/glew.h"
 #include "Dependecies/SDL/include/SDL_opengl.h" 
@@ -21,16 +23,22 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "Dependecies/Glew/libx86/glew32.lib")
-//#pragma comment (lib, "Dependecies/Glew/libx86/glew32s.lib")
 
-#include "I_Mesh.h"
+//#include "Light.h"
+#include "ModuleRenderer3D.h"
+
 #include <vector>
 
 #include "Dependecies/mmgr/mmgr.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
-	cullFace = true;
+	glCullFace = true;
+	glColorMaterial = true;
+	glLighting = true;
+	glDepthTest = true;
+	glTexture2d = true;
+	wireframeMode = false;
 }
 
 // Destructor
@@ -53,6 +61,19 @@ bool ModuleRenderer3D::Init()
 	
 	if(ret == true)
 	{
+		//Init Glew
+		if (glewInit() != GLEW_OK) {
+			LOG("ERROR ON GLEWINIT");
+			ret = false;
+		}
+		else
+			LOG("Glew initialized succesfully!");
+
+		LOG("Vendor: %s", glGetString(GL_VENDOR));
+		LOG("Renderer: %s", glGetString(GL_RENDERER));
+		LOG("OpenGL version supported %s", glGetString(GL_VERSION));
+		LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
 		//Use Vsync
 		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
@@ -113,25 +134,19 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_LINE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		lights[0].Active(true);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
-
+		glEnable(GL_TEXTURE_2D);
+		lights[0].Active(true);
 	}
 
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	if (glewInit() != GLEW_OK) {
-		LOG("ERROR ON GLEWINIT");
-		ret = false;
-	}
-
+	
 	Importer::MeshImp::Import("Assets/Mesh/warrior/warrior.FBX");
 
-	//Importer::MeshImp::Import("Assets/Mesh/BakerHouse/BakerHouse.FBX",&currentId);
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	
 
 	return ret;
 }
@@ -145,6 +160,11 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glMatrixMode(GL_MODELVIEW);
 
 	glLoadMatrixf(App->camera->GetRawViewMatrix());
+
+	if (wireframeMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
@@ -161,23 +181,23 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	mat4x4 tmp;
+	tmp.translate(100.f, 0.f, 0.f);
+	//tmp.Translate(float3(10.f, 0.f, 0.f));
 
+	BROFILER_CATEGORY("Draw Mesh", Profiler::Color::Beige)
 	std::vector<Mesh*>::iterator item = meshes.begin();
-
 	for (; item != meshes.end() ;++item)
 	{
-		DrawMesh( (*item) );
+		DrawMesh( (*item), tmp);
 	}
 
 	DrawCube();
 
-	//DrawMesh(meshes[0]);
-	
-
-	BROFILER_CATEGORY("Draw imgui", Profiler::Color::Azure)
+	BROFILER_CATEGORY("Draw imgui", Profiler::Color::AliceBlue)
 	App->editor->Draw();
 
-	BROFILER_CATEGORY("SwapWindow", Profiler::Color::Azure)
+	BROFILER_CATEGORY("SwapWindow", Profiler::Color::GoldenRod)
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
@@ -189,7 +209,6 @@ bool ModuleRenderer3D::CleanUp()
 	LOG("Destroying 3D Renderer");
 
 	SDL_GL_DeleteContext(context);
-
 	return true;
 }
 
@@ -206,11 +225,13 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void ModuleRenderer3D::DrawMesh(Mesh* mesh)
+void ModuleRenderer3D::DrawMesh(Mesh* mesh, mat4x4 transform)
 {
+
+	glPushMatrix();
+	glMultMatrixf(&transform);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
-
-
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::vertex]);
 
@@ -221,6 +242,34 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh)
 	glDrawElements(GL_TRIANGLES, mesh->buffersSize[Mesh::index], GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
+}
+
+float* ModuleRenderer3D::ArrayMatrix(float4x4 mat)
+{
+	float* ret = new float[16];
+
+	mat.At(0,0) = ret[0];
+	mat.At(0, 1) = ret[1];
+	mat.At(0, 2) = ret[2];
+	mat.At(0, 3) = ret[3];
+
+	mat.At(1, 0) = ret[4];
+	mat.At(1, 1) = ret[5];
+	mat.At(1, 2) = ret[6];
+	mat.At(1, 3) = ret[7];
+
+	mat.At(2, 0) = ret[8];
+	mat.At(2, 1) = ret[9];
+	mat.At(2, 2) = ret[10];
+	mat.At(2, 3) = ret[11];
+
+	mat.At(3, 0) = ret[12];
+	mat.At(3, 1) = ret[13];
+	mat.At(3, 2) = ret[14];
+	mat.At(3, 3) = ret[15];
+	return ret;
 }
 
 void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
@@ -228,7 +277,7 @@ void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
 	//Vertex buffer
 	glGenBuffers(1, (GLuint*)&(newMesh->buffersId[Mesh::vertex]));
 	glBindBuffer(GL_ARRAY_BUFFER, newMesh->buffersId[Mesh::vertex]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * newMesh->buffersSize[Mesh::vertex] * 3, &newMesh->vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * newMesh->buffersSize[Mesh::vertex] * 3, newMesh->vertices, GL_STATIC_DRAW);
 
 
 	if (newMesh->indices != nullptr)
@@ -236,8 +285,17 @@ void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
 		//Index buffer
 		glGenBuffers(1, (GLuint*)&(newMesh->buffersId[Mesh::index]));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newMesh->buffersId[Mesh::index]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * newMesh->buffersSize[Mesh::index], &newMesh->indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * newMesh->buffersSize[Mesh::index], newMesh->indices, GL_STATIC_DRAW);
 	}
+
+	if (newMesh->normals != nullptr)
+	{
+		//Normals buffer
+		glGenBuffers(1, (GLuint*)&(newMesh->buffersId[Mesh::normal]));
+		glBindBuffer(GL_ARRAY_BUFFER, newMesh->buffersId[Mesh::normal]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * newMesh->buffersSize[Mesh::normal] * 3, newMesh->normals, GL_STATIC_DRAW);
+	}
+
 }
 
 void ModuleRenderer3D::FileDropCheck()
@@ -251,9 +309,8 @@ void ModuleRenderer3D::FileDropCheck()
 		{
 			case (SDL_DROPFILE):
 
+			LOG("File was dropped");
 			Importer::MeshImp::Import(event.drop.file);
-
-			LOG("Mesh imported");
 
 			break;
 		}
@@ -262,11 +319,39 @@ void ModuleRenderer3D::FileDropCheck()
 
 void ModuleRenderer3D::SwitchCullFace()
 {
-	if (cullFace)
-	
-		glEnable(GL_CULL_FACE);
+	glIsEnabled(GL_CULL_FACE) == false? glEnable(GL_CULL_FACE): glDisable(GL_CULL_FACE);
+}
+
+void ModuleRenderer3D::SwitchDepthTest()
+{
+	if (glDepthTest)
+		glEnable(GL_DEPTH_TEST);
 	else
-		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+}
+
+void ModuleRenderer3D::SwitchLighting()
+{
+	if (glLighting)
+		glEnable(GL_LIGHTING);
+	else
+		glDisable(GL_LIGHTING);
+}
+
+void ModuleRenderer3D::SwitchTexture2d()
+{
+	if (glTexture2d)
+		glEnable(GL_TEXTURE_2D);
+	else
+		glDisable(GL_TEXTURE_2D);
+}
+
+void ModuleRenderer3D::SwitchColorMaterial()
+{
+	if (glColorMaterial)
+		glEnable(GL_COLOR_MATERIAL);
+	else
+		glDisable(GL_COLOR_MATERIAL);
 }
 
 void ModuleRenderer3D::DrawCube()

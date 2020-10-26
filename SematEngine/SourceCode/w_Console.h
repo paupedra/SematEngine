@@ -1,7 +1,9 @@
-#include <vector>
-#include <string>
+#ifndef __WINDOW_CONSOLE__
+#define __WINDOW_CONSOLE__
 
-#include "Window.h"
+
+class Window; 
+//#include "Window.h" //How the fuck won't this work
 
 class w_Console : public Window
 {
@@ -22,3 +24,4 @@ private:
 	bool scrollToBottom;
 
 };
+#endif //__WINDOW_CONSOLE__

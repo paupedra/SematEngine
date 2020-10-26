@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleRenderer3D.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -34,7 +35,11 @@ bool ModuleWindow::Init()
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
 		//Use OpenGL 2.1
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 		if(WIN_FULLSCREEN == true)
@@ -90,18 +95,34 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
-int ModuleWindow::Width() const
+int ModuleWindow::GetWidth() const
 {
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
 	return w;
 }
 
-int ModuleWindow::Height() const
+int ModuleWindow::GetHeight() const
 {
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
 	return h;
+}
+
+void ModuleWindow::SetWidth(int width)
+{
+	int w = width;
+	int h = GetHeight();
+	SDL_SetWindowSize(window, w, h);
+	App->renderer3D->OnResize(w, h);
+}
+
+void ModuleWindow::SetHeight(int height)
+{
+	int w = GetWidth();
+	int h = height;
+	SDL_SetWindowSize(window, w, h);
+	App->renderer3D->OnResize(w, h);
 }
 
 void ModuleWindow::SetTitle(const char* title)

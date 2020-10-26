@@ -16,6 +16,8 @@ public:
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
 
+	GameObject* CreateGameObject();
+
 	bool CleanUp();
 
 private:

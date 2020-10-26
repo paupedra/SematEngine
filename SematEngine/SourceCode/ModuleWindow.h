@@ -17,17 +17,21 @@ public:
 
 	bool Init();
 	bool CleanUp();
-	int Width() const;
-	int Height() const;
+
+	int GetWidth() const;
+	int GetHeight() const;
+
+	void SetWidth(int width);
+	void SetHeight(int height);
 
 	void SetTitle(const char* title);
 
 public:
-	//The window we'll be rendering to
 	SDL_Window* window;
-
-	//The surface contained by the window
 	SDL_Surface* screen_surface;
+
+	//int width;
+	//int height;
 };
 
 #endif // __ModuleWindow_H__

@@ -1,7 +1,8 @@
 #include <vector>
 #include <string>
 
-#include "Window.h"
+//#include "Window.h"
+class Window;
 
 class w_About : public Window
 {

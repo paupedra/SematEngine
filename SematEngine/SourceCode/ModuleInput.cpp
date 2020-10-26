@@ -48,15 +48,22 @@ update_status ModuleInput::PreUpdate(float dt)
 	{
 		if(keys[i] == 1)
 		{
-			if(keyboard[i] == KEY_IDLE)
+			if (keyboard[i] == KEY_IDLE)
+			{
 				keyboard[i] = KEY_DOWN;
+				const char* keyName = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)i));
+				LOG("Key Pressed %s", keyName);
+			}
 			else
 				keyboard[i] = KEY_REPEAT;
+			
+			
 		}
 		else
 		{
 			if(keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN)
 				keyboard[i] = KEY_UP;
+			
 			else
 				keyboard[i] = KEY_IDLE;
 		}

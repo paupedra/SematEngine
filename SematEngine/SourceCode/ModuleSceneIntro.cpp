@@ -1,13 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleSceneIntro.h"
+//#include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "Primitive.h"
-
 #include "GameObject.h"
 
 #include "Dependecies/imgui/imgui.h"
-
 #include "Dependecies/mmgr/mmgr.h"
 
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled)
@@ -57,4 +56,12 @@ update_status ModuleSceneIntro::PostUpdate(float dt)
 {
 
 	return UPDATE_CONTINUE;
+}
+
+GameObject* ModuleSceneIntro::CreateGameObject()
+{
+	GameObject* newGameObject = new GameObject();
+	gameObjects.push_back(newGameObject);
+
+	return newGameObject;
 }

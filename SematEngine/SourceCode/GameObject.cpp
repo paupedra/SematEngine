@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "Component.h"
+#include "ComponentTransform.h"
 
 GameObject::GameObject()
 {
@@ -19,6 +20,12 @@ void GameObject::Update()
 	}
 
 }
+
+//Component* GameObject::CreateComponent()
+//{
+//
+//}
+
 
 void GameObject::Enable()
 {

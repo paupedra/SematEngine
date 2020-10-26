@@ -1,4 +1,6 @@
 #include "Application.h"
+
+#include "Window.h"
 #include "w_Console.h"
 
 #include "Dependecies/imgui/imgui.h"
@@ -17,6 +19,7 @@ w_Console::~w_Console()
 
 void w_Console::Draw()
 {
+
 	if (!active)
 		return;
 	if (ImGui::Begin("Console", &active))
@@ -30,7 +33,7 @@ void w_Console::Draw()
 
 		if (scrollToBottom)
 		{
-			ImGui::SetScrollY(ImGui::GetScrollMaxY());
+			ImGui::SetScrollHere(1.0f);
 			scrollToBottom = false;
 		}
 
@@ -40,8 +43,9 @@ void w_Console::Draw()
 
 void w_Console::AddLog(char* text)
 {
-	logs.push_back(text);
+	logs.push_back(strdup(text)); //Why does this work?
 	scrollToBottom = true;
+	
 }
 
 void w_Console::CleanUp()

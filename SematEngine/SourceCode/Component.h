@@ -13,7 +13,8 @@ enum type
 class Component
 {
 public:
-	Component();
+	Component() {};
+	Component(GameObject* owner);
 	~Component();
 
 	virtual void Update() = 0;
@@ -24,8 +25,9 @@ public:
 	bool IsActive();
 	type GetType();
 
+	GameObject* GetOwner();
 
-private:
+public:
 	bool active;
 	type type;
 	GameObject* owner;

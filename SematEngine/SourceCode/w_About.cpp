@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include "Window.h"
+
 #include "w_About.h"
 
 #include "Dependecies/imgui/imgui.h"

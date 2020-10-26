@@ -351,6 +351,15 @@
     <ClInclude Include="ComponentMesh.h">
       <Filter>Source Code\GameObject\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentTransform.h">
+      <Filter>Source Code\GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="w_Hierarchy.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="w_Inspector.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -532,6 +541,15 @@
     </ClCompile>
     <ClCompile Include="ComponentMesh.cpp">
       <Filter>Source Code\GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentTransform.cpp">
+      <Filter>Source Code\GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="w_Hierarchy.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="w_Inspector.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

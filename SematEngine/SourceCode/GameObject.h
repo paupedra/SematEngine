@@ -5,6 +5,7 @@
 #include <vector>
 
 class Component;
+class ComponentTransform;
 
 class GameObject
 {
@@ -13,6 +14,8 @@ public:
 	~GameObject();
 
 	void Update();
+
+	//Component* CreateComponent();
 
 	void Enable();
 	void Disable();
@@ -24,6 +27,9 @@ private:
 	bool active;
 	std::string name;
 	std::vector<Component*> components;
+
+public:
+	ComponentTransform* transform;
 };
 
 #endif //__GAMEOBJECT__

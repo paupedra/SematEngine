@@ -4,6 +4,7 @@
 class Window
 {
 public:
+	Window(){};
 	Window(bool _active);
 	~Window();
 

@@ -1,5 +1,8 @@
+#ifndef __COMPONENTMESH__
+#define __COMPONENTMESH__
 
 class Component;
+struct Mesh;
 
 class ComponentMesh : public Component
 {
@@ -13,4 +16,7 @@ public:
 
 private:
 
+	Mesh mesh;
+
 };
+#endif //__COMPONENTMESH__

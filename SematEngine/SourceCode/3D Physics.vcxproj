@@ -80,6 +80,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentMesh.h" />
+    <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="Dependecies\Glew\include\eglew.h" />
     <ClInclude Include="Dependecies\Glew\include\glew.h" />
     <ClInclude Include="Dependecies\Glew\include\glxew.h" />
@@ -171,12 +172,15 @@
     <ClInclude Include="w_About.h" />
     <ClInclude Include="w_Configuration.h" />
     <ClInclude Include="w_Console.h" />
+    <ClInclude Include="w_Hierarchy.h" />
+    <ClInclude Include="w_Inspector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
+    <ClCompile Include="ComponentTransform.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_draw.cpp" />
@@ -233,6 +237,8 @@
     <ClCompile Include="w_About.cpp" />
     <ClCompile Include="w_Configuration.cpp" />
     <ClCompile Include="w_Console.cpp" />
+    <ClCompile Include="w_Hierarchy.cpp" />
+    <ClCompile Include="w_Inspector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependecies\MathGeoLib\src\Geometry\KDTree.inl" />
