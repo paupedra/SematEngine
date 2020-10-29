@@ -5,31 +5,36 @@
 #include <vector>
 
 class Component;
+enum  ComponentType;
 class ComponentTransform;
+class ComponentMesh;
 
 class GameObject
 {
 public:
-	GameObject();
+	GameObject(char* name);
+	GameObject(GameObject* parent, char* name);
 	~GameObject();
 
 	void Update();
 
-	//Component* CreateComponent();
+	Component* AddComponent(Component* component);
 
 	void Enable();
 	void Disable();
 
 	bool IsActive();
 	const char* GetName();
-
+	std::vector<Component*> GetComponents()const;
 private:
 	bool active;
 	std::string name;
 	std::vector<Component*> components;
 
 public:
-	ComponentTransform* transform;
+	ComponentTransform* transform = nullptr;
+	std::vector<GameObject*> children;
+	GameObject* parent;
 };
 
 #endif //__GAMEOBJECT__

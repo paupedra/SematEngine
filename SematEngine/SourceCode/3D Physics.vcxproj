@@ -159,6 +159,7 @@
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="I_Mesh.h" />
+    <ClInclude Include="I_Texture.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleCamera3D.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />
     <ClCompile Include="I_Mesh.cpp" />
+    <ClCompile Include="I_Texture.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />

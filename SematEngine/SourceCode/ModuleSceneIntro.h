@@ -16,12 +16,14 @@ public:
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
 
-	GameObject* CreateGameObject();
+	GameObject* CreateGameObject(char* name,char* path);
+	void SetSelectedObject(GameObject* object);
 
 	bool CleanUp();
 
-private:
+public:
 
 	std::vector<GameObject*> gameObjects;
+	GameObject* selectedObject = nullptr;
 
 };

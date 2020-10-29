@@ -360,6 +360,9 @@
     <ClInclude Include="w_Inspector.h">
       <Filter>Source Code\Editor\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="I_Texture.h">
+      <Filter>Source Code\Importer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -550,6 +553,9 @@
     </ClCompile>
     <ClCompile Include="w_Inspector.cpp">
       <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="I_Texture.cpp">
+      <Filter>Source Code\Importer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

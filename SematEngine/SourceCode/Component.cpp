@@ -1,7 +1,12 @@
 #include "Component.h"
 #include "GameObject.h"
 
-Component::Component(GameObject* owner) : owner(owner)
+Component::Component(ComponentType type) : type(type)
+{
+
+}
+
+Component::Component(ComponentType type,GameObject* owner) : owner(owner) , type(type)
 {
 
 }
@@ -29,7 +34,7 @@ bool Component::IsActive()
 	return active;
 }
 
-type Component::GetType()
+ComponentType Component::GetType()
 {
 	return type;
 }

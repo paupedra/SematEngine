@@ -3,8 +3,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera3D.h"
-
-
+#include "I_Texture.h"
 
 #include "Dependecies/Glew/include/glew.h"
 #include "Dependecies/SDL/include/SDL_opengl.h" 
@@ -35,7 +34,7 @@ ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), 
 {
 	glCullFace = true;
 	glColorMaterial = true;
-	glLighting = true;
+	glLighting = false;
 	glDepthTest = true;
 	glTexture2d = true;
 	wireframeMode = false;
@@ -134,7 +133,7 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_LINE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		glEnable(GL_LIGHTING);
+		//glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 		lights[0].Active(true);
@@ -143,10 +142,13 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	
-	Importer::MeshImp::Import("Assets/Mesh/warrior/warrior.FBX");
+	CreateChekerTexture();
+	//InitCube();
 
-	
+	Importer::TextureImp::InitDevil();
+
+	Texture tmp = Importer::TextureImp::Import("Assets/Mesh/BakerHouse/Baker_house.png");
+	houseId = tmp.id;
 
 	return ret;
 }
@@ -160,12 +162,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glMatrixMode(GL_MODELVIEW);
 
 	glLoadMatrixf(App->camera->GetRawViewMatrix());
-
-	if (wireframeMode)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+		
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
 
@@ -181,18 +178,9 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	mat4x4 tmp;
-	tmp.translate(100.f, 0.f, 0.f);
-	//tmp.Translate(float3(10.f, 0.f, 0.f));
+	ImGui::ShowDemoWindow();
 
-	BROFILER_CATEGORY("Draw Mesh", Profiler::Color::Beige)
-	std::vector<Mesh*>::iterator item = meshes.begin();
-	for (; item != meshes.end() ;++item)
-	{
-		DrawMesh( (*item), tmp);
-	}
-
-	DrawCube();
+	//DrawCube();
 
 	BROFILER_CATEGORY("Draw imgui", Profiler::Color::AliceBlue)
 	App->editor->Draw();
@@ -225,51 +213,42 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void ModuleRenderer3D::DrawMesh(Mesh* mesh, mat4x4 transform)
+void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform)
 {
+	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
+	
+	glLineWidth(2);
 
 	glPushMatrix();
-	glMultMatrixf(&transform);
+	glMultMatrixf((float*)&transform);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	//Texture
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+	//Pass TextureID
+	glBindTexture(GL_TEXTURE_2D, houseId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::texture]);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::vertex]);
-
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[Mesh::index]);
 	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[Mesh::index]);
 	glDrawElements(GL_TRIANGLES, mesh->buffersSize[Mesh::index], GL_UNSIGNED_INT, NULL);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-
 	glPopMatrix();
-}
 
-float* ModuleRenderer3D::ArrayMatrix(float4x4 mat)
-{
-	float* ret = new float[16];
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	mat.At(0,0) = ret[0];
-	mat.At(0, 1) = ret[1];
-	mat.At(0, 2) = ret[2];
-	mat.At(0, 3) = ret[3];
-
-	mat.At(1, 0) = ret[4];
-	mat.At(1, 1) = ret[5];
-	mat.At(1, 2) = ret[6];
-	mat.At(1, 3) = ret[7];
-
-	mat.At(2, 0) = ret[8];
-	mat.At(2, 1) = ret[9];
-	mat.At(2, 2) = ret[10];
-	mat.At(2, 3) = ret[11];
-
-	mat.At(3, 0) = ret[12];
-	mat.At(3, 1) = ret[13];
-	mat.At(3, 2) = ret[14];
-	mat.At(3, 3) = ret[15];
-	return ret;
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
 }
 
 void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
@@ -296,6 +275,13 @@ void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
 		glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * newMesh->buffersSize[Mesh::normal] * 3, newMesh->normals, GL_STATIC_DRAW);
 	}
 
+	if (newMesh->textureCoords != nullptr)
+	{
+		glGenBuffers(1, (GLuint*)&newMesh->buffersId[Mesh::texture]);
+		glBindBuffer(GL_ARRAY_BUFFER, newMesh->buffersId[Mesh::texture]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * newMesh->buffersSize[Mesh::texture] * 2, newMesh->textureCoords, GL_STATIC_DRAW);
+	}
+
 }
 
 void ModuleRenderer3D::FileDropCheck()
@@ -315,6 +301,33 @@ void ModuleRenderer3D::FileDropCheck()
 			break;
 		}
 	}
+}
+
+void ModuleRenderer3D::CreateChekerTexture()
+{
+	GLubyte checkerImage[64][64][4];
+	for (int i = 0; i < 64; i++) {
+		for (int j = 0; j < 64; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+
+			checkerImage[i][j][0] = (GLubyte)c;
+			checkerImage[i][j][1] = (GLubyte)c;
+			checkerImage[i][j][2] = (GLubyte)c;
+			checkerImage[i][j][3] = (GLubyte)255;
+		}
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &checkersId);
+	glBindTexture(GL_TEXTURE_2D, checkersId);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ModuleRenderer3D::SwitchCullFace()
@@ -352,70 +365,4 @@ void ModuleRenderer3D::SwitchColorMaterial()
 		glEnable(GL_COLOR_MATERIAL);
 	else
 		glDisable(GL_COLOR_MATERIAL);
-}
-
-void ModuleRenderer3D::DrawCube()
-{
-	uint my_id = 0;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	float cube_vertex_coords[108] =
-	{
-		0.0f, 0.0f, 0.0f,        //ABC
-		1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 0.0f,
-
-		0.0f, 0.0f, 0.0f,        //ACD
-		1.0f, 1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-
-		1.0f, 0.0f, 0.0f,        //BFC
-		1.0f, 0.0f, -1.0f,
-		1.0f, 1.0f, 0.0f,
-
-		1.0f, 1.0f, 0.0f,        //CFH
-		1.0f, 0.0f, -1.0f,
-		1.0f, 1.0f, -1.0f,
-
-		1.0f, 1.0f, 0.0f,        //CHG
-		1.0f, 1.0f, -1.0f,
-		0.0f, 1.0f, -1.0f,
-
-		1.0f, 1.0f, 0.0f,        //CGD
-		0.0f, 1.0f, -1.0f,
-		0.0f, 1.0f, 0.0f,
-
-		0.0f, 1.0f, 0.0f,        //DGE
-		0.0f, 1.0f, -1.0f,
-		0.0f, 0.0f, -1.0f,
-
-		0.0f, 1.0f, 0.0f,        //DEA
-		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f, 0.0f,
-
-		0.0f, 0.0f, 0.0f,        //AEB
-		0.0f, 0.0f, -1.0f,
-		1.0f, 0.0f, 0.0f,
-
-		1.0f, 0.0f, 0.0f,        //BEF
-		0.0f, 0.0f, -1.0f,
-		1.0f, 0.0f, -1.0f,
-
-		0.0f, 0.0f, -1.0f,        //EHF
-		1.0f, 1.0f, -1.0f,
-		1.0f, 0.0f, -1.0f,
-
-		0.0f, 0.0f, -1.0f,        //EGH
-		0.0f, 1.0f, -1.0f,
-		1.0f, 1.0f, -1.0f
-	};
-
-	glGenBuffers(1, (GLuint*)&my_id);
-	glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, cube_vertex_coords, GL_STATIC_DRAW);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }

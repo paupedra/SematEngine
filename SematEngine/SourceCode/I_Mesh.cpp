@@ -1,4 +1,3 @@
-
 #include "I_Mesh.h"
 
 #include "Application.h"
@@ -13,9 +12,10 @@
 
 #include "Dependecies/mmgr/mmgr.h"
 
-void Importer::MeshImp::Import(const char* file)
+std::vector<Mesh*> Importer::MeshImp::Import(const char* file)
 {
 	const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality);
+    std::vector<Mesh*> ret;
 
     if (scene != nullptr && scene->HasMeshes())
     {
@@ -53,10 +53,21 @@ void Importer::MeshImp::Import(const char* file)
                 memcpy(newMesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * newMesh->buffersSize[Mesh::normal] * 3);
             }
 
+            if (scene->mMeshes[i]->HasTextureCoords(0))
+            {
+                newMesh->buffersSize[Mesh::texture] = scene->mMeshes[i]->mNumVertices;
+                newMesh->textureCoords = new float[scene->mMeshes[i]->mNumVertices * 2];
+
+                for (int j = 0; j < newMesh->buffersSize[Mesh::texture]; j++)
+                {
+                    newMesh->textureCoords[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
+                    newMesh->textureCoords[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
+                }
+            }
+
             App->renderer3D->GenerateBuffers(newMesh);
 
-            App->renderer3D->meshes.push_back(newMesh);
-
+            ret.push_back(newMesh);
         }
 
         aiReleaseImport(scene);
@@ -65,4 +76,5 @@ void Importer::MeshImp::Import(const char* file)
     {
         LOG("Error loading scene %s", file);
     }
+    return ret;
 }

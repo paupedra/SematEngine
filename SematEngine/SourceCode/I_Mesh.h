@@ -2,6 +2,7 @@
 #define __MESHIMG__
 
 #include "Globals.h"
+#include <vector>
 
 struct Mesh
 {
@@ -12,6 +13,7 @@ struct Mesh
 		index,
 		vertex,
 		normal,
+		texture,
 		maxBuffers
 	};
 
@@ -21,13 +23,14 @@ struct Mesh
 	uint* indices = nullptr;
 	float* vertices = nullptr;
 	float* normals = nullptr;
+	float* textureCoords = nullptr;
 };
 
 namespace Importer
 {
 	namespace MeshImp
 	{
-		void Import(const char* file);
+		std::vector<Mesh*> Import(const char* file);
 	}
 }
 

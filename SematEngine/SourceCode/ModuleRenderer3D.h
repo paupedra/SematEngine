@@ -26,15 +26,13 @@ public:
 
 	void OnResize(int width, int height);
 	
-	void DrawMesh(Mesh* mesh, mat4x4 transform);
-
-	float* ArrayMatrix(float4x4 mat);
+	void DrawMesh(Mesh* mesh, float4x4 transform);
 
 	void GenerateBuffers(Mesh* newMesh);
 
 	void FileDropCheck();
 
-	void DrawCube();
+	void CreateChekerTexture();
 
 	void SwitchCullFace();
 	void SwitchDepthTest();
@@ -48,9 +46,9 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ProjectionMatrix;
 
-	uint currentId;
-
-	std::vector<Mesh*> meshes;
+	//Checkerid test
+	uint checkersId;
+	uint houseId;
 
 	bool wireframeMode;
 

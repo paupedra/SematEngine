@@ -3,7 +3,7 @@
 
 class GameObject;
 
-enum type
+enum ComponentType
 {
 	TRANSFORM,
 	MESH,
@@ -13,23 +13,22 @@ enum type
 class Component
 {
 public:
-	Component() {};
-	Component(GameObject* owner);
+	Component(ComponentType type);
+	Component(ComponentType type,GameObject* owner);
 	~Component();
 
 	virtual void Update() = 0;
-
+	virtual void DrawInspector() = 0;
 	void Enable();
 	void Disable();
 
 	bool IsActive();
-	type GetType();
-
+	ComponentType GetType();
 	GameObject* GetOwner();
 
 public:
 	bool active;
-	type type;
+	ComponentType type;
 	GameObject* owner;
 };
 #endif //__COMPONENT__

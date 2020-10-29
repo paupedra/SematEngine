@@ -4,6 +4,12 @@
 
 #include "w_Inspector.h"
 
+#include "ModuleSceneIntro.h"
+
+#include "GameObject.h"
+#include "Component.h"
+#include "ComponentTransform.h"
+
 #include "Dependecies/imgui/imgui.h"
 
 #include "Dependecies/mmgr/mmgr.h"
@@ -25,7 +31,15 @@ void w_Inspector::Draw()
 
 	if (ImGui::Begin("Inspector", &active))
 	{
-
+		if (App->scene_intro->selectedObject != nullptr)
+		{
+			std::vector<Component*> vector = App->scene_intro->selectedObject->GetComponents();
+			std::vector<Component*>::iterator item = vector.begin();
+			for (; item != vector.end(); ++item)
+			{
+				(*item)->DrawInspector();
+			}
+		}
 		ImGui::End();
 	}
 }
