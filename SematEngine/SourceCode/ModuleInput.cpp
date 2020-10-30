@@ -30,7 +30,7 @@ bool ModuleInput::Init()
 
 	if(SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
-		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
+		LOG("(ERROR) SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 
@@ -52,10 +52,12 @@ update_status ModuleInput::PreUpdate(float dt)
 			{
 				keyboard[i] = KEY_DOWN;
 				const char* keyName = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)i));
-				LOG("Key Pressed %s", keyName);
+				LOG("Key Pressed Down %s", keyName);
 			}
 			else
+			{
 				keyboard[i] = KEY_REPEAT;
+			}
 			
 			
 		}

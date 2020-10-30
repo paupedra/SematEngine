@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "Globals.h"
 
 GameObject::GameObject(char* name) : name(name)
 {
@@ -40,18 +41,70 @@ Component* GameObject::AddComponent(Component* component)
 	switch (type)
 	{
 		case TRANSFORM:
+
 			components.push_back(component);
 			transform = (ComponentTransform*)component;
 			break;
 
 		case MESH:
 			
-			components.push_back(component);
+			if (!HasComponentType(MESH))
+			{
+				components.push_back(component);
+			}
+			else
+				LOG("(ERROR) Error adding Mesh: Object already has Mesh");
 			
+			break;
+
+		case TEXTURE:
+
+			if (!HasComponentType(TEXTURE))
+			{
+				components.push_back(component);
+				texture = (ComponentTexture*)component;
+			}
+			else
+			{
+				DeleteComponentType(TEXTURE);
+				components.push_back(component);
+				texture = (ComponentTexture*)component;
+			}
+
 			break;
 	}
 
 	return component;
+}
+
+void GameObject::DeleteComponentType(ComponentType type)
+{
+	std::vector<Component*>::iterator item = components.begin();
+	for (; item != components.end(); ++item)
+	{
+		if ((*item)->GetType() == type)
+		{
+			components.erase(item);
+			return;
+
+		}
+	}
+}
+
+bool GameObject::HasComponentType(ComponentType type)
+{
+	bool ret = false;
+	std::vector<Component*>::iterator item = components.begin();
+	for (; item != components.end(); ++item)
+	{
+		if ((*item)->GetType() == type)
+		{
+			ret = true;
+			return ret;
+		}
+	}
+
+	return ret;
 }
 
 void GameObject::Enable()

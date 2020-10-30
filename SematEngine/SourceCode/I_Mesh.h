@@ -24,6 +24,8 @@ struct Mesh
 	float* vertices = nullptr;
 	float* normals = nullptr;
 	float* textureCoords = nullptr;
+
+	const char* path;
 };
 
 namespace Importer

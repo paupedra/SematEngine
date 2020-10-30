@@ -24,11 +24,26 @@ void w_Console::Draw()
 		return;
 	if (ImGui::Begin("Console", &active))
 	{
-		std::vector<char*>::iterator item = logs.begin();
+		std::vector<Logs*>::iterator item = logs.begin();
 
 		for (item; item != logs.end(); ++item)
 		{
-			ImGui::TextUnformatted((*item));
+			ImVec4 textColor = { 1.f,1.f,1.f,1.f };
+
+			switch ((*item)->type)
+			{
+				case LogType::ERRORS:
+					textColor = { 1.f,0.f,0.f,1.f };
+					break;
+
+				case LogType::INIT:
+					textColor = { 1.f,1.f,0.f,1.f };
+					break;
+			}
+
+			ImGui::PushStyleColor(ImGuiCol_Text, textColor);
+			ImGui::TextUnformatted((*item)->text);
+			ImGui::PopStyleColor();
 		}
 
 		if (scrollToBottom)
@@ -43,7 +58,20 @@ void w_Console::Draw()
 
 void w_Console::AddLog(char* text)
 {
-	logs.push_back(strdup(text)); //Why does this work?
+	Logs* log = new Logs;
+	log->text = strdup(text);
+	log->type = LogType::NONE;
+
+	if (strstr(text, "(ERROR)") != nullptr)
+	{
+		log->type = LogType::ERRORS;
+	}
+	if (strstr(text, "(INIT)") != nullptr)
+	{
+		log->type = LogType::INIT;
+	}
+
+	logs.push_back(log); //Why does this work?
 	scrollToBottom = true;
 	
 }

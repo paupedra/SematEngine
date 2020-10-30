@@ -26,7 +26,7 @@ public:
 
 	void OnResize(int width, int height);
 	
-	void DrawMesh(Mesh* mesh, float4x4 transform);
+	void DrawMesh(Mesh* mesh, float4x4 transform,uint textureId);
 
 	void GenerateBuffers(Mesh* newMesh);
 
@@ -49,6 +49,8 @@ public:
 	//Checkerid test
 	uint checkersId;
 	uint houseId;
+
+	SDL_Event event;
 
 	bool wireframeMode;
 

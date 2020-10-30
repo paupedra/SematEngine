@@ -10,6 +10,8 @@
 
 #include "I_Mesh.h"
 #include "ComponentMesh.h"
+#include "ComponentTexture.h"
+#include "I_Texture.h"
 
 
 
@@ -31,8 +33,10 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
-	CreateGameObject("Warrior","Assets/Mesh/warrior/warrior.FBX");
-	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx");
+	//CreateGameObject("Warrior","Assets/Mesh/warrior/warrior.FBX");
+	
+
+	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/Baker_house.png");
 
 	return ret;
 }
@@ -67,7 +71,7 @@ update_status ModuleSceneIntro::PostUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "")
+GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",char* texturePath = "")
 {
 	GameObject* newGameObject = new GameObject(nullptr,name);
 	gameObjects.push_back(newGameObject);
@@ -78,8 +82,9 @@ GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "")
 
 		if (meshes.size() == 1)
 		{
-			ComponentMesh* newComp = new ComponentMesh(newGameObject, meshPath, meshes.front());
-			newGameObject->AddComponent((Component*)newComp);
+			newGameObject->AddComponent(new ComponentMesh(newGameObject, meshPath, meshes.front()));
+			if(texturePath != nullptr)
+				newGameObject->AddComponent(new ComponentTexture(gameObjects.back(), texturePath, Importer::TextureImp::Import(texturePath)));
 		}
 		else
 		{
@@ -90,9 +95,11 @@ GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "")
 				ComponentMesh* newComp = new ComponentMesh(childGameObject, meshPath, (*item));
 
 				childGameObject->AddComponent((Component*)newComp);
-				newGameObject->children.push_back(childGameObject);
+				
+				if (texturePath != nullptr)
+					childGameObject->AddComponent(new ComponentTexture(gameObjects.back(), texturePath, Importer::TextureImp::Import(texturePath)));
 
-				//gameObjects.push_back(childGameObject);
+				newGameObject->children.push_back(childGameObject);
 			}
 		}
 	}

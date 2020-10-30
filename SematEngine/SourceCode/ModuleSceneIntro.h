@@ -16,7 +16,7 @@ public:
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
 
-	GameObject* CreateGameObject(char* name,char* path);
+	GameObject* CreateGameObject(char* name,char* meshPath, char* texturePath);
 	void SetSelectedObject(GameObject* object);
 
 	bool CleanUp();

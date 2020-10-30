@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
+#include "ComponentTexture.h"
+#include "I_Texture.h"
 #include "I_Mesh.h"
 #include "Dependecies/imgui/imgui.h"
 
@@ -31,13 +33,27 @@ void  ComponentMesh::DrawInspector()
 	if (ImGui::CollapsingHeader("Mesh"))
 	{
 		ImGui::Text("Path: %s", path);
-		ImGui::Text("Vertex: %d", mesh->buffersSize[Mesh::vertex]);
+		ImGui::Text("Vertices: %d", mesh->buffersSize[Mesh::vertex]);
+		
+		
 	}
 }
 
 void ComponentMesh::DrawMesh()
 {
-	App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform());
+	if (active)
+	{
+		if (owner->texture != nullptr)
+		{
+			if (owner->texture->IsEnabled())
+			{
+				App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform(), owner->texture->GetTexture()->id);
+				return;
+			}
+		}
+	}
+
+	App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform(),0);
 }
 
 char* ComponentMesh::GetPath()const

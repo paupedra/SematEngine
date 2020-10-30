@@ -16,9 +16,9 @@ void Importer::TextureImp::InitDevil()
 	ilutRenderer(ILUT_OPENGL);
 }
 
-Texture Importer::TextureImp::Import(const char* path)
+Texture* Importer::TextureImp::Import(const char* path)
 {
-	Texture newTexture;
+	Texture* newTexture = new Texture;
 	uint i;
 	
 	ilGenImages(1,&i);
@@ -34,20 +34,24 @@ Texture Importer::TextureImp::Import(const char* path)
 
 		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
 		{
-			newTexture.id = CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT));
-			newTexture.height = ilGetInteger(IL_IMAGE_HEIGHT);
-			newTexture.width = ilGetInteger(IL_IMAGE_WIDTH);
-			newTexture.path = path;
+			newTexture->id = CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT));
+			newTexture->height = ilGetInteger(IL_IMAGE_HEIGHT);
+			newTexture->width = ilGetInteger(IL_IMAGE_WIDTH);
+			newTexture->path = path;
+
+			LOG("Successfully loaded Texture from: %s", path);
 		}
 		else
 		{
-			LOG("Could not convert image %s", path);
+			LOG("(ERROR)Could not convert image %s", path);
 		}
 	}
 	else
 	{
-		LOG("Error loading Image %s", path);
+		LOG("(ERROR) Error loading Image %s", path);
 	}
+
+	
 
 	return newTexture;
 }

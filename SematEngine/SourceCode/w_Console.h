@@ -5,6 +5,19 @@
 class Window; 
 //#include "Window.h" //How the fuck won't this work
 
+enum class LogType
+{
+	ERRORS,
+	INIT,
+	NONE
+};
+
+struct Logs
+{
+	const char* text;
+	LogType type;
+};
+
 class w_Console : public Window
 {
 public:
@@ -20,7 +33,7 @@ public:
 
 private:
 
-	std::vector<char*> logs;
+	std::vector<Logs*> logs;
 	bool scrollToBottom;
 
 };

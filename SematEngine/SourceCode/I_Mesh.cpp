@@ -67,6 +67,8 @@ std::vector<Mesh*> Importer::MeshImp::Import(const char* file)
 
             App->renderer3D->GenerateBuffers(newMesh);
 
+            newMesh->path = file;
+
             ret.push_back(newMesh);
         }
 
@@ -74,7 +76,7 @@ std::vector<Mesh*> Importer::MeshImp::Import(const char* file)
     }
     else
     {
-        LOG("Error loading scene %s", file);
+        LOG("(ERROR) Error loading scene %s", file);
     }
     return ret;
 }

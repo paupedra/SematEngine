@@ -30,7 +30,7 @@ Editor::Editor(bool start_enabled) : Module(start_enabled)
 	configuration = new w_Configuration(false);
 	console = new w_Console(false);
 	about = new w_About(false);
-	hierarchy = new w_Hierarchy(false);
+	hierarchy = new w_Hierarchy(true);
 	inspector = new w_Inspector(false);
 
 	AddWindow(configuration);

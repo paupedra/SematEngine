@@ -363,6 +363,9 @@
     <ClInclude Include="I_Texture.h">
       <Filter>Source Code\Importer</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentTexture.h">
+      <Filter>Source Code\GameObject\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -556,6 +559,9 @@
     </ClCompile>
     <ClCompile Include="I_Texture.cpp">
       <Filter>Source Code\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentTexture.cpp">
+      <Filter>Source Code\GameObject\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

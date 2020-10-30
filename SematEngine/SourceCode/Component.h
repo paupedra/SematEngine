@@ -7,6 +7,7 @@ enum ComponentType
 {
 	TRANSFORM,
 	MESH,
+	TEXTURE,
 	EMPTY
 };
 

@@ -3,7 +3,12 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera3D.h"
+#include "ModuleSceneIntro.h"
+
 #include "I_Texture.h"
+#include "GameObject.h"
+#include "Component.h"
+#include "ComponentTexture.h"
 
 #include "Dependecies/Glew/include/glew.h"
 #include "Dependecies/SDL/include/SDL_opengl.h" 
@@ -47,14 +52,14 @@ ModuleRenderer3D::~ModuleRenderer3D()
 // Called before render is available
 bool ModuleRenderer3D::Init()
 {
-	LOG("Creating 3D Renderer context");
+	LOG("(INIT) Creating 3D Renderer context");
 	bool ret = true;
 	
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
 	if(context == NULL)
 	{
-		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
+		LOG("(ERROR) OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 	
@@ -62,11 +67,11 @@ bool ModuleRenderer3D::Init()
 	{
 		//Init Glew
 		if (glewInit() != GLEW_OK) {
-			LOG("ERROR ON GLEWINIT");
+			LOG("(ERROR) ERROR ON GLEWINIT");
 			ret = false;
 		}
 		else
-			LOG("Glew initialized succesfully!");
+			LOG("(INIT) Glew initialized succesfully!");
 
 		LOG("Vendor: %s", glGetString(GL_VENDOR));
 		LOG("Renderer: %s", glGetString(GL_RENDERER));
@@ -85,7 +90,7 @@ bool ModuleRenderer3D::Init()
 		GLenum error = glGetError();
 		if(error != GL_NO_ERROR)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			LOG("(ERROR) Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
 
@@ -97,7 +102,7 @@ bool ModuleRenderer3D::Init()
 		error = glGetError();
 		if(error != GL_NO_ERROR)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			LOG("(ERROR) Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
 		
@@ -111,7 +116,7 @@ bool ModuleRenderer3D::Init()
 		error = glGetError();
 		if(error != GL_NO_ERROR)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			LOG("(ERROR) Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
 		
@@ -143,12 +148,7 @@ bool ModuleRenderer3D::Init()
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	CreateChekerTexture();
-	//InitCube();
-
 	Importer::TextureImp::InitDevil();
-
-	Texture tmp = Importer::TextureImp::Import("Assets/Mesh/BakerHouse/Baker_house.png");
-	houseId = tmp.id;
 
 	return ret;
 }
@@ -178,9 +178,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	ImGui::ShowDemoWindow();
-
-	//DrawCube();
+	//ImGui::ShowDemoWindow();
 
 	BROFILER_CATEGORY("Draw imgui", Profiler::Color::AliceBlue)
 	App->editor->Draw();
@@ -213,7 +211,7 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform)
+void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId)
 {
 	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
 	
@@ -225,11 +223,11 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	//Texture
-	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
 	//Pass TextureID
-	glBindTexture(GL_TEXTURE_2D, houseId);
+	if(textureId == 0)
+		glBindTexture(GL_TEXTURE_2D, checkersId);
+	else
+		glBindTexture(GL_TEXTURE_2D, textureId);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::texture]);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
@@ -288,7 +286,7 @@ void ModuleRenderer3D::FileDropCheck()
 {
 	//SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
 	
-	SDL_Event event;
+
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
@@ -296,7 +294,12 @@ void ModuleRenderer3D::FileDropCheck()
 			case (SDL_DROPFILE):
 
 			LOG("File was dropped");
-			Importer::MeshImp::Import(event.drop.file);
+
+			if(strstr(event.drop.file,"fbx") != nullptr)
+				App->scene_intro->CreateGameObject("Imported Game Object", event.drop.file,"");
+
+			if (strstr(event.drop.file, "png") != nullptr || strstr(event.drop.file, "dds") != nullptr )
+				App->scene_intro->selectedObject->AddComponent(new ComponentTexture(App->scene_intro->selectedObject, event.drop.file, Importer::TextureImp::Import(event.drop.file)));
 
 			break;
 		}
@@ -317,17 +320,8 @@ void ModuleRenderer3D::CreateChekerTexture()
 		}
 	}
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &checkersId);
-	glBindTexture(GL_TEXTURE_2D, checkersId);
-	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	checkersId = Importer::TextureImp::CreateTexture(checkerImage, 64, 64, GL_RGBA);
+
 }
 
 void ModuleRenderer3D::SwitchCullFace()

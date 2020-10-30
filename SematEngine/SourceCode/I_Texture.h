@@ -13,7 +13,7 @@ namespace Importer
 {
 	namespace TextureImp
 	{
-		Texture Import(const char* path);
+		Texture* Import(const char* path);
 		uint CreateTexture(const void* data, uint width, uint height, uint format);
 		void InitDevil();
 	}
