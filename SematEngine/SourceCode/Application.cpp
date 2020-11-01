@@ -203,18 +203,18 @@ std::string Application::ReadTxt(const char* path)
 	FILE* fp;
 	char str[MAXCHAR];
 
-	char* filename = "../../LICENSE.md";
+	const char* filename = path;
 
 	fp = fopen(filename, "r");
-	if (fp == NULL) {
-		printf("Could not open file %s", filename);
+	if (fp == nullptr) {
+		LOG("COuld not read file %s", filename);
+		return "Could not read License";
 	}
 	while (fgets(str, MAXCHAR, fp) != NULL)
 		ret += str;
+
 	fclose(fp);
-
 	LOG("Read txt file %s", path);
-
 	return ret;
 }
 

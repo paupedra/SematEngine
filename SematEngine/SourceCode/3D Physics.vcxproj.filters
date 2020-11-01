@@ -96,9 +96,6 @@
     <ClInclude Include="Light.h">
       <Filter>Source Code\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Primitive.h">
-      <Filter>Source Code\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Source Code\Containers</Filter>
     </ClInclude>
@@ -369,6 +366,9 @@
     <ClInclude Include="Dependecies\imgui\imgui_impl_sdl.h">
       <Filter>Dependencies\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>Source Code\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -399,9 +399,6 @@
       <Filter>Source Code\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
-      <Filter>Source Code\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="Primitive.cpp">
       <Filter>Source Code\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
@@ -568,6 +565,9 @@
     </ClCompile>
     <ClCompile Include="Dependecies\imgui\imgui_impl_sdl.cpp">
       <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>Source Code\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,7 +22,8 @@ public:
 private:
 
 	Texture* texture = nullptr;
-	char* path;
+	char* path = "";
+	bool drawTexture = true;
 
 };
 #endif //__COMPONENTTEXTURE__

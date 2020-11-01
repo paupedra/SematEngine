@@ -31,11 +31,9 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
-	//CreateGameObject("Warrior","Assets/Mesh/warrior/warrior.FBX");
+	//Loading Baker House
+	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
 	
-	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/Baker_house.png");
-	
-
 	return ret;
 }
 
@@ -69,17 +67,20 @@ update_status ModuleSceneIntro::PostUpdate(float dt)
 
 GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",char* texturePath = "")
 {
-	GameObject* newGameObject = new GameObject(nullptr,name);
-	gameObjects.push_back(newGameObject);
-
+	GameObject* newGameObject = nullptr;
 	if (meshPath != "")
 	{
 		std::vector<Mesh*> meshes = Importer::MeshImp::Import(meshPath);
+
 		if (meshes.size() == 0)
 		{
 			LOG("(ERROR) No meshes found in %s", meshPath);
 			return nullptr;
 		}
+
+		newGameObject = new GameObject(nullptr, name);
+		gameObjects.push_back(newGameObject);
+
 		if (meshes.size() == 1)
 		{
 			newGameObject->AddComponent(new ComponentMesh(newGameObject, meshPath, meshes.front()));

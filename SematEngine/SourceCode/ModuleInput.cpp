@@ -149,6 +149,10 @@ update_status ModuleInput::PreUpdate(float dt)
 				if (strstr(e.drop.file, ".png") != nullptr || strstr(e.drop.file, ".dds") != nullptr || strstr(e.drop.file, ".PNG") != nullptr || strstr(e.drop.file, ".DDS") != nullptr)
 				{
 					LOG("Loading .png /.dds file");
+					if (App->scene_intro->selectedObject == nullptr)
+					{
+						LOG("There is no GameObject selected"); break;
+					}
 					App->scene_intro->selectedObject->AddComponent(new ComponentTexture(App->scene_intro->selectedObject, e.drop.file, Importer::TextureImp::Import(e.drop.file)));
 				}
 

@@ -48,6 +48,7 @@ Editor::~Editor()
 
 bool Editor::Start()
 {
+	LOG("Creating ImGui Context");
 	ImGui::CreateContext();
 
 	ImGui::GetIO().DisplaySize = ImVec2(1000, 1000);
@@ -99,8 +100,6 @@ void Editor::Draw()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save")) {  }
-			if (ImGui::MenuItem("Load")) {  }
 			if (ImGui::MenuItem("Exit")) { App->ExitApp(); }
 
 			ImGui::EndMenu();
@@ -116,12 +115,12 @@ void Editor::Draw()
 		}
 		if (ImGui::BeginMenu("Primitives"))
 		{
-			if (ImGui::MenuItem("Cube", " ", console->active)) {App->scene_intro->CreateGameObject("Cube Primitive", "Assets/Mesh/Cube.FBX", "");}
-			if (ImGui::MenuItem("Cylinder", " ", console->active)) {App->scene_intro->CreateGameObject("Cylinder Primitive", "Assets/Mesh/Cylinder.FBX", "");}
-			if (ImGui::MenuItem("Sphere", " ", console->active)) {App->scene_intro->CreateGameObject("Sphere Primitive", "Assets/Mesh/Sphere.FBX", "");}
-			if (ImGui::MenuItem("Plane", " ", console->active)) {App->scene_intro->CreateGameObject("Plane Primitive", "Assets/Mesh/Plane.FBX", "");}
-			if (ImGui::MenuItem("Pyramid", " ", console->active)) { App->scene_intro->CreateGameObject("Pyramid Primitive", "Assets/Mesh/Pyramid.FBX", ""); }
-			if (ImGui::MenuItem("Teapot", " ", console->active)) { App->scene_intro->CreateGameObject("Teapot Primitive", "Assets/Mesh/Teapot.FBX", ""); }
+			if (ImGui::MenuItem("Cube", " ", console->active)) {App->scene_intro->CreateGameObject("Cube Primitive", "Assets/Mesh/Primitives/Cube.FBX", "");}
+			if (ImGui::MenuItem("Cylinder", " ", console->active)) {App->scene_intro->CreateGameObject("Cylinder Primitive", "Assets/Mesh/Primitives/Cylinder.FBX", "");}
+			if (ImGui::MenuItem("Sphere", " ", console->active)) {App->scene_intro->CreateGameObject("Sphere Primitive", "Assets/Mesh/Primitives/Sphere.FBX", "");}
+			if (ImGui::MenuItem("Plane", " ", console->active)) {App->scene_intro->CreateGameObject("Plane Primitive", "Assets/Mesh/Primitives/Plane.FBX", "");}
+			if (ImGui::MenuItem("Pyramid", " ", console->active)) { App->scene_intro->CreateGameObject("Pyramid Primitive", "Assets/Mesh/Primitives/Pyramid.FBX", ""); }
+			if (ImGui::MenuItem("Teapot", " ", console->active)) { App->scene_intro->CreateGameObject("Teapot Primitive", "Assets/Mesh/Primitives/Teapot.FBX", ""); }
 
 			ImGui::EndMenu();
 		}

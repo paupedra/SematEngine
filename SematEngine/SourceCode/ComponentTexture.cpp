@@ -27,14 +27,14 @@ void ComponentTexture::Update()
 	
 }
 
-void  ComponentTexture::DrawInspector()
+void ComponentTexture::DrawInspector()
 {
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		ImGui::Text("Path: %s", path);
 		ImGui::Text("Texture height: %d", texture->height);
 		ImGui::Text("Texture width: %d", texture->width);
-		if (ImGui::Checkbox("Active", &this->active)) {}
+		if (ImGui::Checkbox("DrawTexture", &drawTexture)) {}
 	}
 }
 
@@ -50,7 +50,7 @@ Texture* ComponentTexture::GetTexture() const
 
 bool ComponentTexture::IsEnabled()
 {
-	return active;
+	return drawTexture;
 }
 
 void ComponentTexture::SwitchEnabledTexture()

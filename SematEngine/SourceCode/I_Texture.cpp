@@ -10,6 +10,7 @@
 
 void Importer::TextureImp::InitDevil()
 {
+	LOG("Initializing Devil")
 	ilInit();
 	iluInit();
 	ilutInit();

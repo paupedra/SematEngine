@@ -28,8 +28,8 @@ public:
 	GameObject* GetOwner();
 
 public:
-	bool active;
-	ComponentType type;
-	GameObject* owner;
+	bool active = true;
+	ComponentType type = EMPTY;
+	GameObject* owner = nullptr;
 };
 #endif //__COMPONENT__

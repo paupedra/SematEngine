@@ -34,23 +34,25 @@ void  ComponentMesh::DrawInspector()
 	{
 		ImGui::Text("Path: %s", path);
 		ImGui::Text("Vertices: %d", mesh->buffersSize[Mesh::vertex]);
-		ImGui::Checkbox("Active", &active);
+		ImGui::Checkbox("Active", &this->active);
 		ImGui::Checkbox("Draw Vertex Normals", &drawVertexNormals);
 	}
 }
 
 void ComponentMesh::DrawMesh()
 {
-	if (!active)
+	if (!this->active)
 		return;
+
 	if (owner->texture != nullptr)
 	{
 		if (owner->texture->IsEnabled())
 		{
-			App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform(), owner->texture->GetTexture()->id,drawVertexNormals);
+			App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform(), owner->texture->GetTexture()->id ,drawVertexNormals);
 			return;
 		}
 	}
+
 	App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform(),0, drawVertexNormals);
 }
 

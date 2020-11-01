@@ -1,9 +1,11 @@
+
 #include "Globals.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Primitive.h"
 #include "Globals.h"
 #include "Application.h"
+
 
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
@@ -17,7 +19,6 @@ PrimitiveTypes Primitive::GetType() const
 
 void Primitive::Update()
 {
-	
 }
 
 // ------------------------------------------------------------
@@ -58,6 +59,7 @@ void Primitive::Render() const
 		glLineWidth(1.0f);
 	}
 
+
 	glColor3f(color.r, color.g, color.b);
 
 	if (wire || App->renderPrimitives == false)
@@ -88,21 +90,18 @@ void Primitive::InnerRender() const
 void Primitive::SetPos(float x, float y, float z)
 {
 	transform.translate(x, y, z);
-	
 }
 
 // ------------------------------------------------------------
 void Primitive::SetRotation(float angle, const vec3 &u)
 {
 	transform.rotate(angle, u);
-	
 }
 
 // ------------------------------------------------------------
 void Primitive::Scale(float x, float y, float z)
 {
 	transform.scale(x, y, z);
-	
 }
 
 // CUBE ============================================
@@ -169,7 +168,6 @@ void Cube::InnerRender() const
 Sphere::Sphere(float _radius, float mass) : Primitive(), radius(_radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
-	
 }
 
 float Sphere::GetRadius() const
@@ -179,7 +177,6 @@ float Sphere::GetRadius() const
 
 void Sphere::InnerRender() const
 {
-	//glutSolidSphere(radius, 25, 25);
 }
 
 

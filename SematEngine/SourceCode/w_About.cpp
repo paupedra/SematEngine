@@ -10,7 +10,7 @@
 
 w_About::w_About(bool _active) : Window(_active)
 {
-	licenseString = App->ReadTxt("../../LICENSE.md");
+	licenseString = App->ReadTxt("../LICENSE.md");
 }
 
 w_About::~w_About()
