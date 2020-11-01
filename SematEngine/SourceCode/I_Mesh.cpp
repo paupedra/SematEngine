@@ -14,6 +14,7 @@
 
 std::vector<Mesh*> Importer::MeshImp::Import(const char* file)
 {
+    //aiImportFileFromMemory
 	const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality);
     std::vector<Mesh*> ret;
 

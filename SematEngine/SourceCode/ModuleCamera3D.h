@@ -18,6 +18,8 @@ public:
 	void Move(const vec3 &Movement);
 	void ZoomIn(float dt);
 	void RotateCameraStatic();
+	void FocusOnObject();
+	void OrbitObject();
 
 	float* GetRawViewMatrix();
 	mat4x4 GetViewMatrix();
@@ -29,6 +31,9 @@ private:
 public:
 	
 	vec3 X, Y, Z, Position, Reference;
+
+	float cameraMoveSpeed;
+	float cameraRotateSpeed;
 
 private:
 

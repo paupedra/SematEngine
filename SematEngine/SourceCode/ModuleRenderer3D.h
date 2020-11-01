@@ -25,16 +25,12 @@ public:
 	bool CleanUp();
 
 	void OnResize(int width, int height);
-	
-	void DrawMesh(Mesh* mesh, float4x4 transform,uint textureId);
-
+	void DrawMesh(Mesh* mesh, float4x4 transform,uint textureId, bool drawVertexNormals);
+	void DrawVertexNormals(Mesh* mesh);
 	void GenerateBuffers(Mesh* newMesh);
-
-	void FileDropCheck();
-
 	void CreateChekerTexture();
 
-	void SwitchCullFace();
+	void SwitchCullFace(); //This is ugly sorry
 	void SwitchDepthTest();
 	void SwitchLighting();
 	void SwitchTexture2d();

@@ -2,8 +2,19 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleSceneIntro.h"
+#include "Editor.h"
 
+#include "Dependecies/imgui/imgui.h"
+#include "Dependecies/imgui/imgui_internal.h"
+#include "Dependecies/imgui/imgui_impl_sdl.h"
+
+
+#include "GameObject.h"
+#include "Component.h"
+#include "ComponentTexture.h"
 #include "I_Mesh.h"
+#include "I_Texture.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -52,14 +63,12 @@ update_status ModuleInput::PreUpdate(float dt)
 			{
 				keyboard[i] = KEY_DOWN;
 				const char* keyName = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)i));
-				LOG("Key Pressed Down %s", keyName);
+				App->editor->AddInput(keyName);
 			}
 			else
 			{
 				keyboard[i] = KEY_REPEAT;
 			}
-			
-			
 		}
 		else
 		{
@@ -101,8 +110,10 @@ update_status ModuleInput::PreUpdate(float dt)
 	SDL_Event e;
 	while(SDL_PollEvent(&e))
 	{
+		ImGui_ImplSDL2_ProcessEvent(&e);
 		switch(e.type)
 		{
+			
 			case SDL_MOUSEWHEEL:
 			mouse_z = e.wheel.y;
 			break;
@@ -124,8 +135,24 @@ update_status ModuleInput::PreUpdate(float dt)
 				if(e.window.event == SDL_WINDOWEVENT_RESIZED)
 					App->renderer3D->OnResize(e.window.data1, e.window.data2);
 				break;
-			
-			
+
+			case (SDL_DROPFILE):
+
+				LOG("File was dropped");
+
+				if (strstr(e.drop.file, ".fbx") != nullptr || strstr(e.drop.file, ".FBX") != nullptr)
+				{
+					LOG("Loading .FBX file");
+					App->scene_intro->CreateGameObject("Imported Game Object", e.drop.file, "");
+				}
+
+				if (strstr(e.drop.file, ".png") != nullptr || strstr(e.drop.file, ".dds") != nullptr || strstr(e.drop.file, ".PNG") != nullptr || strstr(e.drop.file, ".DDS") != nullptr)
+				{
+					LOG("Loading .png /.dds file");
+					App->scene_intro->selectedObject->AddComponent(new ComponentTexture(App->scene_intro->selectedObject, e.drop.file, Importer::TextureImp::Import(e.drop.file)));
+				}
+
+				break;
 		}
 	}
 

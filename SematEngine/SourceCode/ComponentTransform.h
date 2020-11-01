@@ -22,13 +22,22 @@ public:
 	void SetPosition(float3 position);
 	void SetScale(float3 scale);
 	void RecalculateMatrix();
+	void SetEulerRotation(float3 euler_angles);
+	void UpdateTRS();
+
+	void RecalculateEuler();
 
 private:
 
 	float4x4 transform;
+
 	float3 position;
 	float3 scale;
 	Quat rotation;
+	float3 eulerRotation;
+
+	float3 eulerRotationUi;
+	float3 positionUI;
 
 };
 #endif //__COMPONENTTRANSFORM__

@@ -11,11 +11,12 @@ public:
 	w_About(bool _active);
 	~w_About();
 
+	void Init() override;
 	void Draw() override;
 
 	void CleanUp() override;
 
 private:
 
-	const char* licenseString;
+	 std::string licenseString;
 };

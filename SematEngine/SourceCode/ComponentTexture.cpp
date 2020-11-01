@@ -32,6 +32,8 @@ void  ComponentTexture::DrawInspector()
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		ImGui::Text("Path: %s", path);
+		ImGui::Text("Texture height: %d", texture->height);
+		ImGui::Text("Texture width: %d", texture->width);
 		if (ImGui::Checkbox("Active", &this->active)) {}
 	}
 }

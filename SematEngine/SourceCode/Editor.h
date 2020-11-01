@@ -9,6 +9,7 @@ class w_Configuration;
 class w_About;
 class w_Hierarchy;
 class w_Inspector;
+struct HardwareInfo;
 
 class Editor : public Module
 {
@@ -23,17 +24,21 @@ public:
 	void Draw();
 
 	void AddWindow(Window* window);
+	void AddLog(char* text);
+	void AddInput(const char* input);
 
 	void UpdateConfigFPS(int fps);
 	void UpdateConfigMS(int ms);
-	void AddLog(char* text);
+
+	void SetUpDocking();
+	void SetHardwareInfo(HardwareInfo* hardware);
 
 private:
 
 	std::vector<Window*> windows;
 
 public:
-
+	bool dockActive=true;
 	w_Console* console = nullptr;
 	w_Configuration* configuration = nullptr;
 	w_About* about = nullptr;

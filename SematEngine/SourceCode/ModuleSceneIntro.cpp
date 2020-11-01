@@ -13,8 +13,6 @@
 #include "ComponentTexture.h"
 #include "I_Texture.h"
 
-
-
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -35,8 +33,8 @@ bool ModuleSceneIntro::Start()
 
 	//CreateGameObject("Warrior","Assets/Mesh/warrior/warrior.FBX");
 	
-
 	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/Baker_house.png");
+	
 
 	return ret;
 }
@@ -59,9 +57,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	//Update GameObjects in scene
 	std::vector<GameObject*>::iterator item = gameObjects.begin();
 	for (; item != gameObjects.end(); ++item)
-	{
 		(*item)->Update();
-	}
 
 	return UPDATE_CONTINUE;
 }
@@ -79,11 +75,15 @@ GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",c
 	if (meshPath != "")
 	{
 		std::vector<Mesh*> meshes = Importer::MeshImp::Import(meshPath);
-
+		if (meshes.size() == 0)
+		{
+			LOG("(ERROR) No meshes found in %s", meshPath);
+			return nullptr;
+		}
 		if (meshes.size() == 1)
 		{
 			newGameObject->AddComponent(new ComponentMesh(newGameObject, meshPath, meshes.front()));
-			if(texturePath != nullptr)
+			if(texturePath != "")
 				newGameObject->AddComponent(new ComponentTexture(gameObjects.back(), texturePath, Importer::TextureImp::Import(texturePath)));
 		}
 		else
@@ -96,7 +96,7 @@ GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",c
 
 				childGameObject->AddComponent((Component*)newComp);
 				
-				if (texturePath != nullptr)
+				if (texturePath != "")
 					childGameObject->AddComponent(new ComponentTexture(gameObjects.back(), texturePath, Importer::TextureImp::Import(texturePath)));
 
 				newGameObject->children.push_back(childGameObject);

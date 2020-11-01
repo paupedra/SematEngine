@@ -73,11 +73,6 @@ bool ModuleRenderer3D::Init()
 		else
 			LOG("(INIT) Glew initialized succesfully!");
 
-		LOG("Vendor: %s", glGetString(GL_VENDOR));
-		LOG("Renderer: %s", glGetString(GL_RENDERER));
-		LOG("OpenGL version supported %s", glGetString(GL_VERSION));
-		LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-
 		//Use Vsync
 		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
@@ -169,9 +164,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
-	//File dropping
-	FileDropCheck();
-
 	return UPDATE_CONTINUE;
 }
 
@@ -211,23 +203,26 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId)
+void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,bool drawVertexNormals)
 {
 	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
 	
-	glLineWidth(2);
-
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
+
+	glLineWidth(2);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	//Pass TextureID
-	if(textureId == 0)
-		glBindTexture(GL_TEXTURE_2D, checkersId);
-	else
-		glBindTexture(GL_TEXTURE_2D, textureId);
+	if (!wireframeMode)
+	{
+		if (textureId == 0)
+			glBindTexture(GL_TEXTURE_2D, checkersId);
+		else
+			glBindTexture(GL_TEXTURE_2D, textureId);
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::texture]);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
@@ -246,7 +241,26 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+
+	if (drawVertexNormals)
+	{
+		DrawVertexNormals(mesh);
+	}
+}
+
+void ModuleRenderer3D::DrawVertexNormals(Mesh* mesh)
+{
+	//Draw Normals
+	glBegin(GL_LINES);
+	uint loops = mesh->buffersSize[Mesh::vertex];
+	for (uint i = 0; i < loops; i += 3)
+	{
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glVertex3f(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]);
+		glVertex3f(mesh->vertices[i] + mesh->normals[i], mesh->vertices[i + 1] + mesh->normals[i + 1], mesh->vertices[i + 2] + mesh->normals[i + 2]);
+
+	}
+	glEnd();
 }
 
 void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
@@ -280,30 +294,6 @@ void ModuleRenderer3D::GenerateBuffers(Mesh* newMesh)
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * newMesh->buffersSize[Mesh::texture] * 2, newMesh->textureCoords, GL_STATIC_DRAW);
 	}
 
-}
-
-void ModuleRenderer3D::FileDropCheck()
-{
-	//SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
-	
-
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-			case (SDL_DROPFILE):
-
-			LOG("File was dropped");
-
-			if(strstr(event.drop.file,"fbx") != nullptr)
-				App->scene_intro->CreateGameObject("Imported Game Object", event.drop.file,"");
-
-			if (strstr(event.drop.file, "png") != nullptr || strstr(event.drop.file, "dds") != nullptr )
-				App->scene_intro->selectedObject->AddComponent(new ComponentTexture(App->scene_intro->selectedObject, event.drop.file, Importer::TextureImp::Import(event.drop.file)));
-
-			break;
-		}
-	}
 }
 
 void ModuleRenderer3D::CreateChekerTexture()

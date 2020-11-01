@@ -9,7 +9,6 @@
 
 #include "Dependecies/mmgr/mmgr.h"
 
-
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
 {
 	CalculateViewMatrix();
@@ -20,6 +19,9 @@ ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
 
 	Position = vec3(0.0f, 0.0f, 5.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
+
+	cameraMoveSpeed = 7.5f;
+	cameraRotateSpeed = 60.f;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -46,13 +48,10 @@ bool ModuleCamera3D::CleanUp()
 update_status ModuleCamera3D::Update(float dt)
 {
 	vec3 newPos(0,0,0);
-	float speed = 20.0f * dt;
+	float speed = cameraMoveSpeed * dt;
 
 	if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-		speed = 40.0f * dt;
-
-	//if(App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
-	//if(App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
+		speed = (cameraMoveSpeed * 2.f) * dt;
 
 	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
 	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
@@ -61,22 +60,15 @@ update_status ModuleCamera3D::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
 	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 
-	if (App->scene_intro->selectedObject != nullptr)
-	{
-		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
-		{
-		
-			Reference.x = App->scene_intro->selectedObject->transform->GetPosition().x;
-			Reference.y = App->scene_intro->selectedObject->transform->GetPosition().y;
-			Reference.z = App->scene_intro->selectedObject->transform->GetPosition().z;
-			Position = Reference + Z * 10;
-		}
-	}
+	FocusOnObject();
 
 	ZoomIn(dt);
 
-	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)
 		RotateCameraStatic();
+
+	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+		OrbitObject();
 
 	Position += newPos;
 	Reference += newPos;
@@ -121,8 +113,8 @@ void ModuleCamera3D::Move(const vec3 &Movement)
 
 void ModuleCamera3D::ZoomIn(float dt)
 {
-	int scrollWheel = App->input->GetMouseZ(); // -1 if moving towards me 1 if moving forward
-	float speed = 75.0f * dt;
+	int scrollWheel = App->input->GetMouseZ(); // -1 if moving towards me 1 if moving backwards
+	float speed = cameraRotateSpeed * dt;
 
 	if (scrollWheel > 0)
 	{
@@ -140,8 +132,6 @@ void ModuleCamera3D::RotateCameraStatic()
 	int dy = -App->input->GetMouseYMotion();
 
 	float Sensitivity = 0.15f;
-
-	//Position -= Reference;
 
 	if (dx != 0)
 	{
@@ -166,8 +156,64 @@ void ModuleCamera3D::RotateCameraStatic()
 		}
 	}
 
-	//Position = Reference + Z * length(Position);
-		//Position = Reference + Z; //*length(Position)
+}
+
+void ModuleCamera3D::FocusOnObject()
+{
+	if (App->scene_intro->selectedObject != nullptr)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		{
+
+			Reference.x = App->scene_intro->selectedObject->transform->GetPosition().x;
+			Reference.y = App->scene_intro->selectedObject->transform->GetPosition().y;
+			Reference.z = App->scene_intro->selectedObject->transform->GetPosition().z;
+			Position = Reference + Z * 10;
+		}
+	}
+}
+
+void ModuleCamera3D::OrbitObject()
+{
+	int dx = -App->input->GetMouseXMotion();
+	int dy = -App->input->GetMouseYMotion();
+
+	float Sensitivity = 0.15f;
+
+	if (App->scene_intro->selectedObject != nullptr)
+	{
+		Reference.x = App->scene_intro->selectedObject->transform->GetPosition().x;
+		Reference.y = App->scene_intro->selectedObject->transform->GetPosition().y;
+		Reference.z = App->scene_intro->selectedObject->transform->GetPosition().z;
+	}
+
+	Position -= Reference;
+
+	if (dx != 0)
+	{
+		float DeltaX = (float)dx * Sensitivity;
+
+		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	if (dy != 0)
+	{
+		float DeltaY = (float)dy * Sensitivity;
+
+		Y = rotate(Y, DeltaY, X);
+		Z = rotate(Z, DeltaY, X);
+
+		if (Y.y < 0.0f)
+		{
+			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+			Y = cross(Z, X);
+		}
+	}
+
+	Position = Reference + Z * length(Position);
+		
 }
 
 // -----------------------------------------------------------------

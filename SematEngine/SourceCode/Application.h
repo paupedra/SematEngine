@@ -56,8 +56,8 @@ public:
 
 	void ExitApp();
 	void OpenLink(const char* link);
-	const char* ReadTxt(const char* path);
-
+	std::string ReadTxt(const char* path);
+	 
 	const char* GetTitle() const;
 	float GetFrameCap() const;
 

@@ -297,30 +297,6 @@
     <ClInclude Include="Dependecies\mmgr\nommgr.h">
       <Filter>Dependencies\mmgr</Filter>
     </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imconfig.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imgui.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imgui_internal.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imstb_rectpack.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imstb_textedit.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imstb_truetype.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imgui_impl_opengl3.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\imgui\imgui_impl_sdl.h">
-      <Filter>Dependencies\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Editor.h">
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
@@ -365,6 +341,33 @@
     </ClInclude>
     <ClInclude Include="ComponentTexture.h">
       <Filter>Source Code\GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFileSystem.h">
+      <Filter>Source Code\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imconfig.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imgui.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imgui_internal.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imstb_rectpack.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imstb_textedit.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imstb_truetype.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imgui_impl_opengl3.h">
+      <Filter>Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependecies\imgui\imgui_impl_sdl.h">
+      <Filter>Dependencies\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -500,24 +503,6 @@
     <ClCompile Include="Dependecies\mmgr\mmgr.cpp">
       <Filter>Dependencies\mmgr</Filter>
     </ClCompile>
-    <ClCompile Include="Dependecies\imgui\imgui.cpp">
-      <Filter>Dependencies\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependecies\imgui\imgui_demo.cpp">
-      <Filter>Dependencies\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependecies\imgui\imgui_draw.cpp">
-      <Filter>Dependencies\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependecies\imgui\imgui_widgets.cpp">
-      <Filter>Dependencies\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependecies\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Dependencies\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependecies\imgui\imgui_impl_sdl.cpp">
-      <Filter>Dependencies\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="Editor.cpp">
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
@@ -562,6 +547,27 @@
     </ClCompile>
     <ClCompile Include="ComponentTexture.cpp">
       <Filter>Source Code\GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFileSystem.cpp">
+      <Filter>Source Code\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\imgui\imgui.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\imgui\imgui_demo.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\imgui\imgui_draw.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\imgui\imgui_widgets.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\imgui\imgui_impl_sdl.cpp">
+      <Filter>Dependencies\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

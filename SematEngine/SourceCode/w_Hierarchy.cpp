@@ -20,40 +20,59 @@ w_Hierarchy::~w_Hierarchy()
 
 }
 
+void w_Hierarchy::Init()
+{
+
+}
+
 void w_Hierarchy::Draw()
 {
 	if (!active)
 		return;
 
-	if (ImGui::Begin("Hierarchy", &active))
+	if (!ImGui::Begin("Hierarchy", &active))
 	{
-		ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-		std::vector<GameObject*>::iterator item = App->scene_intro->gameObjects.begin();
-		for (; item != App->scene_intro->gameObjects.end(); ++item)
-		{
-			bool node_open = ImGui::TreeNodeEx((*item)->GetName(), base_flags);
-			
-			if (ImGui::IsItemClicked())
-			{
-				App->scene_intro->SetSelectedObject((*item));
-			}
-
-			if (node_open)
-			{
-				if (!(*item)->children.empty())
-				{
-					std::vector<GameObject*>::iterator child = (*item)->children.begin();
-					for (; child != (*item)->children.end(); ++child)
-					{
-						ImGui::Button((*child)->GetName());
-						if(ImGui::IsItemClicked())
-							App->scene_intro->SetSelectedObject((*child)); 
-					}
-				}
-				ImGui::TreePop();
-			}
-		}
 		ImGui::End();
+		return;
+	}
+
+	
+	ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+	std::vector<GameObject*>::iterator item = App->scene_intro->gameObjects.begin();
+	for (; item != App->scene_intro->gameObjects.end(); ++item)
+		DrawTree((*item));
+		
+	ImGui::End();
+	
+}
+
+void w_Hierarchy::DrawTree(GameObject* object)
+{
+	ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+	
+	if (!object->children.empty())
+	{
+		bool node_open = ImGui::TreeNodeEx(object->GetName(), baseFlags);
+		if (ImGui::IsItemClicked())
+			App->scene_intro->SetSelectedObject(object);
+
+		if (node_open)
+		{
+			std::vector<GameObject*>::iterator child = object->children.begin();
+			for (; child != object->children.end(); ++child)
+			{
+				DrawTree((*child));
+			}
+			ImGui::TreePop();
+		}
+	}
+	else
+	{
+		ImGuiTreeNodeFlags finalFlags = baseFlags | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		bool node_open = ImGui::TreeNodeEx(object->GetName(), finalFlags);
+		if (ImGui::IsItemClicked())
+			App->scene_intro->SetSelectedObject(object);
 	}
 }
 

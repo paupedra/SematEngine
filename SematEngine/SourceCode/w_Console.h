@@ -25,6 +25,7 @@ public:
 	w_Console(bool _active);
 	~w_Console();
 
+	void Init() override;
 	void Draw() override;
 
 	void AddLog(char* text);

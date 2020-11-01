@@ -32,6 +32,7 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 
 	title = "Semat Engine";
 	wantToExit = false;
+	frame_cap = 120;
 }
 
 Application::~Application()
@@ -196,26 +197,25 @@ void Application::OpenLink(const char* link)
 	ShellExecute(NULL, "open", link, NULL, NULL, SW_SHOWNORMAL);
 }
 
-const char* Application::ReadTxt(const char* path)
+std::string Application::ReadTxt(const char* path)
 {
-	/*FILE* file;
-	char str[500];
+	std::string ret;
+	FILE* fp;
+	char str[MAXCHAR];
 
-	file = fopen(path, "r");
+	char* filename = "../../LICENSE.md";
 
-	if (file == NULL) {
-		printf("Could not open file %s", path);
-		return "error";
+	fp = fopen(filename, "r");
+	if (fp == NULL) {
+		printf("Could not open file %s", filename);
 	}
-	
-	for (int i = 0; fgets(str[i], sizeof str[i], file) != NULL; i++) 
-	{
-		LOG("string? %s",str);
-	}
-		
-	fclose(file);*/
+	while (fgets(str, MAXCHAR, fp) != NULL)
+		ret += str;
+	fclose(fp);
 
-	return "0";
+	LOG("Read txt file %s", path);
+
+	return ret;
 }
 
 void Application::AddModule(Module* mod)

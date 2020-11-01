@@ -20,8 +20,9 @@ public:
 	char* GetPath()const;
 private:
 
-	Mesh* mesh;
-	char* path;
+	Mesh* mesh = nullptr;
+	char* path = nullptr;
+	bool drawVertexNormals = false;
 
 };
 #endif //__COMPONENTMESH__

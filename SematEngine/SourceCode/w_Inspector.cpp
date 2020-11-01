@@ -24,24 +24,34 @@ w_Inspector::~w_Inspector()
 
 }
 
+void w_Inspector::Init()
+{
+
+}
+
 void w_Inspector::Draw()
 {
 	if (!active)
 		return;
 
-	if (ImGui::Begin("Inspector", &active))
+	if (!ImGui::Begin("Inspector", &active))
 	{
-		if (App->scene_intro->selectedObject != nullptr)
-		{
-			std::vector<Component*> vector = App->scene_intro->selectedObject->GetComponents();
-			std::vector<Component*>::iterator item = vector.begin();
-			for (; item != vector.end(); ++item)
-			{
-				(*item)->DrawInspector();
-			}
-		}
 		ImGui::End();
+		return;
 	}
+
+	if (App->scene_intro->selectedObject != nullptr)
+	{
+		std::vector<Component*> vector = App->scene_intro->selectedObject->GetComponents();
+		std::vector<Component*>::iterator item = vector.begin();
+		for (; item != vector.end(); ++item)
+		{
+			(*item)->DrawInspector();
+		}
+	}
+
+	ImGui::End();
+	
 }
 
 void w_Inspector::CleanUp()

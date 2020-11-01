@@ -7,6 +7,7 @@ public:
 	w_Inspector(bool _active);
 	~w_Inspector();
 
+	void Init() override;
 	void Draw() override;
 
 	void CleanUp() override;
