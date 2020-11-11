@@ -8,6 +8,7 @@
 #include "I_Texture.h"
 #include "I_Mesh.h"
 #include "Dependecies/imgui/imgui.h"
+#include "Dependecies/mmgr/mmgr.h"
 
 ComponentMesh::ComponentMesh(GameObject* owner) : Component(ComponentType::MESH,owner)
 {
@@ -26,6 +27,12 @@ ComponentMesh::~ComponentMesh()
 void ComponentMesh::Update()
 {
 	DrawMesh();
+}
+
+void ComponentMesh::CleanUp()
+{
+	//delete path; //What is this
+	delete mesh;
 }
 
 void  ComponentMesh::DrawInspector()

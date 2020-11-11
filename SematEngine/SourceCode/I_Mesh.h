@@ -30,9 +30,14 @@ struct Mesh
 
 namespace Importer
 {
-	namespace MeshImp
+	namespace MeshImporter
 	{
 		std::vector<Mesh*> Import(const char* file);
+
+		void Save(const Mesh mesh);
+
+		void Load(const char* fileBuffer, Mesh* mesh);
+
 	}
 }
 

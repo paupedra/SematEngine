@@ -1,4 +1,3 @@
-#pragma once
 #include "Module.h"
 #include "Globals.h"
 #include <vector>
@@ -16,7 +15,7 @@ public:
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
 
-	GameObject* CreateGameObject(char* name,char* meshPath, char* texturePath);
+	void CreateGameObject(char* name,char* meshPath, char* texturePath);
 	void SetSelectedObject(GameObject* object);
 
 	bool CleanUp();
@@ -25,5 +24,4 @@ public:
 
 	std::vector<GameObject*> gameObjects;
 	GameObject* selectedObject = nullptr;
-
 };

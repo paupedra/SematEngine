@@ -12,7 +12,7 @@
 
 #include "Dependecies/mmgr/mmgr.h"
 
-std::vector<Mesh*> Importer::MeshImp::Import(const char* file)
+std::vector<Mesh*> Importer::MeshImporter::Import(const char* file)
 {
     //aiImportFileFromMemory
 	const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality);
@@ -80,4 +80,78 @@ std::vector<Mesh*> Importer::MeshImp::Import(const char* file)
         LOG("(ERROR) Error loading scene %s", file);
     }
     return ret;
+}
+
+void Importer::MeshImporter::Save(const Mesh mesh)
+{
+    uint sizes[4] = { mesh.buffersSize[Mesh::vertex] ,mesh.buffersSize[Mesh::index], mesh.buffersSize[Mesh::normal], mesh.buffersSize[Mesh::texture] };
+
+    uint size = sizeof(sizes) + sizeof(uint) * mesh.buffersSize[Mesh::index] + sizeof(float) * mesh.buffersSize[Mesh::vertex] * 3
+        + sizeof(float) * mesh.buffersSize[Mesh::normal] * 3 + sizeof(float) * mesh.buffersSize[Mesh::texture] * 2;
+
+    char* fileBuffer = new char[size];
+    char* cursor = fileBuffer;
+
+    uint bytes = sizeof(sizes);
+    memcpy(cursor, sizes, bytes);
+    cursor += bytes;
+
+    //Indices
+    bytes = sizeof(uint) * mesh.buffersSize[Mesh::index];
+    memcpy(cursor, mesh.indices, bytes);
+    cursor += bytes;
+
+    //vertices
+    bytes = sizeof(uint) * mesh.buffersSize[Mesh::vertex] * 3;
+    memcpy(cursor, mesh.indices, bytes);
+    cursor += bytes;
+
+    //normals
+    bytes = sizeof(uint) * mesh.buffersSize[Mesh::normal] * 3;
+    memcpy(cursor, mesh.indices, bytes);
+    cursor += bytes;
+
+    //TextureCoords
+    bytes = sizeof(uint) * mesh.buffersSize[Mesh::texture] * 2;
+    memcpy(cursor, mesh.indices, bytes);
+    cursor += bytes;
+}
+
+void Importer::MeshImporter::Load(const char* fileBuffer, Mesh* mesh)
+{
+    const char* cursor = fileBuffer;
+
+    uint sizes[4];
+    uint bytes = sizeof(sizes);
+    memcpy(sizes, cursor, bytes);
+    cursor += bytes;
+
+    mesh->buffersSize[Mesh::index] = sizes[0];
+    mesh->buffersSize[Mesh::vertex] = sizes[1];
+    mesh->buffersSize[Mesh::normal] = sizes[2];
+    mesh->buffersSize[Mesh::texture] = sizes[3];
+
+    //Indices
+    bytes = sizeof(uint) * mesh->buffersSize[Mesh::index];
+    mesh->indices = new uint[mesh->buffersSize[Mesh::index]];
+    memcpy(mesh->indices, cursor, bytes);
+    cursor += bytes;
+
+    //Vertices
+    bytes = sizeof(float) * mesh->buffersSize[Mesh::vertex] * 3;
+    mesh->vertices = new float[mesh->buffersSize[Mesh::vertex] * 3];
+    memcpy(mesh->vertices, cursor, bytes);
+    cursor += bytes;
+
+    //Normals
+    bytes = sizeof(float) * mesh->buffersSize[Mesh::normal] * 3;
+    mesh->normals = new float[mesh->buffersSize[Mesh::normal] * 3];
+    memcpy(mesh->normals, cursor, bytes);
+    cursor += bytes;
+
+    //Texture Coords
+    bytes = sizeof(float) * mesh->buffersSize[Mesh::texture] * 2;
+    mesh->textureCoords = new float[mesh->buffersSize[Mesh::texture] * 2];
+    memcpy(mesh->normals, cursor, bytes);
+    cursor += bytes;
 }

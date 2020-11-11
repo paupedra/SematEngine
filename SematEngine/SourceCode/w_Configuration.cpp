@@ -151,7 +151,7 @@ void w_Configuration::AddInput(const char* input)
 
 void w_Configuration::CleanUp()
 {
-
+	inputs.clear();
 }
 
 HardwareInfo* w_Configuration::GetHardwareInfo()

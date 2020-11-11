@@ -20,6 +20,7 @@ public:
 	bool Start();
 	update_status PreUpdate(float dt) override;
 	bool CleanUp();
+	bool Save() override;
 
 	void Draw();
 

@@ -14,6 +14,7 @@ public:
 	~ComponentMesh();
 
 	void Update() override;
+	void CleanUp() override;
 	void DrawInspector() override;
 
 	void DrawMesh();

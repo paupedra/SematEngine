@@ -41,4 +41,9 @@ public:
 	{ 
 		return true; 
 	}
+
+	virtual bool Save()
+	{
+		return true;
+	}
 };

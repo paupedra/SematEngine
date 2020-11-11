@@ -5,10 +5,12 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleWindow.h"
 #include "Editor.h"
+#include "ModuleFileSystem.h"
 
 #include "Dependecies/Brofiler/Brofiler.h"
+#include "Dependecies/mmgr/mmgr.h"
 
-Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
+Application::Application() : debug(false), dt(0.16f)
 {
 	window = new ModuleWindow();
 	input = new ModuleInput();
@@ -16,6 +18,7 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 	renderer3D = new ModuleRenderer3D();
 	camera = new ModuleCamera3D();
 	editor = new Editor();
+	fileSystem = new FileSystem();
 
 	// They will CleanUp() in reverse order
 	// Main Modules
@@ -32,6 +35,7 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 
 	title = "Semat Engine";
 	wantToExit = false;
+	wantToSave = false;
 	frame_cap = 120;
 }
 
@@ -85,11 +89,18 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+	FrameCalculations();
 	
+	if(wantToSave)
+		Save();
+}
+
+void Application::FrameCalculations()
+{
 	frame_cap_ms = 1000 / frame_cap;
 	uint current_frame_ms = frame_timer.Read();
 
-	if ( !vsync && current_frame_ms < frame_cap_ms)						
+	if (!vsync && current_frame_ms < frame_cap_ms)
 	{
 		SDL_Delay(frame_cap_ms - current_frame_ms);
 	}
@@ -105,7 +116,19 @@ void Application::FinishUpdate()
 	}
 
 	frame_count++;
+}
 
+void Application::Save()
+{
+	std::vector<Module*>::iterator item = modules.begin();
+
+	BROFILER_CATEGORY("Engine PreUpdate", Profiler::Color::Yellow)
+	for (; item != modules.end(); ++item)
+	{
+		(*item)->Save();
+	}
+	LOG("Succesfully saved");
+	wantToSave = false;
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -154,7 +177,11 @@ bool Application::CleanUp()
 	for( auto item = modules.begin(); item != modules.end() && ret == true; ++item)
 	{
 		ret = (*item)->CleanUp();
+		delete (*item);
 	}
+
+	modules.clear();
+
 	return ret;
 }
 

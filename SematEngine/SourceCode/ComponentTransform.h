@@ -13,6 +13,7 @@ public:
 	~ComponentTransform();
 
 	void Update() override;
+	void CleanUp() override;
 	void DrawInspector() override;
 
 	float4x4 GetTransform() const;
@@ -34,6 +35,7 @@ private:
 	float3 position;
 	float3 scale;
 	Quat rotation;
+
 	float3 eulerRotation;
 
 	float3 eulerRotationUi;

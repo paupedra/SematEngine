@@ -1,9 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleSceneIntro.h"
-//#include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "Primitive.h"
+#include "ModuleInput.h"
 
 #include "Component.h"
 #include "GameObject.h"
@@ -42,6 +42,15 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 
+	std::vector<GameObject*>::iterator item = gameObjects.begin();
+	for (; item != gameObjects.end(); ++item)
+	{
+		(*item)->CleanUp();
+		delete (*item);
+	}
+
+	gameObjects.clear();
+
 	return true;
 }
 
@@ -57,6 +66,12 @@ update_status ModuleSceneIntro::Update(float dt)
 	for (; item != gameObjects.end(); ++item)
 		(*item)->Update();
 
+	if(App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
+	{
+		App->wantToSave = true;
+
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -65,17 +80,17 @@ update_status ModuleSceneIntro::PostUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",char* texturePath = "")
+void ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",char* texturePath = "")
 {
 	GameObject* newGameObject = nullptr;
 	if (meshPath != "")
 	{
-		std::vector<Mesh*> meshes = Importer::MeshImp::Import(meshPath);
+		std::vector<Mesh*> meshes = Importer::MeshImporter::Import(meshPath);
 
 		if (meshes.size() == 0)
 		{
 			LOG("(ERROR) No meshes found in %s", meshPath);
-			return nullptr;
+			return;
 		}
 
 		newGameObject = new GameObject(nullptr, name);
@@ -104,8 +119,6 @@ GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",c
 			}
 		}
 	}
-
-	return newGameObject;
 }
 
 void ModuleSceneIntro::SetSelectedObject(GameObject* object)

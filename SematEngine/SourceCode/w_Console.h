@@ -34,7 +34,7 @@ public:
 
 private:
 
-	std::vector<Logs*> logs;
+	std::vector<Logs> logs;
 	bool scrollToBottom;
 
 };

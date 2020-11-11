@@ -5,7 +5,7 @@
 #include <vector>
 
 class Component;
-enum  ComponentType;
+enum class ComponentType;
 class ComponentTransform;
 class ComponentMesh;
 class ComponentTexture;
@@ -18,6 +18,8 @@ public:
 	~GameObject();
 
 	void Update();
+
+	void CleanUp();
 
 	Component* AddComponent(Component* component);
 
@@ -37,7 +39,6 @@ private:
 	std::string name;
 	std::vector<Component*> components;
 	
-
 public:
 	ComponentTransform* transform = nullptr;
 	ComponentTexture* texture = nullptr;

@@ -3,6 +3,7 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "Globals.h"
+#include "Dependecies/mmgr/mmgr.h"
 
 GameObject::GameObject(char* name) : name(name)
 {
@@ -34,21 +35,43 @@ void GameObject::Update()
 	}
 }
 
+void GameObject::CleanUp()
+{
+
+	std::vector<Component*>::iterator item = components.begin();
+	for (; item != components.end(); ++item)
+	{
+		(*item)->CleanUp();
+		delete (*item);
+	}
+
+	components.clear();
+
+	std::vector<GameObject*>::iterator child = children.begin();
+	for (; child != children.end(); ++child)
+	{
+		(*child)->CleanUp();
+		delete (*child);
+	}
+
+	children.clear();
+}
+
 Component* GameObject::AddComponent(Component* component)
 {
 	ComponentType type = component->GetType();
 	
 	switch (type)
 	{
-		case TRANSFORM:
+	case ComponentType::TRANSFORM:
 
 			components.push_back(component);
 			transform = (ComponentTransform*)component;
 			break;
 
-		case MESH:
+		case ComponentType::MESH:
 			
-			if (!HasComponentType(MESH))
+			if (!HasComponentType(ComponentType::MESH))
 			{
 				components.push_back(component);
 			}
@@ -57,16 +80,16 @@ Component* GameObject::AddComponent(Component* component)
 			
 			break;
 
-		case TEXTURE:
+		case ComponentType::TEXTURE:
 
-			if (!HasComponentType(TEXTURE))
+			if (!HasComponentType(ComponentType::TEXTURE))
 			{
 				components.push_back(component);
 				texture = (ComponentTexture*)component;
 			}
 			else
 			{
-				DeleteComponentType(TEXTURE);
+				DeleteComponentType(ComponentType::TEXTURE);
 				components.push_back(component);
 				texture = (ComponentTexture*)component;
 			}

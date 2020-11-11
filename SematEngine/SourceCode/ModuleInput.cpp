@@ -9,7 +9,6 @@
 #include "Dependecies/imgui/imgui_internal.h"
 #include "Dependecies/imgui/imgui_impl_sdl.h"
 
-
 #include "GameObject.h"
 #include "Component.h"
 #include "ComponentTexture.h"
@@ -128,6 +127,7 @@ update_status ModuleInput::PreUpdate(float dt)
 
 			case SDL_QUIT:
 			quit = true;
+			App->wantToExit = true;
 			break;
 
 			case SDL_WINDOWEVENT:
@@ -170,9 +170,6 @@ update_status ModuleInput::Update(float dt)
 {
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		App->debug = !App->debug;
-
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
-		App->renderPrimitives = !App->renderPrimitives;
 
 	return UPDATE_CONTINUE;
 }

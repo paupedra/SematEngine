@@ -28,11 +28,8 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "Dependecies/Glew/libx86/glew32.lib")
 
-//#include "Light.h"
 #include "ModuleRenderer3D.h"
-
 #include <vector>
-
 #include "Dependecies/mmgr/mmgr.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), context()
@@ -43,6 +40,7 @@ ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), 
 	glDepthTest = true;
 	glTexture2d = true;
 	wireframeMode = false;
+	checkersId = 0;
 }
 
 // Destructor

@@ -12,6 +12,7 @@ public:
 	~ComponentTexture();
 
 	void Update() override;
+	void CleanUp() override;
 	void DrawInspector() override;
 
 	char* GetPath()const;

@@ -33,12 +33,12 @@ void w_Console::Draw()
 		return;
 	}
 
-	std::vector<Logs*>::iterator item = logs.begin();
+	std::vector<Logs>::iterator item = logs.begin();
 	for (item; item != logs.end(); ++item)
 	{
 		ImVec4 textColor = { 1.f,1.f,1.f,1.f };
 
-		switch ((*item)->type)
+		switch ((*item).type)
 		{
 			case LogType::ERRORS:
 				textColor = { 1.f,0.f,0.f,1.f };
@@ -50,7 +50,7 @@ void w_Console::Draw()
 		}
 
 		ImGui::PushStyleColor(ImGuiCol_Text, textColor);
-		ImGui::TextUnformatted((*item)->text);
+		ImGui::TextUnformatted((*item).text);
 		ImGui::PopStyleColor();
 	}
 
@@ -65,17 +65,17 @@ void w_Console::Draw()
 
 void w_Console::AddLog(char* text)
 {
-	Logs* log = new Logs;
-	log->text = strdup(text);
-	log->type = LogType::NONE;
+	Logs log;
+	log.text = strdup(text);
+	log.type = LogType::NONE;
 
 	if (strstr(text, "(ERROR)") != nullptr)
 	{
-		log->type = LogType::ERRORS;
+		log.type = LogType::ERRORS;
 	}
 	if (strstr(text, "(INIT)") != nullptr)
 	{
-		log->type = LogType::INIT;
+		log.type = LogType::INIT;
 	}
 
 	logs.push_back(log); //Why does this work?
@@ -85,5 +85,6 @@ void w_Console::AddLog(char* text)
 
 void w_Console::CleanUp()
 {
+	logs.clear();
 
 }

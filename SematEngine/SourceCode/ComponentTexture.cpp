@@ -6,6 +6,7 @@
 #include "I_Texture.h"
 #include "ComponentTexture.h"
 #include "Dependecies/imgui/imgui.h"
+#include "Dependecies/mmgr/mmgr.h"
 
 ComponentTexture::ComponentTexture(GameObject* owner) : Component(ComponentType::TEXTURE, owner)
 {
@@ -25,6 +26,12 @@ ComponentTexture::~ComponentTexture()
 void ComponentTexture::Update()
 {
 	
+}
+
+void ComponentTexture::CleanUp()
+{
+	delete texture;
+	//delete path; //What is this
 }
 
 void ComponentTexture::DrawInspector()

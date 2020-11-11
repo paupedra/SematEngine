@@ -3,15 +3,18 @@
 #include "ComponentTransform.h"
 #include "Dependecies/imgui/imgui.h"
 #include "GameObject.h"
+#include "Dependecies/mmgr/mmgr.h"
 
 ComponentTransform::ComponentTransform(GameObject* owner) : Component(ComponentType::TRANSFORM,owner)
 {
 	position = float3(0.f, 0.f, 0.f);
 	positionUI = float3(0.f, 0.f, 0.f);
 	scale = float3(1.f, 1.f, 1.f);
+
 	eulerRotationUi = float3(0.f, 0.f, 0.f);
 	eulerRotation = float3(0.f, 0.f, 0.f);
 	rotation = Quat::identity;
+
 	transform = float4x4::FromTRS(position, rotation, scale);
 }
 
@@ -23,9 +26,14 @@ ComponentTransform::~ComponentTransform()
 void ComponentTransform::Update()
 {
 	
-	//RecalculateMatrix();
+	
 	//transform.Decompose(position, rotation, scale);
 	//RecalculateEuler();
+}
+
+void ComponentTransform::CleanUp()
+{
+
 }
 
 void ComponentTransform::UpdateTRS()
@@ -40,8 +48,8 @@ void  ComponentTransform::DrawInspector()
 	{
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-		ImGui::InputFloat3("Transform", (float*)&positionUI, "%.2f", flags);
-		ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags);
+		if (ImGui::InputFloat3("Transform", (float*)&position, "%.2f", flags)) { RecalculateMatrix(); };
+		if (ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags)) { RecalculateMatrix(); };
 		if (ImGui::InputFloat3("Rotation", (float*)&eulerRotationUi, "%.2f", flags)) { SetEulerRotation(eulerRotationUi); }
 	}
 }

@@ -369,6 +369,9 @@
     <ClInclude Include="Primitive.h">
       <Filter>Source Code\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="PathNode.h">
+      <Filter>Source Code\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">

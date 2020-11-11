@@ -12,6 +12,7 @@ class ModuleSceneIntro;
 class ModuleRenderer3D;
 class ModuleCamera3D;
 class Editor;
+class FileSystem;
 
 class Application
 {
@@ -22,10 +23,12 @@ public:
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 	Editor* editor;
+	FileSystem* fileSystem;
 
 	bool debug;
-	bool renderPrimitives;
 	bool vsync;
+	bool wantToExit;
+	bool wantToSave;
 
 private:
 
@@ -35,8 +38,6 @@ private:
 	float	dt;
 	float	frame_cap;
 	int		frame_count;
-
-	bool wantToExit;
 
 	std::vector<Module*> modules;
 	std::string title;
@@ -66,4 +67,6 @@ private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+	void FrameCalculations();
+	void Save();
 };

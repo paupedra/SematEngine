@@ -3,7 +3,7 @@
 
 class GameObject;
 
-enum ComponentType
+enum class ComponentType
 {
 	TRANSFORM,
 	MESH,
@@ -19,6 +19,7 @@ public:
 	~Component();
 
 	virtual void Update() = 0;
+	virtual void CleanUp() = 0;
 	virtual void DrawInspector() = 0;
 	void Enable();
 	void Disable();
@@ -29,7 +30,7 @@ public:
 
 public:
 	bool active = true;
-	ComponentType type = EMPTY;
+	ComponentType type = ComponentType::EMPTY;
 	GameObject* owner = nullptr;
 };
 #endif //__COMPONENT__

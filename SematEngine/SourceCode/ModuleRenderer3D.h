@@ -16,6 +16,7 @@ struct Mesh;
 class ModuleRenderer3D : public Module
 {
 public:
+
 	ModuleRenderer3D(bool start_enabled = true);
 	~ModuleRenderer3D();
 
@@ -37,16 +38,13 @@ public:
 	void SwitchColorMaterial();
 
 public:
+
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ProjectionMatrix;
 
-	//Checkerid test
-	uint checkersId;
-	uint houseId;
-
-	SDL_Event event;
+	uint checkersId;	//Default texture id
 
 	bool wireframeMode;
 

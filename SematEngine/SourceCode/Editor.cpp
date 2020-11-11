@@ -23,7 +23,6 @@
 #include "w_Hierarchy.h"
 #include "w_Inspector.h"
 
-
 #include "Dependecies/mmgr/mmgr.h"
 
 Editor::Editor(bool start_enabled) : Module(start_enabled)
@@ -85,9 +84,20 @@ bool Editor::CleanUp()
 	for (item; item != windows.end(); ++item)
 		(*item)->CleanUp();
 
-	//delete console;
-	//delete configuration;
-	//delete about;
+	delete console;
+	delete configuration;
+	delete about;
+	delete hierarchy;
+	delete inspector;
+
+	windows.clear();
+
+	return true;
+}
+
+bool Editor::Save()
+{
+	LOG("saved editor");
 
 	return true;
 }

@@ -1,5 +1,7 @@
 #include "I_Texture.h"
 #include "Globals.h"
+
+
 #include "Dependecies/Devil/Include/ilut.h"
 #include "Dependecies/Devil/Include/ilu.h"
 #include "Dependecies/Devil/Include/il.h"
@@ -7,6 +9,8 @@
 #pragma comment (lib, "Dependecies/Devil/libx86/DevIL.lib")
 #pragma comment (lib, "Dependecies/Devil/libx86/ILU.lib")
 #pragma comment (lib, "Dependecies/Devil/libx86/ILUT.lib")
+
+#include "Dependecies/mmgr/mmgr.h"
 
 void Importer::TextureImp::InitDevil()
 {
