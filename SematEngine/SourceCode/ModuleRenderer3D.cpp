@@ -206,7 +206,7 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,b
 	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
 	
 	glPushMatrix();
-	glMultMatrixf((float*)&transform);
+	glMultMatrixf((float*)&transform.Transposed());
 
 	glLineWidth(2);
 

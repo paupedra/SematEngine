@@ -50,7 +50,7 @@ void  ComponentTransform::DrawInspector()
 
 		if (ImGui::InputFloat3("Transform", (float*)&position, "%.2f", flags)) { RecalculateMatrix(); };
 		if (ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags)) { RecalculateMatrix(); };
-		if (ImGui::InputFloat3("Rotation", (float*)&eulerRotationUi, "%.2f", flags)) { SetEulerRotation(eulerRotationUi); }
+		if (ImGui::InputFloat3("Rotation", (float*)&eulerRotationUi, "%.2f")) { SetEulerRotation(eulerRotationUi); }
 	}
 }
 
