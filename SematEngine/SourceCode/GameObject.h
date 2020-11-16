@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-class Component;
+#include "Component.h"
 enum class ComponentType;
 class ComponentTransform;
 class ComponentMesh;
@@ -30,9 +30,27 @@ public:
 	const char* GetName();
 	std::vector<Component*> GetComponents()const;
 
-	void DeleteComponentType(ComponentType type);
+	void DeleteComponentType(Component::ComponentType type);
 
-	bool HasComponentType(ComponentType type);
+	bool HasComponentType(Component::ComponentType type);
+
+	void UpdatedTransform();
+
+	template<typename ComponentTemp>
+	const ComponentTemp* GetComponent() const
+	{
+		Component::ComponentType type = ComponentTemp::GetType();
+
+		for (int i = 0; i < components.size(); i++)
+		{
+			if (type == components[i]->GetType())
+			{
+				return (ComponentTemp*)coponents[i];
+			}
+		}
+		return nullptr;
+	}
+
 
 private:
 	bool active;
@@ -41,7 +59,6 @@ private:
 	
 public:
 	ComponentTransform* transform = nullptr;
-	ComponentTexture* texture = nullptr;
 	std::vector<GameObject*> children;
 	GameObject* parent;
 };

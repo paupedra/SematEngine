@@ -39,6 +39,15 @@ enum update_status
 #define VSYNC false
 #define TITLE "3D Physics Playground"
 
+// File System
+
+#define LIBRARY_PATH "Library/"
+#define FOLDERS_PATH "Library/Folders/"
+#define MESHES_PATH "Library/Meshes/"
+#define MATERIALS_PATH "Library/Materials/"
+#define TEXTURES_PATH "Library/Textures/"
+#define SCENES_PATH "Library/Scenes/"
+
 class Application;
 
 extern Application* App;

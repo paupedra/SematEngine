@@ -16,6 +16,7 @@ ComponentTransform::ComponentTransform(GameObject* owner) : Component(ComponentT
 	rotation = Quat::identity;
 
 	transform = float4x4::FromTRS(position, rotation, scale);
+	globalTransform = Quat::identity;
 }
 
 ComponentTransform::~ComponentTransform()
@@ -26,9 +27,6 @@ ComponentTransform::~ComponentTransform()
 void ComponentTransform::Update()
 {
 	
-	
-	//transform.Decompose(position, rotation, scale);
-	//RecalculateEuler();
 }
 
 void ComponentTransform::CleanUp()
@@ -78,6 +76,11 @@ float3 ComponentTransform::GetScale()const
 	return scale;
 }
 
+float4x4 ComponentTransform::GetGlobalTransform()const
+{
+	return globalTransform;
+}
+
 void ComponentTransform::SetPosition(float3 position)
 {
 	this->position = position;
@@ -93,10 +96,19 @@ void ComponentTransform::SetScale(float3 scale)
 void ComponentTransform::RecalculateMatrix()
 {
 	transform = float4x4::FromTRS(position, rotation, scale);
+	updateTransform = true;
+
 }
 
 void ComponentTransform::RecalculateEuler()
 {
 	eulerRotation = rotation.ToEulerXYZ();
 	eulerRotation *= 57.295779513082320876f;
+}
+
+void ComponentTransform::UpdatedTransform(float4x4 parentGlobalTransform)
+{
+	globalTransform = parentGlobalTransform * transform;
+	UpdateTRS();
+	updateTransform = false;
 }

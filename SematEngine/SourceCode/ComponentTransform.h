@@ -19,6 +19,7 @@ public:
 	float4x4 GetTransform() const;
 	float3 GetPosition()const;
 	float3 GetScale()const;
+	float4x4 GetGlobalTransform()const;
 
 	void SetPosition(float3 position);
 	void SetScale(float3 scale);
@@ -28,9 +29,13 @@ public:
 
 	void RecalculateEuler();
 
+	//Update global transform
+	void UpdatedTransform(float4x4 parentGlobalTransform);
+
 private:
 
-	float4x4 transform;
+	float4x4 transform; //Local Transformç
+	float4x4 globalTransform;
 
 	float3 position;
 	float3 scale;
@@ -40,6 +45,8 @@ private:
 
 	float3 eulerRotationUi;
 	float3 positionUI;
+
+	bool updateTransform = false;
 
 };
 #endif //__COMPONENTTRANSFORM__

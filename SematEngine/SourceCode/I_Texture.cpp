@@ -81,3 +81,11 @@ uint Importer::TextureImp::CreateTexture(const void* data,uint width, uint heigh
 
 	return id;
 }
+
+uint64 Importer::TextureImp::Save(Texture* texture)
+{
+	uint64 ret = 0;
+
+
+	return ret;
+}

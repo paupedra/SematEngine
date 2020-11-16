@@ -35,10 +35,10 @@ bool Component::IsActive()
 	return active;
 }
 
-ComponentType Component::GetType()
-{
-	return type;
-}
+//Component::ComponentType Component::GetType()
+//{
+//	return type;
+//}
 
 GameObject* Component::GetOwner()
 {

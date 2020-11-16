@@ -18,7 +18,7 @@ public:
 	char* GetPath()const;
 	Texture* GetTexture() const;
 
-	bool IsEnabled();
+	bool IsEnabled()const ;
 	void SwitchEnabledTexture();
 private:
 

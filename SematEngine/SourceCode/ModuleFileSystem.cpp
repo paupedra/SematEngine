@@ -6,6 +6,7 @@
 #include "Dependecies/PhysFS/include/physfs.h"
 #include <fstream>
 #include <filesystem>
+#include <direct.h>
 
 #include "Dependecies/Assimp/include/cfileio.h"
 #include "Dependecies/Assimp/include/types.h"
@@ -15,15 +16,20 @@
 FileSystem::FileSystem(bool start_enabled) //: Module("FileSystem", true)
 {
 	// needs to be created before Init so other modules can use it
-	char* base_path = SDL_GetBasePath();
-	PHYSFS_init(nullptr);
-	SDL_free(base_path);
+	char basePath[200];
 
+	_getcwd(basePath, sizeof(basePath));
+
+	LOG("Base path is: %s", basePath);
+	PHYSFS_init(nullptr);
+	
 	//Setting the working directory as the writing directory
-	if (PHYSFS_setWriteDir(".") == 0)
+	if (PHYSFS_setWriteDir(basePath) == 0)
 		LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
 
-	AddPath("."); //Adding ProjectFolder (working directory)
+	SDL_free(basePath);
+	
+	AddPath(basePath); //Adding ProjectFolder (working directory)
 	AddPath("Assets");
 	CreateLibraryDirectories();
 }
@@ -40,14 +46,16 @@ bool FileSystem::Init() //Config& config
 	LOG("Loading File System");
 	bool ret = true;
 
-	// Ask SDL for a write dir
-	//char* write_path = SDL_GetPrefPath(Engine->GetOrganizationName(), Engine->GetTitleName());
+	//// Ask SDL for a write dir
+	//char* writePath = SDL_GetPrefPath("UPC", App->GetTitle());
+	////char* writePath = "Assets";
+	//LOG("write path is : %s", writePath);
 
-	// Trun this on while in game mode
-	//if(PHYSFS_setWriteDir(write_path) == 0)
+	//// Trun this on while in game mode
+	//if(PHYSFS_setWriteDir(writePath) == 0)
 	//	LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
 
-	//SDL_free(write_path);
+	//SDL_free(writePath);
 
 	return ret;
 }
@@ -62,16 +70,12 @@ bool FileSystem::CleanUp()
 
 void FileSystem::CreateLibraryDirectories()
 {
-	/*CreateDir(LIBRARY_PATH);
+	CreateDir(LIBRARY_PATH);
 	CreateDir(FOLDERS_PATH);
 	CreateDir(MESHES_PATH);
 	CreateDir(TEXTURES_PATH);
 	CreateDir(MATERIALS_PATH);
-	CreateDir(MODELS_PATH);
-	CreateDir(ANIMATIONS_PATH);
-	CreateDir(PARTICLES_PATH);
-	CreateDir(SHADERS_PATH);
-	CreateDir(SCENES_PATH);*/
+	CreateDir(SCENES_PATH);
 }
 
 // Add a new zip file or folder
@@ -329,6 +333,9 @@ uint FileSystem::Load(const char* file, char** buffer) const
 	}
 	else
 		LOG("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
+
+
+	//LOG("Successfully loaded File: %s",file);
 
 	return ret;
 }

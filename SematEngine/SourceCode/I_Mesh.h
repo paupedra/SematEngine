@@ -34,9 +34,9 @@ namespace Importer
 	{
 		std::vector<Mesh*> Import(const char* file);
 
-		void Save(const Mesh mesh);
+		uint64 Save(const Mesh mesh);	//Store mesh info into custom format file
 
-		void Load(const char* fileBuffer, Mesh* mesh);
+		void Load(const char* fileBuffer, Mesh* mesh); //Load buffer from custom format file and store into mesh
 
 	}
 }

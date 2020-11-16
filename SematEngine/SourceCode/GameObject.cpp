@@ -59,19 +59,19 @@ void GameObject::CleanUp()
 
 Component* GameObject::AddComponent(Component* component)
 {
-	ComponentType type = component->GetType();
+	Component::ComponentType type = component->GetType();
 	
 	switch (type)
 	{
-	case ComponentType::TRANSFORM:
+	case Component::ComponentType::TRANSFORM:
 
 			components.push_back(component);
 			transform = (ComponentTransform*)component;
 			break;
 
-		case ComponentType::MESH:
+		case Component::ComponentType::MESH:
 			
-			if (!HasComponentType(ComponentType::MESH))
+			if (!HasComponentType(Component::ComponentType::MESH))
 			{
 				components.push_back(component);
 			}
@@ -80,18 +80,16 @@ Component* GameObject::AddComponent(Component* component)
 			
 			break;
 
-		case ComponentType::TEXTURE:
+		case Component::ComponentType::TEXTURE:
 
-			if (!HasComponentType(ComponentType::TEXTURE))
+			if (!HasComponentType(Component::ComponentType::TEXTURE))
 			{
 				components.push_back(component);
-				texture = (ComponentTexture*)component;
 			}
 			else
 			{
-				DeleteComponentType(ComponentType::TEXTURE);
+				DeleteComponentType(Component::ComponentType::TEXTURE);
 				components.push_back(component);
-				texture = (ComponentTexture*)component;
 			}
 
 			break;
@@ -100,7 +98,7 @@ Component* GameObject::AddComponent(Component* component)
 	return component;
 }
 
-void GameObject::DeleteComponentType(ComponentType type)
+void GameObject::DeleteComponentType(Component::ComponentType type)
 {
 	std::vector<Component*>::iterator item = components.begin();
 	for (; item != components.end(); ++item)
@@ -114,7 +112,7 @@ void GameObject::DeleteComponentType(ComponentType type)
 	}
 }
 
-bool GameObject::HasComponentType(ComponentType type)
+bool GameObject::HasComponentType(Component::ComponentType type)
 {
 	bool ret = false;
 	std::vector<Component*>::iterator item = components.begin();
@@ -152,4 +150,23 @@ const char* GameObject::GetName()
 std::vector<Component*> GameObject::GetComponents()const
 {
 	return components;
+}
+
+void GameObject::UpdatedTransform()
+{
+
+	//If parent update 
+	if (parent != nullptr)
+	{
+		transform->UpdatedTransform(parent->transform->GetGlobalTransform());
+	}
+
+
+	//call children's on updateTransforms
+	
+	std::vector<GameObject*>::iterator child = children.begin();
+	for (; child != children.end(); ++child)
+	{
+		(*child)->UpdatedTransform();
+	}
 }

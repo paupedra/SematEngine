@@ -55,7 +55,7 @@ Texture* ComponentTexture::GetTexture() const
 	return texture;
 }
 
-bool ComponentTexture::IsEnabled()
+bool ComponentTexture::IsEnabled() const
 {
 	return drawTexture;
 }

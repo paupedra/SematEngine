@@ -3,16 +3,18 @@
 
 class GameObject;
 
-enum class ComponentType
-{
-	TRANSFORM,
-	MESH,
-	TEXTURE,
-	EMPTY
-};
+
 
 class Component
 {
+public:
+	enum class ComponentType
+	{
+		TRANSFORM,
+		MESH,
+		TEXTURE,
+		EMPTY
+	};
 public:
 	Component(ComponentType type);
 	Component(ComponentType type,GameObject* owner);
@@ -25,7 +27,7 @@ public:
 	void Disable();
 
 	bool IsActive();
-	ComponentType GetType();
+	inline ComponentType GetType() { return type; };
 	GameObject* GetOwner();
 
 public:

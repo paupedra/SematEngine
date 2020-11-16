@@ -26,6 +26,7 @@ Application::Application() : debug(false), dt(0.16f)
 	AddModule(camera);
 	AddModule(input);
 	AddModule(editor);
+	AddModule(fileSystem);
 	
 	// Scenes
 	AddModule(scene_intro);

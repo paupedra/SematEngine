@@ -1,8 +1,6 @@
 #ifndef __COMPONENTMESH__
 #define __COMPONENTMESH__
 
-//#include "I_Mesh.h"
-
 class Component;
 struct Mesh;
 
