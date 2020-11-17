@@ -1,4 +1,4 @@
-
+#include "Globals.h"
 #include "Component.h"
 #include "ComponentTransform.h"
 #include "Dependecies/imgui/imgui.h"
@@ -8,7 +8,6 @@
 ComponentTransform::ComponentTransform(GameObject* owner) : Component(ComponentType::TRANSFORM,owner)
 {
 	position = float3(0.f, 0.f, 0.f);
-	positionUI = float3(0.f, 0.f, 0.f);
 	scale = float3(1.f, 1.f, 1.f);
 
 	eulerRotationUi = float3(0.f, 0.f, 0.f);
@@ -26,7 +25,15 @@ ComponentTransform::~ComponentTransform()
 
 void ComponentTransform::Update()
 {
-	
+	if (updateTransform)
+	{
+		owner->UpdatedTransform();
+	}
+
+	if (updateTransform)
+	{
+		LOG("UpdateTransform still true");
+	}
 }
 
 void ComponentTransform::CleanUp()
@@ -46,9 +53,9 @@ void  ComponentTransform::DrawInspector()
 	{
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-		if (ImGui::InputFloat3("Transform", (float*)&position, "%.2f", flags)) { RecalculateMatrix(); };
-		if (ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags)) { RecalculateMatrix(); };
-		if (ImGui::InputFloat3("Rotation", (float*)&eulerRotationUi, "%.2f")) { SetEulerRotation(eulerRotationUi); }
+		if (ImGui::InputFloat3("Transform", (float*)&position, "%.2f", flags)) { UpdateLocalTransform(); };
+		if (ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags)) { UpdateLocalTransform(); };
+		if (ImGui::InputFloat3("Rotation", (float*)&eulerRotationUi, "%.2f",flags)) { SetEulerRotation(eulerRotationUi); }
 	}
 }
 
@@ -58,7 +65,7 @@ void ComponentTransform::SetEulerRotation(float3 euler_angles)
 	Quat quaternion_rotation = Quat::FromEulerXYZ(delta.x, delta.y, delta.z);
 	rotation = rotation * quaternion_rotation;
 	eulerRotation = euler_angles;
-	RecalculateMatrix();
+	UpdateLocalTransform();
 }
 
 float4x4 ComponentTransform::GetTransform() const
@@ -84,20 +91,19 @@ float4x4 ComponentTransform::GetGlobalTransform()const
 void ComponentTransform::SetPosition(float3 position)
 {
 	this->position = position;
-	RecalculateMatrix();
+	UpdateLocalTransform();
 }
 
 void ComponentTransform::SetScale(float3 scale)
 {
 	this->scale = scale;
-	RecalculateMatrix();
+	UpdateLocalTransform();
 }
 
-void ComponentTransform::RecalculateMatrix()
+void ComponentTransform::UpdateLocalTransform()
 {
 	transform = float4x4::FromTRS(position, rotation, scale);
 	updateTransform = true;
-
 }
 
 void ComponentTransform::RecalculateEuler()
@@ -110,5 +116,9 @@ void ComponentTransform::UpdatedTransform(float4x4 parentGlobalTransform)
 {
 	globalTransform = parentGlobalTransform * transform;
 	UpdateTRS();
+
+	LOG("Updated Transform of: %s", owner->GetName());
+
 	updateTransform = false;
+	LOG("set update transform to false -------------");
 }

@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleFileSystem.h"
-
 #include "Timer.h"
 
 #include "Dependecies/Assimp/include/mesh.h"
@@ -79,6 +78,11 @@ std::vector<Mesh*> Importer::MeshImporter::Import(const char* file)
                 }
             }
 
+            if (scene->mMeshes[i]->HasPositions)
+            {
+                //scene->mRootNode->
+            }
+
             ////Save and load trying
             //uint64 id = Importer::MeshImporter::Save(*newMesh);
 
@@ -116,6 +120,9 @@ std::vector<Mesh*> Importer::MeshImporter::Import(const char* file)
     {
         LOG("(ERROR) Error loading scene %s", file);
     }
+
+    delete timeImporting;
+
     return ret;
 }
 
@@ -204,11 +211,6 @@ void Importer::MeshImporter::Load(const char* fileBuffer, Mesh* mesh)
     mesh->normals = new float[mesh->buffersSize[Mesh::normal] * 3];
     memcpy(mesh->normals, cursor, bytes);
     cursor += bytes;
-
-    for (int i = 0; i < mesh->buffersSize[Mesh::normal] * 3; i++)
-    {
-        uint bruh = mesh->normals[i];
-    }
 
     //Texture Coords
     bytes = sizeof(float) * mesh->buffersSize[Mesh::texture] * 2;

@@ -18,7 +18,6 @@ public:
 	~GameObject();
 
 	void Update();
-
 	void CleanUp();
 
 	Component* AddComponent(Component* component);
@@ -31,26 +30,22 @@ public:
 	std::vector<Component*> GetComponents()const;
 
 	void DeleteComponentType(Component::ComponentType type);
-
 	bool HasComponentType(Component::ComponentType type);
-
 	void UpdatedTransform();
 
 	template<typename ComponentTemp>
 	const ComponentTemp* GetComponent() const
 	{
 		Component::ComponentType type = ComponentTemp::GetType();
-
 		for (int i = 0; i < components.size(); i++)
 		{
 			if (type == components[i]->GetType())
 			{
-				return (ComponentTemp*)coponents[i];
+				return ((ComponentTemp*)components[i]);
 			}
 		}
 		return nullptr;
 	}
-
 
 private:
 	bool active;

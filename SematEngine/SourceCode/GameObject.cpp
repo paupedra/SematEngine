@@ -154,13 +154,13 @@ std::vector<Component*> GameObject::GetComponents()const
 
 void GameObject::UpdatedTransform()
 {
+	
 
 	//If parent update 
 	if (parent != nullptr)
-	{
 		transform->UpdatedTransform(parent->transform->GetGlobalTransform());
-	}
-
+	else
+		transform->UpdatedTransform(float4x4::identity);
 
 	//call children's on updateTransforms
 	

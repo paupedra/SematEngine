@@ -15,6 +15,8 @@ public:
 	void CleanUp() override;
 	void DrawInspector() override;
 
+	static inline ComponentType GetType() { return ComponentType::MESH; };
+
 	void DrawMesh();
 	char* GetPath()const;
 private:

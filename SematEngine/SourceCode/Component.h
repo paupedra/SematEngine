@@ -15,6 +15,7 @@ public:
 		TEXTURE,
 		EMPTY
 	};
+
 public:
 	Component(ComponentType type);
 	Component(ComponentType type,GameObject* owner);
@@ -27,7 +28,7 @@ public:
 	void Disable();
 
 	bool IsActive();
-	inline ComponentType GetType() { return type; };
+	inline ComponentType GetType() const { return type; };
 	GameObject* GetOwner();
 
 public:

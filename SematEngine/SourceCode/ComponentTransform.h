@@ -21,9 +21,11 @@ public:
 	float3 GetScale()const;
 	float4x4 GetGlobalTransform()const;
 
+	static inline ComponentType GetType() { return ComponentType::TRANSFORM; };
+
 	void SetPosition(float3 position);
 	void SetScale(float3 scale);
-	void RecalculateMatrix();
+	void UpdateLocalTransform();
 	void SetEulerRotation(float3 euler_angles);
 	void UpdateTRS();
 
@@ -34,19 +36,19 @@ public:
 
 private:
 
-	float4x4 transform; //Local Transformç
+	float4x4 transform; //Local Transform
 	float4x4 globalTransform;
 
+	//Local
 	float3 position;
 	float3 scale;
 	Quat rotation;
 
 	float3 eulerRotation;
-
 	float3 eulerRotationUi;
-	float3 positionUI;
 
-	bool updateTransform = false;
+public:
+	bool updateTransform = false; //should be private
 
 };
 #endif //__COMPONENTTRANSFORM__

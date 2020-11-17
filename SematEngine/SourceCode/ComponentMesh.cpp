@@ -55,7 +55,7 @@ void ComponentMesh::DrawMesh()
 	{
 		if (owner->GetComponent<ComponentTexture>()->IsEnabled()) //
 		{
-			App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform(), owner->GetComponent<ComponentTexture>()->GetTexture()->id ,drawVertexNormals);
+			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), owner->GetComponent<ComponentTexture>()->GetTexture()->id ,drawVertexNormals);
 			return;
 		}
 	}
