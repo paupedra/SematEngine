@@ -26,10 +26,12 @@ public:
 	bool CleanUp();
 
 	void OnResize(int width, int height);
-	void DrawMesh(Mesh* mesh, float4x4 transform,uint textureId, bool drawVertexNormals);
+	void DrawMesh(Mesh* mesh, float4x4 transform,uint textureId, bool drawVertexNormals = false, bool drawBoundingBox = false);
 	void DrawVertexNormals(Mesh* mesh);
 	void GenerateBuffers(Mesh* newMesh);
 	void CreateChekerTexture();
+	void DrawBoundingBox(Mesh* mesh);
+	void DrawScenePlane(int size);
 
 	void SwitchCullFace(); //This is ugly sorry
 	void SwitchDepthTest();

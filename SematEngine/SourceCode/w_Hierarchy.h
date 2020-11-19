@@ -15,5 +15,5 @@ public:
 	void CleanUp() override;
 
 private:
-
+	GameObject* draggedObject = nullptr;
 };

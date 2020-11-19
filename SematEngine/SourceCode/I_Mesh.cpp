@@ -78,7 +78,7 @@ std::vector<Mesh*> Importer::MeshImporter::Import(const char* file)
                 }
             }
 
-            if (scene->mMeshes[i]->HasPositions)
+            if (scene->mMeshes[i]->HasPositions())
             {
                 //scene->mRootNode->
             }

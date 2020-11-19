@@ -3,6 +3,7 @@
 
 #include "Globals.h"
 #include <vector>
+#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
 
 struct Mesh
 {
@@ -26,6 +27,8 @@ struct Mesh
 	float* textureCoords = nullptr;
 
 	const char* path;
+
+	AABB aabb;
 };
 
 namespace Importer

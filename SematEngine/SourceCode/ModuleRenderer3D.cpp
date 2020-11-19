@@ -201,7 +201,7 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,bool drawVertexNormals)
+void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,bool drawVertexNormals, bool drawBoundingBox)
 {
 	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
 	
@@ -241,9 +241,9 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,b
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (drawVertexNormals)
-	{
 		DrawVertexNormals(mesh);
-	}
+	if (drawBoundingBox)
+		DrawBoundingBox(mesh);
 }
 
 void ModuleRenderer3D::DrawVertexNormals(Mesh* mesh)
@@ -310,6 +310,65 @@ void ModuleRenderer3D::CreateChekerTexture()
 
 	checkersId = Importer::TextureImp::CreateTexture(checkerImage, 64, 64, GL_RGBA);
 
+}
+
+void ModuleRenderer3D::DrawBoundingBox(Mesh* mesh)
+{
+	float3 corners[8];
+	mesh->aabb.GetCornerPoints(corners);
+	glBegin(GL_LINES);
+		//Between-planes right
+	glVertex3fv((GLfloat*)&corners[1]);
+	glVertex3fv((GLfloat*)&corners[5]);
+	glVertex3fv((GLfloat*)&corners[7]);
+	glVertex3fv((GLfloat*)&corners[3]);
+
+	//Between-planes left
+	glVertex3fv((GLfloat*)&corners[4]);
+	glVertex3fv((GLfloat*)&corners[0]);
+	glVertex3fv((GLfloat*)&corners[2]);
+	glVertex3fv((GLfloat*)&corners[6]);
+
+	//Far plane horizontal
+	glVertex3fv((GLfloat*)&corners[5]);
+	glVertex3fv((GLfloat*)&corners[4]);
+	glVertex3fv((GLfloat*)&corners[6]);
+	glVertex3fv((GLfloat*)&corners[7]);
+
+	//Near plane horizontal
+	glVertex3fv((GLfloat*)&corners[0]);
+	glVertex3fv((GLfloat*)&corners[1]);
+	glVertex3fv((GLfloat*)&corners[3]);
+	glVertex3fv((GLfloat*)&corners[2]);
+
+	//Near plane vertical
+	glVertex3fv((GLfloat*)&corners[1]);
+	glVertex3fv((GLfloat*)&corners[3]);
+	glVertex3fv((GLfloat*)&corners[0]);
+	glVertex3fv((GLfloat*)&corners[2]);
+
+	//Far plane vertical
+	glVertex3fv((GLfloat*)&corners[5]);
+	glVertex3fv((GLfloat*)&corners[7]);
+	glVertex3fv((GLfloat*)&corners[4]);
+	glVertex3fv((GLfloat*)&corners[6]);
+
+	glEnd();
+}
+
+void ModuleRenderer3D::DrawScenePlane(int size)
+{
+	glLineWidth(1.0f);
+	glBegin(GL_LINES);
+
+	for (int i = -size; i <= size; i++)
+	{
+		glVertex3d(i, 0,-size);
+		glVertex3d(i, 0, size);
+		glVertex3d(size, 0, i);
+		glVertex3d(-size, 0, i);
+	}
+	glEnd();
 }
 
 void ModuleRenderer3D::SwitchCullFace()

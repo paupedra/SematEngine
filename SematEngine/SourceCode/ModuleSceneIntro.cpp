@@ -4,6 +4,7 @@
 #include "ModuleCamera3D.h"
 #include "Primitive.h"
 #include "ModuleInput.h"
+#include "ModuleRenderer3D.h"
 
 #include "Component.h"
 #include "GameObject.h"
@@ -31,8 +32,11 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
+	rootObject = CreateGameObject("rootObject","","",true);
+
 	//Loading Baker House
 	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
+	CreateGameObject("BakerHouse", "Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
 	
 	return ret;
 }
@@ -57,19 +61,22 @@ bool ModuleSceneIntro::CleanUp()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
-	Plane p(vec3(0, 1, 0));
-	p.axis = true;
-	p.Render();
+	//Plane p(vec3(0, 1, 0));
+	//p.axis = true;
+	//p.Render();
+
+	App->renderer3D->DrawScenePlane(200);
 
 	//Update GameObjects in scene
-	std::vector<GameObject*>::iterator item = gameObjects.begin();
+	/*std::vector<GameObject*>::iterator item = gameObjects.begin();
 	for (; item != gameObjects.end(); ++item)
-		(*item)->Update();
+		(*item)->Update();*/
+
+	rootObject->Update(); //Updates children in a tree
 
 	if(App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
 	{
 		App->wantToSave = true;
-
 	}
 
 	return UPDATE_CONTINUE;
@@ -80,9 +87,16 @@ update_status ModuleSceneIntro::PostUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",char* texturePath = "")
+GameObject* ModuleSceneIntro::CreateGameObject(char* name, char* meshPath,char* texturePath, bool isRoot)
 {
 	GameObject* newGameObject = nullptr;
+
+	if (isRoot)
+	{
+		newGameObject = new GameObject(nullptr, name);
+		return newGameObject;
+	}
+
 	if (meshPath != "")
 	{
 		std::vector<Mesh*> meshes = Importer::MeshImporter::Import(meshPath);
@@ -90,11 +104,12 @@ void ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",char* te
 		if (meshes.size() == 0)
 		{
 			LOG("(ERROR) No meshes found in %s", meshPath);
-			return;
+			return newGameObject;
 		}
 
-		newGameObject = new GameObject(nullptr, name);
+		newGameObject = new GameObject(rootObject, name);
 		gameObjects.push_back(newGameObject);
+		rootObject->children.push_back(newGameObject);
 
 		if (meshes.size() == 1)
 		{
@@ -115,10 +130,13 @@ void ModuleSceneIntro::CreateGameObject(char* name, char* meshPath = "",char* te
 				if (texturePath != "")
 					childGameObject->AddComponent(new ComponentTexture(gameObjects.back(), texturePath, Importer::TextureImp::Import(texturePath)));
 
+				gameObjects.push_back(childGameObject);
 				newGameObject->children.push_back(childGameObject);
 			}
 		}
 	}
+
+	return newGameObject;
 }
 
 void ModuleSceneIntro::SetSelectedObject(GameObject* object)

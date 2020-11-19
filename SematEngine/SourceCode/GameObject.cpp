@@ -22,10 +22,13 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	std::vector<Component*>::iterator item = components.begin();
-	for (; item != components.end(); ++item)
+	if (!components.empty())
 	{
-		(*item)->Update();
+		std::vector<Component*>::iterator item = components.begin();
+		for (; item != components.end(); ++item)
+		{
+			(*item)->Update();
+		}
 	}
 
 	std::vector<GameObject*>::iterator child = children.begin();
@@ -47,12 +50,12 @@ void GameObject::CleanUp()
 
 	components.clear();
 
-	std::vector<GameObject*>::iterator child = children.begin();
-	for (; child != children.end(); ++child)
-	{
-		(*child)->CleanUp();
-		delete (*child);
-	}
+	//std::vector<GameObject*>::iterator child = children.begin();
+	//for (; child != children.end(); ++child)
+	//{
+	//	(*child)->CleanUp();
+	//	delete (*child);
+	//}
 
 	children.clear();
 }
@@ -155,12 +158,9 @@ std::vector<Component*> GameObject::GetComponents()const
 void GameObject::UpdatedTransform()
 {
 	
-
 	//If parent update 
-	if (parent != nullptr)
-		transform->UpdatedTransform(parent->transform->GetGlobalTransform());
-	else
-		transform->UpdatedTransform(float4x4::identity);
+	transform->UpdatedTransform(parent->transform->GetGlobalTransform());
+
 
 	//call children's on updateTransforms
 	

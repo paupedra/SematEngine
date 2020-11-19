@@ -15,7 +15,7 @@ public:
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
 
-	void CreateGameObject(char* name,char* meshPath, char* texturePath);
+	GameObject* CreateGameObject(char* name,char* meshPath = "", char* texturePath = "", bool isRoot = false);
 	void SetSelectedObject(GameObject* object);
 
 	bool CleanUp();
@@ -23,5 +23,6 @@ public:
 public:
 
 	std::vector<GameObject*> gameObjects;
+	GameObject* rootObject;
 	GameObject* selectedObject = nullptr;
 };
