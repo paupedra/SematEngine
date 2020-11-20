@@ -43,7 +43,6 @@ void w_Hierarchy::Draw()
 		DrawTree((*item));
 		
 	ImGui::End();
-	
 }
 
 void w_Hierarchy::DrawTree(GameObject* object)
@@ -72,7 +71,7 @@ void w_Hierarchy::DrawTree(GameObject* object)
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Dragged GO"))
 			{
 				//do thing with object
-				LOG("Dropped %s", draggedObject->GetName());
+				LOG("Dropped %s on %s", draggedObject->GetName(),object->GetName());
 			}
 
 			//LOG("Dropped %s", object->GetName());

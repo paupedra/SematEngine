@@ -13,6 +13,7 @@
 #include "ComponentMesh.h"
 #include "ComponentTexture.h"
 #include "I_Texture.h"
+#include "I_Scene.h"
 
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/mmgr/mmgr.h"
@@ -36,7 +37,8 @@ bool ModuleSceneIntro::Start()
 
 	//Loading Baker House
 	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
-	CreateGameObject("BakerHouse", "Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
+
+	Importer::SceneImporter::Import("Assets/Mesh/street/Street environment_V01.FBX");
 	
 	return ret;
 }

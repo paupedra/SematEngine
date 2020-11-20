@@ -5,6 +5,8 @@
 #include <vector>
 #include "Dependecies/MathGeoLib/src/MathGeoLib.h"
 
+struct aiNode;
+
 struct Mesh
 {
 	Mesh() {};
@@ -36,6 +38,8 @@ namespace Importer
 	namespace MeshImporter
 	{
 		std::vector<Mesh*> Import(const char* file);
+
+		void LoadNodeMesh(const aiNode* node);
 
 		uint64 Save(const Mesh mesh);	//Store mesh info into custom format file
 

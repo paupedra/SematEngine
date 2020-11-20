@@ -372,6 +372,9 @@
     <ClInclude Include="PathNode.h">
       <Filter>Source Code\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="I_Scene.h">
+      <Filter>Source Code\Importer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleWindow.cpp">
@@ -571,6 +574,9 @@
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
       <Filter>Source Code\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="I_Scene.cpp">
+      <Filter>Source Code\Importer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

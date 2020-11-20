@@ -27,6 +27,7 @@ public:
 
 	bool IsActive();
 	const char* GetName();
+	void SetName(const char* name);
 	std::vector<Component*> GetComponents()const;
 
 	void DeleteComponentType(Component::ComponentType type);

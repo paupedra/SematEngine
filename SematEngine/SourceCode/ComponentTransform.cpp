@@ -100,9 +100,18 @@ void ComponentTransform::SetScale(float3 scale)
 	UpdateLocalTransform();
 }
 
+void ComponentTransform::SetTransform(float3 position, float3 scale, Quat rotation)
+{
+	this->position = position;
+	this->scale = scale;
+	this->rotation = rotation;
+	UpdateLocalTransform();
+}
+
 void ComponentTransform::UpdateLocalTransform()
 {
 	transform = float4x4::FromTRS(position, rotation, scale);
+	RecalculateEuler();
 	updateTransform = true;
 }
 
@@ -110,6 +119,7 @@ void ComponentTransform::RecalculateEuler()
 {
 	eulerRotation = rotation.ToEulerXYZ();
 	eulerRotation *= 57.295779513082320876f;
+	eulerRotationUi = eulerRotation;
 }
 
 void ComponentTransform::UpdatedTransform(float4x4 parentGlobalTransform)

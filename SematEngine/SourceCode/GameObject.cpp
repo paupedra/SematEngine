@@ -150,6 +150,12 @@ const char* GameObject::GetName()
 {
 	return name.c_str();
 }
+
+void GameObject::SetName(const char* name)
+{
+	this->name = name;
+}
+
 std::vector<Component*> GameObject::GetComponents()const
 {
 	return components;

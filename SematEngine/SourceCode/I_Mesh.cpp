@@ -126,6 +126,11 @@ std::vector<Mesh*> Importer::MeshImporter::Import(const char* file)
     return ret;
 }
 
+void Importer::MeshImporter::LoadNodeMesh(const aiNode* node)
+{
+
+}
+
 uint64 Importer::MeshImporter::Save(const Mesh mesh)
 {
     Timer* timeSaving = new Timer();
