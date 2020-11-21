@@ -51,10 +51,13 @@ void ComponentMesh::DrawMesh()
 	if (!this->active)
 		return;
 
+	LOG("Drawing %s mesh", owner->GetName());
+
 	if (owner->GetComponent<ComponentTexture>() != nullptr)
 	{
 		if (owner->GetComponent<ComponentTexture>()->IsEnabled()) //
 		{
+			
 			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), owner->GetComponent<ComponentTexture>()->GetTexture()->id ,drawVertexNormals);
 			return;
 		}

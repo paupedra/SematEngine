@@ -1,8 +1,10 @@
 #include "Application.h"
 #include "I_Scene.h"
+#include "I_Mesh.h"
 #include "ModuleFileSystem.h"
 #include "GameObject.h"
 #include "ComponentTransform.h"
+#include "ComponentMesh.h"
 
 #include "ModuleSceneIntro.h"
 
@@ -20,20 +22,25 @@ void Importer::SceneImporter::Import(const char* file) //Load buffer with .fbx s
 	char* buffer;
 	uint byteSize = App->fileSystem->Load(file, &buffer);
 
+	LOG("Began importing: %s", file);
+
 	if (byteSize > 0)
 	{
 		const aiScene* scene = aiImportFileFromMemory(buffer, byteSize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 		const aiNode* rootNode = scene->mRootNode;
 
-		ProcessAiNode(rootNode,nullptr); //Process node tree
+		ProcessAiNode(scene,rootNode,App->scene_intro->rootObject); //Process node tree
+
+		LOG("Finished importing: %s", file);
 	}
 	else
 	{
 		LOG("(ERROR) Could not load .fbx file");
 	}
+	
 }
 
-void Importer::SceneImporter::ProcessAiNode(const aiNode* node, GameObject* parentObject) //Load meshes, materials, textures, transforms
+void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* node, GameObject* parentObject) //Load meshes, materials, textures, transforms
 {
 	GameObject* newGameObject;
 
@@ -48,24 +55,25 @@ void Importer::SceneImporter::ProcessAiNode(const aiNode* node, GameObject* pare
 	//Load things
 	LoadTransform(node, newGameObject);
 	
+	if (node->mNumMeshes > 0)
+	{
+		LoadMeshes(scene, node, newGameObject);
+	}
 	//_&AssimpFbx&_ dummy
 
 	//Add object
-	if (parentObject == nullptr)
-		App->scene_intro->rootObject->children.push_back(newGameObject);
-	else
-		parentObject->children.push_back(newGameObject);
+	parentObject->children.push_back(newGameObject);
 
 	App->scene_intro->gameObjects.push_back(newGameObject);
 
 	//Iterate children
 	for (int i = 0; i < node->mNumChildren; i++)
 	{
-		ProcessAiNode(node->mChildren[i],newGameObject);
+		ProcessAiNode(scene,node->mChildren[i],newGameObject);
 	}
 }
 
-void Importer::SceneImporter::LoadTransform(const aiNode* node, GameObject* newGameObject)
+void Importer::SceneImporter::LoadTransform( const aiNode* node, GameObject* newGameObject)
 {
 	aiVector3D position;
 	aiVector3D scale;
@@ -80,7 +88,15 @@ void Importer::SceneImporter::LoadTransform(const aiNode* node, GameObject* newG
 	newGameObject->transform->SetTransform(_position, _scale, _rotation);
 }
 
-void Importer::SceneImporter::LoadMeshes(const aiNode* node, GameObject* newGameObject)
+void Importer::SceneImporter::LoadMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject)
 {
+	std::vector<Mesh*> meshes;
 
+	Importer::MeshImporter::LoadNodeMesh(scene,node,meshes);
+
+	for (int i = 0; i < meshes.size(); i++)
+	{
+		newGameObject->AddComponent(new ComponentMesh(newGameObject,"",meshes[i]));
+	}
+	
 }

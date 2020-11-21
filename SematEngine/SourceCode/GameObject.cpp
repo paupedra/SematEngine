@@ -31,11 +31,12 @@ void GameObject::Update()
 		}
 	}
 
-	std::vector<GameObject*>::iterator child = children.begin();
+	//Used to update objects in a tree
+	/*std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child)
 	{
 		(*child)->Update();
-	}
+	}*/
 }
 
 void GameObject::CleanUp()

@@ -1,6 +1,7 @@
 #include <vector>
 #include "Globals.h"
 
+struct aiScene;
 struct aiNode;
 class GameObject;
 
@@ -10,10 +11,10 @@ namespace Importer
 	{
 		void Import(const char* file);
 
-		void ProcessAiNode(const aiNode* node,GameObject* parentObject);
+		void ProcessAiNode(const aiScene* scene,const aiNode* node,GameObject* parentObject);
 
-		void LoadTransform(const aiNode* node,GameObject* newGameObject);
-		void LoadMeshes(const aiNode* node, GameObject* newGameObject);
+		void LoadTransform( const aiNode* node,GameObject* newGameObject);
+		void LoadMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject);
 
 		uint64 Save();	//Store mesh info into custom format file
 

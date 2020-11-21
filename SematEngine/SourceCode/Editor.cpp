@@ -149,7 +149,7 @@ void Editor::Draw()
 
 	ImGui::Render();
 	
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); //Crashes when loading buffers of meshes
 
 }
 

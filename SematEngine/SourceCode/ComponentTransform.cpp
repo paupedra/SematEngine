@@ -127,8 +127,8 @@ void ComponentTransform::UpdatedTransform(float4x4 parentGlobalTransform)
 	globalTransform = parentGlobalTransform * transform;
 	UpdateTRS();
 
-	LOG("Updated Transform of: %s", owner->GetName());
+	//LOG("Updated Transform of: %s", owner->GetName());
 
 	updateTransform = false;
-	LOG("set update transform to false -------------");
+	//LOG("set update transform to false -------------");
 }

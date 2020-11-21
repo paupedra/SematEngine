@@ -231,6 +231,12 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,b
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[Mesh::index]);
 	glDrawElements(GL_TRIANGLES, mesh->buffersSize[Mesh::index], GL_UNSIGNED_INT, NULL);
 
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		LOG("(ERROR) Problem drawing mesh %s\n", gluErrorString(error));
+	}
+
 	glPopMatrix();
 
 	glDisableClientState(GL_VERTEX_ARRAY);
