@@ -41,7 +41,7 @@ bool ModuleSceneIntro::Start()
 	//CreateGameObject("Street", "Assets/Mesh/street/Street environment_V01.FBX");
 
 	//Importer::SceneImporter::Import("Assets/Mesh/street/Street environment_V01.FBX");
-	//Importer::SceneImporter::Import("Assets/Mesh/BakerHouse/BakerHouse.fbx");
+	Importer::SceneImporter::Import("Assets/Mesh/BakerHouse/BakerHouse.fbx");
 	
 	return ret;
 }
@@ -72,14 +72,14 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	App->renderer3D->DrawScenePlane(200);
 
-	LOG("before update GOs");
+	//LOG("before update GOs");
 	//Update GameObjects in scene
 	std::vector<GameObject*>::iterator item = gameObjects.begin();
 	for (; item != gameObjects.end(); ++item)
 	{
 		(*item)->Update();
 	}
-	LOG("after update GOs");
+	//LOG("after update GOs");
 	
 	if(App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
 	{

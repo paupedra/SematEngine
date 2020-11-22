@@ -27,7 +27,7 @@ public:
 
 	void OnResize(int width, int height);
 	void DrawMesh(Mesh* mesh, float4x4 transform,uint textureId, bool drawVertexNormals = false, bool drawBoundingBox = false);
-	void DrawVertexNormals(Mesh* mesh);
+	void DrawVertexNormals(Mesh* mesh, float4x4 transform);
 	void GenerateBuffers(Mesh* newMesh);
 	void CreateChekerTexture();
 	void DrawBoundingBox(Mesh* mesh);

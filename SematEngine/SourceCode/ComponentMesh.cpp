@@ -51,7 +51,7 @@ void ComponentMesh::DrawMesh()
 	if (!this->active)
 		return;
 
-	LOG("Drawing %s mesh", owner->GetName());
+	//LOG("Drawing %s mesh", owner->GetName());
 
 	if (owner->GetComponent<ComponentTexture>() != nullptr)
 	{

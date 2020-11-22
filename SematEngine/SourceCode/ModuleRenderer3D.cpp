@@ -247,15 +247,19 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,b
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (drawVertexNormals)
-		DrawVertexNormals(mesh);
+		DrawVertexNormals(mesh,transform);
 	if (drawBoundingBox)
 		DrawBoundingBox(mesh);
 }
 
-void ModuleRenderer3D::DrawVertexNormals(Mesh* mesh)
+void ModuleRenderer3D::DrawVertexNormals(Mesh* mesh,float4x4 transform)
 {
 	//Draw Normals
 	glBegin(GL_LINES);
+
+	glPushMatrix();
+	glMultMatrixf((float*)&transform.Transposed());
+
 	uint loops = mesh->buffersSize[Mesh::vertex];
 	for (uint i = 0; i < loops; i += 3)
 	{
@@ -264,6 +268,7 @@ void ModuleRenderer3D::DrawVertexNormals(Mesh* mesh)
 		glVertex3f(mesh->vertices[i] + mesh->normals[i], mesh->vertices[i + 1] + mesh->normals[i + 1], mesh->vertices[i + 2] + mesh->normals[i + 2]);
 
 	}
+	glPopMatrix();
 	glEnd();
 }
 
