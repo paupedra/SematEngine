@@ -28,7 +28,7 @@ public:
 
 public:
 	SDL_Window* window;
-	SDL_Surface* screen_surface;
+	SDL_Surface* screenSurface;
 
 	//int width;
 	//int height;

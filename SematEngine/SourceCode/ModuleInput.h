@@ -36,36 +36,36 @@ public:
 
 	int GetMouseX() const
 	{
-		return mouse_x;
+		return mouseX;
 	}
 
 	int GetMouseY() const
 	{
-		return mouse_y;
+		return mouseY;
 	}
 
 	int GetMouseZ() const
 	{
-		return mouse_z;
+		return mouseZ;
 	}
 
 	int GetMouseXMotion() const
 	{
-		return mouse_x_motion;
+		return mouseXMotion;
 	}
 
 	int GetMouseYMotion() const
 	{
-		return mouse_y_motion;
+		return mouseYMotion;
 	}
 
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouse_buttons[MAX_MOUSE_BUTTONS];
-	int mouse_x;
-	int mouse_y;
-	int mouse_z;
-	int mouse_x_motion;
-	int mouse_y_motion;
+	int mouseX;
+	int mouseY;
+	int mouseZ;
+	int mouseXMotion;
+	int mouseYMotion;
 	//int mouse_z_motion;
 };

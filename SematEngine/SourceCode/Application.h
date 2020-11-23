@@ -32,12 +32,12 @@ public:
 
 private:
 
-	Timer	frame_timer;
-	Timer	seconds_timer;
-	uint	frame_cap_ms;
+	Timer	frameTimer;
+	Timer	secondsTimer;
+	uint	frameCapMs;
 	float	dt;
-	float	frame_cap;
-	int		frame_count;
+	float	frameCap;
+	int		frameCount;
 
 	std::vector<Module*> modules;
 	std::string title;

@@ -37,7 +37,7 @@ Application::Application() : debug(false), dt(0.16f)
 	title = "Semat Engine";
 	wantToExit = false;
 	wantToSave = false;
-	frame_cap = 120;
+	frameCap = 120;
 }
 
 Application::~Application()
@@ -71,9 +71,9 @@ bool Application::Init()
 		ret = (*item)->Start();
 	}
 	
-	frame_timer.Start();
-	seconds_timer.Start();
-	frame_cap = 120;
+	frameTimer.Start();
+	secondsTimer.Start();
+	frameCap = 120;
 
 	vsync = VSYNC;
 
@@ -83,8 +83,8 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	dt = (float)frame_timer.Read() / 1000.0f;
-	frame_timer.Start();
+	dt = (float)frameTimer.Read() / 1000.0f;
+	frameTimer.Start();
 }
 
 // ---------------------------------------------
@@ -98,25 +98,25 @@ void Application::FinishUpdate()
 
 void Application::FrameCalculations()
 {
-	frame_cap_ms = 1000 / frame_cap;
-	uint current_frame_ms = frame_timer.Read();
+	frameCapMs = 1000 / frameCap;
+	uint current_frame_ms = frameTimer.Read();
 
-	if (!vsync && current_frame_ms < frame_cap_ms)
+	if (!vsync && current_frame_ms < frameCapMs)
 	{
-		SDL_Delay(frame_cap_ms - current_frame_ms);
+		SDL_Delay(frameCapMs - current_frame_ms);
 	}
 
-	App->editor->UpdateConfigMS(frame_timer.Read());
+	App->editor->UpdateConfigMS(frameTimer.Read());
 
-	if (seconds_timer.Read() >= 1000)
+	if (secondsTimer.Read() >= 1000)
 	{
-		seconds_timer.Start();
-		App->editor->UpdateConfigFPS(frame_count);
+		secondsTimer.Start();
+		App->editor->UpdateConfigFPS(frameCount);
 
-		frame_count = 0;
+		frameCount = 0;
 	}
 
-	frame_count++;
+	frameCount++;
 }
 
 void Application::Save()
@@ -193,7 +193,7 @@ const char* Application::GetTitle() const
 
 float Application::GetFrameCap() const
 {
-	return frame_cap;
+	return frameCap;
 }
 
 void Application::SwitchVsync()
@@ -212,7 +212,7 @@ void Application::SetTitle(const char* _title)
 
 void Application::SetFrameCap(int cap)
 {
-	frame_cap = cap;
+	frameCap = cap;
 }
 
 void Application::ExitApp()
