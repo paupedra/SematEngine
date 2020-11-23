@@ -106,6 +106,8 @@ void Editor::Draw()
 {
 	//ImGui::CaptureKeyboardFromApp(true);
 
+	ImGuiIO io = ImGui::GetIO();
+
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -148,7 +150,10 @@ void Editor::Draw()
 		(*item)->Draw();
 
 	ImGui::Render();
-	
+
+	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+	glClearColor(0, 0, 0, 0);
+
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); //Crashes when loading buffers of meshes
 
 }

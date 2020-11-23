@@ -26,6 +26,7 @@ public:
 	void SetPosition(float3 position);
 	void SetScale(float3 scale);
 	void SetTransform(float3 position,float3 scale ,Quat rotation); 
+	void SetLocalTransform(float3 position, float3 scale, Quat rotation);
 
 	void UpdateLocalTransform();
 	void SetEulerRotation(float3 euler_angles);

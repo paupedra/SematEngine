@@ -63,7 +63,12 @@ void ComponentMesh::DrawMesh()
 		}
 	}
 
-	App->renderer3D->DrawMesh(mesh, owner->transform->GetTransform(),0, drawVertexNormals);
+	if (!strcmp(owner->GetName(),"Line002") || !strcmp(owner->GetName(), "Object010")) //Temporal fix
+	{
+		return;
+	}
+
+	App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(),0, drawVertexNormals);
 }
 
 char* ComponentMesh::GetPath()const

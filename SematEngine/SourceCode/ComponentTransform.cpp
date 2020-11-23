@@ -100,12 +100,17 @@ void ComponentTransform::SetScale(float3 scale)
 	UpdateLocalTransform();
 }
 
-void ComponentTransform::SetTransform(float3 position, float3 scale, Quat rotation)
+void ComponentTransform::SetLocalTransform(float3 position, float3 scale, Quat rotation)
 {
 	this->position = position;
 	this->scale = scale;
 	this->rotation = rotation;
 	UpdateLocalTransform();
+}
+
+void ComponentTransform::SetTransform(float3 position, float3 scale, Quat rotation)
+{
+
 }
 
 void ComponentTransform::UpdateLocalTransform()

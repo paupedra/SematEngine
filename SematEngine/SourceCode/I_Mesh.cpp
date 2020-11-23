@@ -128,12 +128,12 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
         {
             newMesh->buffersSize[Mesh::index] = scene->mMeshes[node->mMeshes[i]]->mNumFaces * 3;
             newMesh->indices = new uint[newMesh->buffersSize[Mesh::index]];
+
             for (uint f = 0; f < scene->mMeshes[node->mMeshes[i]]->mNumFaces; ++f)
             {
                 if (scene->mMeshes[node->mMeshes[i]]->mFaces[f].mNumIndices != 3)
                 {
-                    LOG("WARNING, geometery face with != 3 indices!");
-                    return;
+                    LOG("WARNING, geometery face with != 3 indices!"); //Problems with != 3 faces
                 }
                 else
                 {
@@ -161,9 +161,10 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
             }
         }
 
-        App->renderer3D->GenerateBuffers(newMesh); //Crashes
 
-        meshes.push_back(newMesh);
+         App->renderer3D->GenerateBuffers(newMesh); //Crashes
+         meshes.push_back(newMesh);
+
     }
 }
 

@@ -3,6 +3,7 @@
 
 struct aiScene;
 struct aiNode;
+struct Texture;
 class GameObject;
 
 namespace Importer
@@ -11,10 +12,11 @@ namespace Importer
 	{
 		void Import(const char* file);
 
-		void ProcessAiNode(const aiScene* scene,const aiNode* node,GameObject* parentObject);
+		void ProcessAiNode(const aiScene* scene,const aiNode* node,GameObject* parentObject, const char* file);
 
 		void LoadTransform( const aiNode* node,GameObject* newGameObject);
 		void LoadMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject);
+		void LoadMaterial(const aiScene* scene, const aiNode* node, GameObject* newGameObject, const char* file);
 
 		uint64 Save();	//Store mesh info into custom format file
 

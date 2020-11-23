@@ -56,8 +56,6 @@ Texture* Importer::TextureImp::Import(const char* path)
 		LOG("(ERROR) Error loading Image %s", path);
 	}
 
-	
-
 	return newTexture;
 }
 

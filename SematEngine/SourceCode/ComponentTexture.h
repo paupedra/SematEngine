@@ -8,7 +8,7 @@ class ComponentTexture : public Component
 {
 public:
 	ComponentTexture(GameObject* owner);
-	ComponentTexture(GameObject* owner, char* path, Texture* mesh);
+	ComponentTexture(GameObject* owner, const char* path, Texture* mesh);
 	~ComponentTexture();
 
 	void Update() override;
@@ -17,7 +17,7 @@ public:
 
 	static inline ComponentType GetType() { return ComponentType::TEXTURE; };
 
-	char* GetPath()const;
+	const char* GetPath()const;
 	Texture* GetTexture() const;
 
 	bool IsEnabled()const ;
@@ -25,7 +25,7 @@ public:
 private:
 
 	Texture* texture = nullptr;
-	char* path = "";
+	const char* path = "";
 	bool drawTexture = true;
 
 };

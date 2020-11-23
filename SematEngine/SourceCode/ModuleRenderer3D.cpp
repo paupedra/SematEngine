@@ -211,6 +211,7 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,b
 	glLineWidth(2);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	//Pass TextureID
@@ -223,18 +224,21 @@ void ModuleRenderer3D::DrawMesh(Mesh* mesh, float4x4 transform, uint textureId,b
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::texture]);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::normal]);
+	glNormalPointer(GL_FLOAT, 0, nullptr);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[Mesh::vertex]);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[Mesh::index]);
-	glDrawElements(GL_TRIANGLES, mesh->buffersSize[Mesh::index], GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, mesh->buffersSize[Mesh::index], GL_UNSIGNED_INT, nullptr);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 	{
-		LOG("(ERROR) Problem drawing mesh %s\n", gluErrorString(error));
+		LOG("(ERROR) Problem drawing mesh: %s\n", gluErrorString(error));
 	}
 
 	glPopMatrix();
@@ -266,8 +270,8 @@ void ModuleRenderer3D::DrawVertexNormals(Mesh* mesh,float4x4 transform)
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glVertex3f(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]);
 		glVertex3f(mesh->vertices[i] + mesh->normals[i], mesh->vertices[i + 1] + mesh->normals[i + 1], mesh->vertices[i + 2] + mesh->normals[i + 2]);
-
 	}
+
 	glPopMatrix();
 	glEnd();
 }

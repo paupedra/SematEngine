@@ -5,7 +5,7 @@ struct Texture
 	uint width;
 	uint height;
 	
-	uint id;
+	uint id; //Open gl ID
 	const char* path;
 };
 

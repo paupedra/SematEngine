@@ -1,10 +1,13 @@
 #include "Application.h"
 #include "I_Scene.h"
 #include "I_Mesh.h"
+#include "I_Texture.h"
 #include "ModuleFileSystem.h"
 #include "GameObject.h"
+
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "ComponentTexture.h"
 
 #include "ModuleSceneIntro.h"
 
@@ -29,7 +32,7 @@ void Importer::SceneImporter::Import(const char* file) //Load buffer with .fbx s
 		const aiScene* scene = aiImportFileFromMemory(buffer, byteSize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 		const aiNode* rootNode = scene->mRootNode;
 
-		ProcessAiNode(scene,rootNode,App->scene_intro->rootObject); //Process node tree
+		ProcessAiNode(scene,rootNode,App->scene_intro->rootObject,file); //Process node tree
 
 		LOG("Finished importing: %s", file);
 	}
@@ -40,7 +43,7 @@ void Importer::SceneImporter::Import(const char* file) //Load buffer with .fbx s
 	
 }
 
-void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* node, GameObject* parentObject) //Load meshes, materials, textures, transforms
+void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* node, GameObject* parentObject,const char* file) //Load meshes, materials, textures, transforms
 {
 	GameObject* newGameObject;
 
@@ -59,6 +62,10 @@ void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* 
 	{
 		LoadMeshes(scene, node, newGameObject);
 	}
+
+	//Load material
+	LoadMaterial(scene, node, newGameObject,file);
+
 	//_&AssimpFbx&_ dummy
 
 	//Add object
@@ -69,7 +76,7 @@ void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* 
 	//Iterate children
 	for (int i = 0; i < node->mNumChildren; i++)
 	{
-		ProcessAiNode(scene,node->mChildren[i],newGameObject);
+		ProcessAiNode(scene,node->mChildren[i],newGameObject,file);
 	}
 }
 
@@ -85,7 +92,7 @@ void Importer::SceneImporter::LoadTransform( const aiNode* node, GameObject* new
 	float3 _scale = { scale.x, scale.y, scale.z };
 	Quat _rotation = { rotation.x,rotation.y,rotation.z,rotation.w };
 
-	newGameObject->transform->SetTransform(_position, _scale, _rotation);
+	newGameObject->transform->SetLocalTransform(_position, _scale, _rotation);
 }
 
 void Importer::SceneImporter::LoadMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject)
@@ -99,4 +106,37 @@ void Importer::SceneImporter::LoadMeshes(const aiScene* scene, const aiNode* nod
 		newGameObject->AddComponent(new ComponentMesh(newGameObject,"",meshes[i]));
 	}
 	
+}
+
+void Importer::SceneImporter::LoadMaterial(const aiScene* scene, const aiNode* node, GameObject* newGameObject, const char* file)
+{
+	for (int i = 0; i < node->mNumMeshes; i++)
+	{
+		Texture* texture;
+		uint index = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
+		aiString path;
+
+		if (index >= 0)
+		{
+			if (scene->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+			{
+				std::string fileName, extension;
+				App->fileSystem->SplitFilePath(path.C_Str(), nullptr, &fileName, &extension);
+
+				fileName += "." + extension;
+				fileName = "Assets/Textures/" + fileName;
+
+				LOG("Adding texture to %s", newGameObject->GetName());
+
+				texture = Importer::TextureImp::Import(fileName.c_str());
+
+				newGameObject->AddComponent(new ComponentTexture(newGameObject, fileName.c_str(), texture));
+			}
+			else
+			{
+				LOG("(ERROR) Failed loading node texture: %s in node %s",path.C_Str(),node->mName.C_Str());
+			}
+		}
+
+	}
 }

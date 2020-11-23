@@ -164,7 +164,6 @@ std::vector<Component*> GameObject::GetComponents()const
 
 void GameObject::UpdatedTransform()
 {
-	
 	//If parent update 
 	transform->UpdatedTransform(parent->transform->GetGlobalTransform());
 

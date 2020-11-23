@@ -40,8 +40,8 @@ bool ModuleSceneIntro::Start()
 
 	//CreateGameObject("Street", "Assets/Mesh/street/Street environment_V01.FBX");
 
-	//Importer::SceneImporter::Import("Assets/Mesh/street/Street environment_V01.FBX");
-	Importer::SceneImporter::Import("Assets/Mesh/BakerHouse/BakerHouse.fbx");
+	Importer::SceneImporter::Import("Assets/Mesh/street/Street environment_V01.FBX");
+	//Importer::SceneImporter::Import("Assets/Mesh/BakerHouse/BakerHouse.fbx");
 	
 	return ret;
 }
