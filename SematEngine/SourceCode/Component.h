@@ -3,8 +3,6 @@
 
 class GameObject;
 
-
-
 class Component
 {
 public:

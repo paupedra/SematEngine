@@ -1,24 +1,27 @@
 #include "Application.h"
-#include "ModuleCamera3D.h"
-#include "ModuleInput.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleWindow.h"
-#include "Editor.h"
-#include "ModuleFileSystem.h"
+
+#include "MCamera3D.h"
+#include "MInput.h"
+#include "MRenderer3D.h"
+#include "MScene.h"
+#include "MWindow.h"
+#include "MEditor.h"
+#include "MFileSystem.h"
+#include "MResourceManager.h"
 
 #include "Dependecies/Brofiler/Brofiler.h"
 #include "Dependecies/mmgr/mmgr.h"
 
 Application::Application() : debug(false), dt(0.16f)
 {
-	window = new ModuleWindow();
-	input = new ModuleInput();
-	scene_intro = new ModuleSceneIntro();
-	renderer3D = new ModuleRenderer3D();
-	camera = new ModuleCamera3D();
-	editor = new Editor();
-	fileSystem = new FileSystem();
+	window = new MWindow();
+	input = new MInput();
+	scene = new MScene();
+	renderer3D = new MRenderer3D();
+	camera = new MCamera3D();
+	editor = new MEditor();
+	fileSystem = new MFileSystem();
+	resourceManager = new MResourceManager();
 
 	// They will CleanUp() in reverse order
 	// Main Modules
@@ -27,9 +30,10 @@ Application::Application() : debug(false), dt(0.16f)
 	AddModule(input);
 	AddModule(editor);
 	AddModule(fileSystem);
+	AddModule(resourceManager);
 	
 	// Scenes
-	AddModule(scene_intro);
+	AddModule(scene);
 
 	// Renderer last!
 	AddModule(renderer3D);

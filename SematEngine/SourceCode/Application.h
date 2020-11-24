@@ -6,24 +6,26 @@
 #include "Timer.h"
 #include "Module.h"
 
-class ModuleWindow;
-class ModuleInput;
-class ModuleSceneIntro;
-class ModuleRenderer3D;
-class ModuleCamera3D;
-class Editor;
-class FileSystem;
+class MWindow;
+class MInput;
+class MScene;
+class MRenderer3D;
+class MCamera3D;
+class MEditor;
+class MFileSystem;
+class MResourceManager;
 
 class Application
 {
 public:
-	ModuleWindow* window;
-	ModuleInput* input;
-	ModuleSceneIntro* scene_intro;
-	ModuleRenderer3D* renderer3D;
-	ModuleCamera3D* camera;
-	Editor* editor;
-	FileSystem* fileSystem;
+	MWindow* window;
+	MInput* input;
+	MScene* scene;
+	MRenderer3D* renderer3D;
+	MCamera3D* camera;
+	MEditor* editor;
+	MFileSystem* fileSystem;
+	MResourceManager* resourceManager;
 
 	bool debug;
 	bool vsync;

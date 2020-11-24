@@ -6,15 +6,15 @@
 
 #include "Component.h"
 enum class ComponentType;
-class ComponentTransform;
-class ComponentMesh;
-class ComponentTexture;
+class CTransform;
+class CMesh;
+class CMaterial;
 
 class GameObject
 {
 public:
-	GameObject(char* name);
-	GameObject(GameObject* parent, char* name);
+	GameObject(const char* name);
+	GameObject(GameObject* parent, const char* name);
 	~GameObject();
 
 	void Update();
@@ -34,15 +34,15 @@ public:
 	bool HasComponentType(Component::ComponentType type);
 	void UpdatedTransform();
 
-	template<typename ComponentTemp>
-	const ComponentTemp* GetComponent() const
+	template<typename CTemplate>
+	const CTemplate* GetComponent() const
 	{
-		Component::ComponentType type = ComponentTemp::GetType();
+		Component::ComponentType type = CTemplate::GetType();
 		for (int i = 0; i < components.size(); i++)
 		{
 			if (type == components[i]->GetType())
 			{
-				return ((ComponentTemp*)components[i]);
+				return ((CTemplate*)components[i]);
 			}
 		}
 		return nullptr;
@@ -54,7 +54,7 @@ private:
 	std::vector<Component*> components;
 	
 public:
-	ComponentTransform* transform = nullptr;
+	CTransform* transform = nullptr;
 	std::vector<GameObject*> children;
 	GameObject* parent;
 };

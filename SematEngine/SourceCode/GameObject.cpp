@@ -1,18 +1,20 @@
+#include "Globals.h"
 #include "GameObject.h"
 #include "Component.h"
-#include "ComponentTransform.h"
-#include "ComponentMesh.h"
-#include "Globals.h"
+
+#include "CTransform.h"
+#include "CMesh.h"
+
 #include "Dependecies/mmgr/mmgr.h"
 
-GameObject::GameObject(char* name) : name(name)
+GameObject::GameObject(const char* name) : name(name)
 {
-	AddComponent(new ComponentTransform(this));
+	AddComponent(new CTransform(this));
 }
 
-GameObject::GameObject(GameObject* parent = nullptr, char* name = "Object") : parent(parent), name(name)
+GameObject::GameObject(GameObject* parent = nullptr, const char* name = "Object") : parent(parent), name(name)
 {
-	AddComponent(new ComponentTransform(this));
+	AddComponent(new CTransform(this));
 }
 
 GameObject::~GameObject()
@@ -30,13 +32,6 @@ void GameObject::Update()
 			(*item)->Update();
 		}
 	}
-
-	//Used to update objects in a tree
-	/*std::vector<GameObject*>::iterator child = children.begin();
-	for (; child != children.end(); ++child)
-	{
-		(*child)->Update();
-	}*/
 }
 
 void GameObject::CleanUp()
@@ -51,13 +46,6 @@ void GameObject::CleanUp()
 
 	components.clear();
 
-	//std::vector<GameObject*>::iterator child = children.begin();
-	//for (; child != children.end(); ++child)
-	//{
-	//	(*child)->CleanUp();
-	//	delete (*child);
-	//}
-
 	children.clear();
 }
 
@@ -70,7 +58,7 @@ Component* GameObject::AddComponent(Component* component)
 	case Component::ComponentType::TRANSFORM:
 
 			components.push_back(component);
-			transform = (ComponentTransform*)component;
+			transform = (CTransform*)component;
 			break;
 
 		case Component::ComponentType::MESH:
@@ -164,12 +152,9 @@ std::vector<Component*> GameObject::GetComponents()const
 
 void GameObject::UpdatedTransform()
 {
-	//If parent update 
 	transform->UpdatedTransform(parent->transform->GetGlobalTransform());
 
-
 	//call children's on updateTransforms
-	
 	std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child)
 	{
