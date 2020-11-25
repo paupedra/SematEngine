@@ -129,7 +129,7 @@ update_status MInput::PreUpdate(float dt)
 
 			case SDL_QUIT:
 			quit = true;
-			App->wantToExit = true;
+			App->ExitApp();
 			break;
 
 			case SDL_WINDOWEVENT:

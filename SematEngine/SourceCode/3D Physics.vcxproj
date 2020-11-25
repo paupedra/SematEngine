@@ -81,6 +81,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CMaterial.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="CTransform.h" />
     <ClInclude Include="Dependecies\Glew\include\eglew.h" />
     <ClInclude Include="Dependecies\Glew\include\glew.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CMaterial.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="CTransform.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_demo.cpp" />

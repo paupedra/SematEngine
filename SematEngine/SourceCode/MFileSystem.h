@@ -12,7 +12,7 @@ int close_sdl_rwops(SDL_RWops* rw);
 struct aiFileIO;
 
 //struct BASS_FILEPROCS;
-class Config;
+class ConfigNode;
 struct PathNode;
 
 class MFileSystem : public Module

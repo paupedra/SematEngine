@@ -14,7 +14,7 @@ namespace Importer
 
 		void ProcessAiNode(const aiScene* scene,const aiNode* node,GameObject* parentObject, const char* file);
 
-		void LoadTransform( const aiNode* node,GameObject* newGameObject);
+		const aiNode* LoadTransform( const aiNode* node,GameObject* newGameObject);
 		void LoadMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject);
 		void LoadMaterial(const aiScene* scene, const aiNode* node, GameObject* newGameObject, const char* file);
 

@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include "Globals.h"
 #include "Application.h"
+#include "Config.h"
 
 #include "MEditor.h"
 #include "MWindow.h"
@@ -96,7 +97,7 @@ bool MEditor::CleanUp()
 	return true;
 }
 
-bool MEditor::Save()
+bool MEditor::Save(ConfigNode* config)
 {
 	LOG("saved editor");
 
@@ -109,17 +110,35 @@ void MEditor::Draw()
 
 	ImGuiIO io = ImGui::GetIO();
 
+	DrawMainMenuBar();
+
+	std::vector<Window*>::iterator item = windows.begin();
+	for (item; item != windows.end(); ++item)
+		(*item)->Draw();
+
+	ImGui::Render();
+
+	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+	glClearColor(0, 0, 0, 0);
+
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); //Crashes when loading buffers of meshes
+
+}
+
+void MEditor::DrawMainMenuBar()
+{
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("Save")) { App->WantToSave(); }
 			if (ImGui::MenuItem("Exit")) { App->ExitApp(); }
 
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Windows"))
 		{
-			if (ImGui::MenuItem("Console"," ",console->active)) { console->SetActive(); }
+			if (ImGui::MenuItem("Console", " ", console->active)) { console->SetActive(); }
 			if (ImGui::MenuItem("Configuration", " ", configuration->active)) { configuration->SetActive(); }
 			if (ImGui::MenuItem("Hierarchy", " ", hierarchy->active)) { hierarchy->SetActive(); }
 			if (ImGui::MenuItem("Inspector", " ", inspector->active)) { inspector->SetActive(); }
@@ -128,10 +147,10 @@ void MEditor::Draw()
 		}
 		if (ImGui::BeginMenu("Primitives"))
 		{
-			if (ImGui::MenuItem("Cube", " ", console->active)) {App->scene->CreateGameObject("Cube Primitive", "Assets/Mesh/Primitives/Cube.FBX", "");}
-			if (ImGui::MenuItem("Cylinder", " ", console->active)) {App->scene->CreateGameObject("Cylinder Primitive", "Assets/Mesh/Primitives/Cylinder.FBX", "");}
-			if (ImGui::MenuItem("Sphere", " ", console->active)) {App->scene->CreateGameObject("Sphere Primitive", "Assets/Mesh/Primitives/Sphere.FBX", "");}
-			if (ImGui::MenuItem("Plane", " ", console->active)) {App->scene->CreateGameObject("Plane Primitive", "Assets/Mesh/Primitives/Plane.FBX", "");}
+			if (ImGui::MenuItem("Cube", " ", console->active)) { App->scene->CreateGameObject("Cube Primitive", "Assets/Mesh/Primitives/Cube.FBX", ""); }
+			if (ImGui::MenuItem("Cylinder", " ", console->active)) { App->scene->CreateGameObject("Cylinder Primitive", "Assets/Mesh/Primitives/Cylinder.FBX", ""); }
+			if (ImGui::MenuItem("Sphere", " ", console->active)) { App->scene->CreateGameObject("Sphere Primitive", "Assets/Mesh/Primitives/Sphere.FBX", ""); }
+			if (ImGui::MenuItem("Plane", " ", console->active)) { App->scene->CreateGameObject("Plane Primitive", "Assets/Mesh/Primitives/Plane.FBX", ""); }
 			if (ImGui::MenuItem("Pyramid", " ", console->active)) { App->scene->CreateGameObject("Pyramid Primitive", "Assets/Mesh/Primitives/Pyramid.FBX", ""); }
 			if (ImGui::MenuItem("Teapot", " ", console->active)) { App->scene->CreateGameObject("Teapot Primitive", "Assets/Mesh/Primitives/Teapot.FBX", ""); }
 
@@ -145,18 +164,6 @@ void MEditor::Draw()
 		}
 		ImGui::EndMainMenuBar();
 	}
-
-	std::vector<Window*>::iterator item = windows.begin();
-	for (item; item != windows.end(); ++item)
-		(*item)->Draw();
-
-	ImGui::Render();
-
-	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-	glClearColor(0, 0, 0, 0);
-
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); //Crashes when loading buffers of meshes
-
 }
 
 void MEditor::SetUpDocking()

@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Config.h"
 
 #include "MCamera3D.h"
 #include "MInput.h"
@@ -125,12 +126,16 @@ void Application::FrameCalculations()
 
 void Application::Save()
 {
+	ConfigNode config;
+
+
+
 	std::vector<Module*>::iterator item = modules.begin();
 
 	BROFILER_CATEGORY("Engine PreUpdate", Profiler::Color::Yellow)
 	for (; item != modules.end(); ++item)
 	{
-		(*item)->Save();
+		(*item)->Save(&config);
 	}
 	LOG("Succesfully saved");
 	wantToSave = false;
@@ -219,6 +224,11 @@ void Application::SetFrameCap(int cap)
 	frameCap = cap;
 }
 
+void Application::WantToSave()
+{
+	wantToSave = true;
+}
+
 void Application::ExitApp()
 {
 	wantToExit = true;
@@ -253,6 +263,11 @@ std::string Application::ReadTxt(const char* path)
 void Application::AddModule(Module* mod)
 {
 	modules.push_back(mod);
+}
+
+bool Application::WantsToExit() const
+{
+	return wantToExit;
 }
 
 Application* App = nullptr;

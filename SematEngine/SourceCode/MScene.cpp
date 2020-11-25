@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Component.h"
 #include "GameObject.h"
+#include "Config.h"
 
 #include "Primitive.h"
 
@@ -12,6 +13,7 @@
 
 #include "CMesh.h"
 #include "CMaterial.h"
+#include "CTransform.h"
 
 #include "IMesh.h"
 #include "ITexture.h"
@@ -38,7 +40,7 @@ bool MScene::Start()
 	rootObject = CreateGameObject("rootObject","","",true);
 
 	//Loading Baker House
-	CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
+	//CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
 
 	//CreateGameObject("Street", "Assets/Mesh/street/Street environment_V01.FBX");
 
@@ -82,11 +84,6 @@ update_status MScene::Update(float dt)
 		(*item)->Update();
 	}
 	//LOG("after update GOs");
-	
-	if(App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
-	{
-		App->wantToSave = true;
-	}
 
 	return UPDATE_CONTINUE;
 }
@@ -94,6 +91,37 @@ update_status MScene::Update(float dt)
 update_status MScene::PostUpdate(float dt)
 {
 	return UPDATE_CONTINUE;
+}
+
+bool MScene::Save(ConfigNode* config)
+{
+	bool ret = true;
+	LOG("Saving scene");
+
+	JSON_Value* currentNode;
+
+	config->rootNode = json_value_init_object(); //root
+	config->node = json_value_get_object(config->rootNode);
+
+	ConfigArray gameObjectsJson = config->SetArray("GameObjects");
+
+	std::vector<GameObject*>::iterator item = gameObjects.begin();
+	for (; item != gameObjects.end(); item++)
+	{
+		ConfigNode newObject = gameObjectsJson.AddNode();
+
+		ConfigArray transform = newObject.SetArray("Transform");
+
+		transform.AddNumber((*item)->transform->GetPosition().x);
+		transform.AddNumber((*item)->transform->GetPosition().x);
+		transform.AddNumber((*item)->transform->GetPosition().x);
+	}
+
+	//Create scene meta file
+
+	config->Serialize(); //saves for now
+
+	return ret;
 }
 
 GameObject* MScene::CreateGameObject(char* name, char* meshPath,char* texturePath, bool isRoot)

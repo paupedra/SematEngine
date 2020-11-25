@@ -214,6 +214,8 @@ void MRenderer3D::OnResize(int width, int height)
 
 void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,bool drawVertexNormals, bool drawBoundingBox)
 {
+	
+
 	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
 	
 	glPushMatrix();
@@ -237,7 +239,7 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 		}
 		else
 		{
-
+			glColor4f(255, 100, 100, 255);
 		}
 	}
 

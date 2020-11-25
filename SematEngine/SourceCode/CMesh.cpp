@@ -39,7 +39,6 @@ void CMesh::Update()
 
 void CMesh::CleanUp()
 {
-	//delete path; //What is this
 	delete mesh;
 }
 
@@ -65,16 +64,10 @@ void CMesh::DrawMesh()
 	{
 		if (owner->GetComponent<CMaterial>()->IsEnabled()) //
 		{
-			
 			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), owner->GetComponent<CMaterial>()->GetTexture() ,drawVertexNormals);
 			return;
 		}
 	}
-
-	//if (!strcmp(owner->GetName(), "Line002") || !strcmp(owner->GetName(), "Object010")) //Temporal fix !strcmp(owner->GetName(),"Line002") ||
-	//{
-	//	return;
-	//}
 
 	App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(),nullptr, drawVertexNormals);
 }

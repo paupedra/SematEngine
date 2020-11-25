@@ -4,6 +4,7 @@
 
 class Primitive;
 class GameObject;
+class ConfigNode;
 
 class MScene : public Module
 {
@@ -14,9 +15,12 @@ public:
 	bool Start();
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
+	bool Save(ConfigNode* config) override;
 
 	GameObject* CreateGameObject(char* name,char* meshPath = "", char* texturePath = "", bool isRoot = false);
 	void SetSelectedObject(GameObject* object);
+
+	
 
 	bool CleanUp();
 

@@ -1,5 +1,8 @@
 #pragma once
 
+class ConfigNode;
+
+
 class Module
 {
 private :
@@ -42,7 +45,7 @@ public:
 		return true; 
 	}
 
-	virtual bool Save()
+	virtual bool Save(ConfigNode* config)
 	{
 		return true;
 	}

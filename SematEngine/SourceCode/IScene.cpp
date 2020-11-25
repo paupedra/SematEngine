@@ -48,34 +48,6 @@ void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* 
 {
 	GameObject* newGameObject;
 	
-	float3 position = { 0,0,0 };
-	float3 scale = { 0,0,0 };
-	Quat rotation = Quat::identity;
-
-	while (strstr(node->mName.C_Str(), "_$AssimpFbx$_") != nullptr)
-	{
-		aiVector3D _position = { 0,0,0 };
-		aiVector3D _scale = { 0,0,0 };
-		aiQuaternion _rotation;
-
-		node->mTransformation.Decompose(_scale, _rotation, _position);
-
-		position.x += _position.x;
-		position.y += _position.y;
-		position.z += _position.z;
-
-		scale.x += _scale.x;
-		scale.y += _scale.y;
-		scale.z += _scale.z;
-
-		rotation.x += _rotation.x;
-		rotation.y += _rotation.y;
-		rotation.z += _rotation.z;
-		rotation.w += _rotation.w;
-
-		node = node->mChildren[0];
-	}
-
 	if (node->mParent == NULL)
 	{
 		std::string name;
@@ -84,11 +56,10 @@ void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* 
 	}
 	else
 	{
-		aiString nodeName = node->mName;
-		newGameObject = new GameObject(parentObject, nodeName.C_Str());
+		newGameObject = new GameObject(parentObject, node->mName.C_Str());
 	}
 
-	LoadTransform(node, newGameObject);
+	node = LoadTransform(node, newGameObject);
 
 	if (node->mNumMeshes > 0)
 	{
@@ -97,31 +68,61 @@ void Importer::SceneImporter::ProcessAiNode(const aiScene* scene, const aiNode* 
 
 	LoadMaterial(scene, node, newGameObject, file);
 
-	//Add object
-	parentObject->children.push_back(newGameObject);
+	parentObject->children.push_back(newGameObject);  //Add object
 	App->scene->gameObjects.push_back(newGameObject);
 	
-
-	//Iterate children
-	for (int i = 0; i < node->mNumChildren; i++)
+	
+	for (int i = 0; i < node->mNumChildren; i++) //Process children
 	{
 		ProcessAiNode(scene,node->mChildren[i],newGameObject,file);
 	}
 }
 
-void Importer::SceneImporter::LoadTransform( const aiNode* node, GameObject* newGameObject)
+const aiNode* Importer::SceneImporter::LoadTransform(const aiNode* node, GameObject* newGameObject)
 {
-	aiVector3D position;
-	aiVector3D scale;
+	aiVector3D position = { 0,0,0 };
+	aiVector3D scale = { 0,0,0 };
 	aiQuaternion rotation;
 
-	node->mTransformation.Decompose(scale, rotation, position);
+	aiVector3D _position = { 0,0,0 };
+	aiVector3D _scale = { 0,0,0 };
+	aiQuaternion _rotation = { 0,0,0,0 };
 
-	float3 _position = {position.x, position.y, position.z};
-	float3 _scale = { scale.x, scale.y, scale.z };
-	Quat _rotation = { rotation.x,rotation.y,rotation.z,rotation.w };
+	while (strstr(node->mName.C_Str(), "_$AssimpFbx$_") != nullptr && node->mNumChildren == 1)
+	{
+		node->mTransformation.Decompose(_scale, _rotation, _position);
 
-	newGameObject->transform->SetLocalTransform(_position, _scale, _rotation);
+		position.x += _position.x;
+		position.y += _position.y;
+		position.z += _position.z;
+
+		scale.x *= _scale.x;
+		scale.y *= _scale.y;
+		scale.z *= _scale.z;
+
+		rotation = rotation * _rotation;
+
+		node = node->mChildren[0];
+
+		newGameObject->SetName(node->mName.C_Str());
+	}
+
+	node->mTransformation.Decompose(_scale, _rotation, _position);
+
+	scale.x += _scale.x;
+	scale.y += _scale.y;
+	scale.z += _scale.z;
+
+	rotation = rotation * _rotation;
+	position += _position;
+
+	float3 p = {position.x, position.y, position.z};
+	float3 s = { scale.x, scale.y, scale.z };
+	Quat r = { rotation.x,rotation.y,rotation.z,rotation.w };
+
+	newGameObject->transform->SetLocalTransform(p, s, r);
+
+	return node;
 }
 
 void Importer::SceneImporter::LoadMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject)

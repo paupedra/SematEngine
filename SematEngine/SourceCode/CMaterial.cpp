@@ -38,7 +38,6 @@ void CMaterial::Update()
 void CMaterial::CleanUp()
 {
 	delete material;
-	//delete path; //What is this
 }
 
 void CMaterial::DrawInspector()

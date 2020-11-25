@@ -29,10 +29,11 @@ public:
 
 	bool debug;
 	bool vsync;
-	bool wantToExit;
-	bool wantToSave;
 
 private:
+
+	bool wantToExit;
+	bool wantToSave;
 
 	Timer	frameTimer;
 	Timer	secondsTimer;
@@ -57,12 +58,15 @@ public:
 	void SetFrameCap(int cap);
 	void SwitchVsync();
 
+	void WantToSave();
 	void ExitApp();
 	void OpenLink(const char* link);
 	std::string ReadTxt(const char* path);
 	 
 	const char* GetTitle() const;
 	float GetFrameCap() const;
+
+	bool WantsToExit() const;
 
 private:
 

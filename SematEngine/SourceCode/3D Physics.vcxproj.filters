@@ -390,6 +390,9 @@
     <ClInclude Include="RMesh.h">
       <Filter>Source Code\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Source Code\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -604,6 +607,9 @@
     </ClCompile>
     <ClCompile Include="RMesh.cpp">
       <Filter>Source Code\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Source Code\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
