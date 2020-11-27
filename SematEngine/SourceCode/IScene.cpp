@@ -1,6 +1,9 @@
 #include "Application.h"
 #include "GameObject.h"
 #include "Resource.h"
+#include "Config.h"
+#include "Component.h"
+#include "Resource.h"
 
 #include "MFileSystem.h"
 #include "MScene.h"
@@ -12,6 +15,9 @@
 #include "IScene.h"
 #include "IMesh.h"
 #include "ITexture.h"
+
+#include "RMesh.h"
+#include "RMaterial.h"
 
 #include "Dependecies/Assimp/include/mesh.h"
 #include "Dependecies/Assimp/include/cimport.h"
@@ -174,4 +180,69 @@ void Importer::SceneImporter::LoadMaterial(const aiScene* scene, const aiNode* n
 		}
 
 	}
+}
+
+uint64 Importer::SceneImporter::SaveScene(ConfigNode* config, std::vector<GameObject*> gameObjects)
+{
+	JSON_Value* currentNode;
+	config->rootNode = json_value_init_object(); //root
+	config->node = json_value_get_object(config->rootNode);
+
+	//gameObjects -----------------------
+	ConfigArray gameObjectsJson = config->InitArray("GameObjects");
+
+	std::vector<GameObject*>::iterator item = gameObjects.begin();
+	for (; item != gameObjects.end(); item++)
+	{
+		ConfigNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
+		ConfigArray transform = newObject.InitArray("Transform"); //Transform array
+
+		transform.AddNumber((*item)->transform->GetPosition().x);
+		transform.AddNumber((*item)->transform->GetPosition().x);
+		transform.AddNumber((*item)->transform->GetPosition().x);
+
+		//Components -----------------------
+		ConfigArray components = newObject.InitArray("Components"); //Create array in GO node
+		std::vector<Component*> comps = (*item)->GetComponents();
+		for (int i = 0; i < comps.size(); i++)
+		{
+			ConfigNode newComponent = components.AddNode(); //Add Component object
+
+			newComponent.AddNumber("Type", (double)comps[i]->GetType());
+			SaveComponent(&newComponent,comps[i]);
+		}
+	}
+
+	return 5467;
+}
+
+void Importer::SceneImporter::SaveComponent(ConfigNode* node, Component* component)
+{
+	CMesh* cMesh;
+	CMaterial* cMaterial;
+
+	switch (component->GetType())
+	{
+		case Component::ComponentType::TRANSFORM:
+
+
+			break;
+
+		case Component::ComponentType::MESH:
+			
+			cMesh = (CMesh*)component;
+
+			node->AddNumber("UID", cMesh->GetMesh()->GetUID());
+
+			break;
+
+		case Component::ComponentType::MATERIAL:
+
+			cMaterial = (CMaterial*)component;
+
+			node->AddNumber("UID", cMaterial->GetTexture()->GetUID());
+
+			break;
+	}
+	
 }

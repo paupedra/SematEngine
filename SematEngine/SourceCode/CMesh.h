@@ -19,6 +19,7 @@ public:
 	static inline ComponentType GetType() { return ComponentType::MESH; };
 
 	char* GetPath()const;
+	RMesh* GetMesh()const;
 
 private:
 

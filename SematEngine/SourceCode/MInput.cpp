@@ -11,6 +11,7 @@
 #include "CMaterial.h"
 
 #include "IMesh.h"
+#include "IScene.h"
 #include "ITexture.h"
 
 #include "Dependecies/imgui/imgui.h"
@@ -145,7 +146,7 @@ update_status MInput::PreUpdate(float dt)
 				if (strstr(e.drop.file, ".fbx") != nullptr || strstr(e.drop.file, ".FBX") != nullptr)
 				{
 					LOG("Loading .FBX file");
-					App->scene->CreateGameObject("Imported Game Object", e.drop.file, "");
+					Importer::SceneImporter::Import(e.drop.file);
 				}
 
 				if (strstr(e.drop.file, ".png") != nullptr || strstr(e.drop.file, ".dds") != nullptr || strstr(e.drop.file, ".PNG") != nullptr || strstr(e.drop.file, ".DDS") != nullptr)

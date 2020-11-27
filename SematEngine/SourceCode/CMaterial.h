@@ -15,7 +15,7 @@ public:
 	void CleanUp() override;
 	void DrawInspector() override;
 
-	static inline ComponentType GetType() { return ComponentType::TEXTURE; };
+	static inline ComponentType GetType() { return ComponentType::MATERIAL; };
 
 	const char* GetPath()const;
 	RMaterial* GetTexture() const;

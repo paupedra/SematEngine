@@ -15,12 +15,12 @@
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/mmgr/mmgr.h"
 
-CMaterial::CMaterial(GameObject* owner) : Component(ComponentType::TEXTURE, owner)
+CMaterial::CMaterial(GameObject* owner) : Component(ComponentType::MATERIAL, owner)
 {
 
 }
 
-CMaterial::CMaterial(GameObject* owner, const char* path, RMaterial* material = nullptr) : Component(ComponentType::TEXTURE, owner), material(material), path(path)
+CMaterial::CMaterial(GameObject* owner, const char* path, RMaterial* material = nullptr) : Component(ComponentType::MATERIAL, owner), material(material), path(path)
 {
 
 }
@@ -42,7 +42,7 @@ void CMaterial::CleanUp()
 
 void CMaterial::DrawInspector()
 {
-	if (ImGui::CollapsingHeader("Texture"))
+	if (ImGui::CollapsingHeader("Material"))
 	{
 		ImGui::Text("Path: %s", path);
 		ImGui::Text("Texture height: %d", material->GetHeight());

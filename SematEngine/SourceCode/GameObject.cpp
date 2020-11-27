@@ -72,15 +72,15 @@ Component* GameObject::AddComponent(Component* component)
 			
 			break;
 
-		case Component::ComponentType::TEXTURE:
+		case Component::ComponentType::MATERIAL:
 
-			if (!HasComponentType(Component::ComponentType::TEXTURE))
+			if (!HasComponentType(Component::ComponentType::MATERIAL))
 			{
 				components.push_back(component);
 			}
 			else
 			{
-				DeleteComponentType(Component::ComponentType::TEXTURE);
+				DeleteComponentType(Component::ComponentType::MATERIAL);
 				components.push_back(component);
 			}
 

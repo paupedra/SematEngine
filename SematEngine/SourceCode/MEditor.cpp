@@ -15,6 +15,8 @@
 #include "WHierarchy.h"
 #include "WInspector.h"
 
+#include "IScene.h"
+
 #include "Dependecies/Glew/include/glew.h" // extension lib
 #include "Dependecies/SDL/include/SDL_opengl.h"
 #include <gl/GL.h>
@@ -131,7 +133,7 @@ void MEditor::DrawMainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save")) { App->WantToSave(); }
+			if (ImGui::MenuItem("Save")) { App->scene->SaveScene(); }
 			if (ImGui::MenuItem("Exit")) { App->ExitApp(); }
 
 			ImGui::EndMenu();
@@ -147,12 +149,12 @@ void MEditor::DrawMainMenuBar()
 		}
 		if (ImGui::BeginMenu("Primitives"))
 		{
-			if (ImGui::MenuItem("Cube", " ", console->active)) { App->scene->CreateGameObject("Cube Primitive", "Assets/Mesh/Primitives/Cube.FBX", ""); }
-			if (ImGui::MenuItem("Cylinder", " ", console->active)) { App->scene->CreateGameObject("Cylinder Primitive", "Assets/Mesh/Primitives/Cylinder.FBX", ""); }
-			if (ImGui::MenuItem("Sphere", " ", console->active)) { App->scene->CreateGameObject("Sphere Primitive", "Assets/Mesh/Primitives/Sphere.FBX", ""); }
-			if (ImGui::MenuItem("Plane", " ", console->active)) { App->scene->CreateGameObject("Plane Primitive", "Assets/Mesh/Primitives/Plane.FBX", ""); }
-			if (ImGui::MenuItem("Pyramid", " ", console->active)) { App->scene->CreateGameObject("Pyramid Primitive", "Assets/Mesh/Primitives/Pyramid.FBX", ""); }
-			if (ImGui::MenuItem("Teapot", " ", console->active)) { App->scene->CreateGameObject("Teapot Primitive", "Assets/Mesh/Primitives/Teapot.FBX", ""); }
+			if (ImGui::MenuItem("Cube", " ", console->active)) { Importer::SceneImporter::Import( "Assets/Mesh/Primitives/Cube.FBX"); }
+			if (ImGui::MenuItem("Cylinder", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Cylinder.FBX"); }
+			if (ImGui::MenuItem("Sphere", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Sphere.FBX"); }
+			if (ImGui::MenuItem("Plane", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Plane.FBX"); }
+			if (ImGui::MenuItem("Pyramid", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Pyramid.FBX"); }
+			if (ImGui::MenuItem("Teapot", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Teapot.FBX"); }
 
 			ImGui::EndMenu();
 		}

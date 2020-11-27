@@ -76,3 +76,8 @@ char* CMesh::GetPath()const
 {
 	return path;
 }
+
+RMesh* CMesh::GetMesh()const
+{
+	return mesh;
+}

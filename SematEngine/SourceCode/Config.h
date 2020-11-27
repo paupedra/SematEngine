@@ -10,9 +10,12 @@ public:
 	ConfigNode();
 	ConfigNode(JSON_Object* node);
 
-	void Serialize();
+	uint Serialize(char** buffer);
 
-	ConfigArray SetArray(const char* name);
+	void AddNumber(const char* name, double number);
+	void AddString(const char* name, const char* string);
+
+	ConfigArray InitArray(const char* name);
 
 public:
 

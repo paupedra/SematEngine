@@ -10,6 +10,7 @@
 #include "MCamera3D.h"
 #include "MInput.h"
 #include "MRenderer3D.h"
+#include "MFileSystem.h"
 
 #include "CMesh.h"
 #include "CMaterial.h"
@@ -98,30 +99,25 @@ bool MScene::Save(ConfigNode* config)
 	bool ret = true;
 	LOG("Saving scene");
 
-	JSON_Value* currentNode;
-
-	config->rootNode = json_value_init_object(); //root
-	config->node = json_value_get_object(config->rootNode);
-
-	ConfigArray gameObjectsJson = config->SetArray("GameObjects");
-
-	std::vector<GameObject*>::iterator item = gameObjects.begin();
-	for (; item != gameObjects.end(); item++)
-	{
-		ConfigNode newObject = gameObjectsJson.AddNode();
-
-		ConfigArray transform = newObject.SetArray("Transform");
-
-		transform.AddNumber((*item)->transform->GetPosition().x);
-		transform.AddNumber((*item)->transform->GetPosition().x);
-		transform.AddNumber((*item)->transform->GetPosition().x);
-	}
-
-	//Create scene meta file
-
-	config->Serialize(); //saves for now
-
+	
+	
 	return ret;
+}
+
+void MScene::SaveScene()
+{
+	ConfigNode* sceneNode;
+
+	uint64 id = Importer::SceneImporter::SaveScene(sceneNode, gameObjects);
+
+	std::string path = "Library/Scenes/";
+	std::string idString = std::to_string(id);
+	path += idString + ".scene";
+
+	//Create and save scene meta file
+	char* buffer;
+	uint size = sceneNode->Serialize(&buffer); //Saves for now
+	App->fileSystem->Save(path.c_str(), buffer, size);
 }
 
 GameObject* MScene::CreateGameObject(char* name, char* meshPath,char* texturePath, bool isRoot)

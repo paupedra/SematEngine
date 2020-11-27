@@ -16,6 +16,7 @@ public:
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
 	bool Save(ConfigNode* config) override;
+	void SaveScene();
 
 	GameObject* CreateGameObject(char* name,char* meshPath = "", char* texturePath = "", bool isRoot = false);
 	void SetSelectedObject(GameObject* object);

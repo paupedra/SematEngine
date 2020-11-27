@@ -10,7 +10,7 @@ public:
 	{
 		TRANSFORM,
 		MESH,
-		TEXTURE,
+		MATERIAL,
 		EMPTY
 	};
 
