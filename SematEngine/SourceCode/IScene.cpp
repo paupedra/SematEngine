@@ -29,6 +29,8 @@
 
 void Importer::SceneImporter::Import(const char* file) //Load buffer with .fbx scene
 {
+	//Check if we have this .fbx in library?
+
 	char* buffer;
 	uint byteSize = App->fileSystem->Load(file, &buffer);
 
@@ -140,6 +142,8 @@ void Importer::SceneImporter::LoadMeshes(const aiScene* scene, const aiNode* nod
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		newGameObject->AddComponent(new CMesh(newGameObject,"",meshes[i]));
+
+		Importer::MeshImporter::Save(*meshes[i],node->mName.C_Str()); //Saving by name .mesh file
 	}
 	
 }
@@ -148,14 +152,15 @@ void Importer::SceneImporter::LoadMaterial(const aiScene* scene, const aiNode* n
 {
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
-		RMaterial* texture;
+		RMaterial* material = new RMaterial();
 		uint index = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
 		aiString path;
 
 		aiColor3D color;
-		scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+		if (scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+		{
 
-		
+		}
 
 		if (index >= 0)
 		{
@@ -169,9 +174,11 @@ void Importer::SceneImporter::LoadMaterial(const aiScene* scene, const aiNode* n
 
 				LOG("Adding texture to %s", newGameObject->GetName());
 
-				texture = Importer::TextureImp::Import(fileName.c_str());
+				material->SetTexture(Importer::TextureImp::Import(fileName.c_str()));
 
-				newGameObject->AddComponent(new CMaterial(newGameObject, fileName.c_str(), texture));
+				material->SetColor(color.r, color.g, color.b);
+
+				newGameObject->AddComponent(new CMaterial(newGameObject, fileName.c_str(), material));
 			}
 			else
 			{
@@ -195,11 +202,11 @@ uint64 Importer::SceneImporter::SaveScene(ConfigNode* config, std::vector<GameOb
 	for (; item != gameObjects.end(); item++)
 	{
 		ConfigNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
-		ConfigArray transform = newObject.InitArray("Transform"); //Transform array
+		//ConfigArray transform = newObject.InitArray("Transform"); //Transform array
 
-		transform.AddNumber((*item)->transform->GetPosition().x);
-		transform.AddNumber((*item)->transform->GetPosition().x);
-		transform.AddNumber((*item)->transform->GetPosition().x);
+		//transform.AddNumber((*item)->transform->GetPosition().x);
+		//transform.AddNumber((*item)->transform->GetPosition().x);
+		//transform.AddNumber((*item)->transform->GetPosition().x);
 
 		//Components -----------------------
 		ConfigArray components = newObject.InitArray("Components"); //Create array in GO node

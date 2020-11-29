@@ -1,8 +1,12 @@
 #include "Globals.h"
 #include "Resource.h"
+#include "Application.h"
+
+#include "MFileSystem.h"
 
 #include "ITexture.h"
 
+#include "RTexture.h"
 #include "RMaterial.h"
 
 #include "Dependecies/Devil/Include/ilut.h"
@@ -24,15 +28,18 @@ void Importer::TextureImp::InitDevil()
 	ilutRenderer(ILUT_OPENGL);
 }
 
-RMaterial* Importer::TextureImp::Import(const char* path)
+RTexture* Importer::TextureImp::Import(const char* path)
 {
-	RMaterial* newMaterial = new RMaterial();
+	char* buffer;
+	uint size = App->fileSystem->Load(path, &buffer);
+	
+	RTexture* newTexture = new RTexture();
 	uint i;
 	
 	ilGenImages(1,&i);
 	ilBindImage(i);
 
-	if (ilLoadImage(path))
+	if (ilLoadL(IL_TYPE_UNKNOWN,buffer,size))
 	{
 		ILinfo ImgInfo;
 		iluGetImageInfo(&ImgInfo);
@@ -42,10 +49,10 @@ RMaterial* Importer::TextureImp::Import(const char* path)
 
 		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
 		{
-			newMaterial->SetId(CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
-			newMaterial->SetHeight(ilGetInteger(IL_IMAGE_HEIGHT));
-			newMaterial->SetWidth(ilGetInteger(IL_IMAGE_WIDTH));
-			newMaterial->SetPath(path);
+			newTexture->SetId(Importer::TextureImp::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
+			newTexture->SetHeight(ilGetInteger(IL_IMAGE_HEIGHT));
+			newTexture->SetWidth(ilGetInteger(IL_IMAGE_WIDTH));
+			newTexture->SetPath(path);
 
 			LOG("Successfully loaded Texture from: %s", path);
 		}
@@ -59,7 +66,7 @@ RMaterial* Importer::TextureImp::Import(const char* path)
 		LOG("(ERROR) Error loading Image %s", path);
 	}
 
-	return newMaterial;
+	return newTexture;
 }
 
 uint Importer::TextureImp::CreateTexture(const void* data,uint width, uint height, uint format)
@@ -87,6 +94,24 @@ uint64 Importer::TextureImp::Save(RMaterial* material)
 {
 	uint64 ret = 0;
 
+	ILuint size;
+	ILubyte* data;
+
+	char* fileBuffer;
+
+	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);// To pick a specific DXT compression use
+	size = ilSaveL(IL_DDS, nullptr, 0); // Get the size of the data buffer
+	if (size > 0) {
+		data = new ILubyte[size]; // allocate data buffer
+		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
+			fileBuffer = (char*)data;
+	}
+
+	std::string filePath = "Library/Texture";
+
+	//std::string 
+
+	//App->fileSystem->Save();
 
 	return ret;
 }

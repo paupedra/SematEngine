@@ -1,10 +1,13 @@
 #ifndef __ModuleResourceManager_H__
 #define __ModuleResourceManager_H__
 
+#include <map>
 #include "Module.h"
 #include "Dependecies/SDL/include/SDL.h"
 
 class Application;
+class Resource;
+enum class ResourceType;
 
 class MResourceManager : public Module
 {
@@ -18,9 +21,21 @@ public:
 	bool Init();
 	bool CleanUp();
 
+	uint Find(const char* file_in_assets) const;
+	uint ImportFile(const char* newFileInAssets);
+	uint GenerateNewUID();
 
+	const Resource* RequestResource(uint uid) const;
+	Resource* RequestResource(uint uid);
+	void ReleaseResource(uint uid);
 
-public:
+private:
+
+	Resource* CreateNewResource(const char* assetsFile, ResourceType type);
+
+private:
+	std::map<uint, Resource*> resources;
+
 
 };
 

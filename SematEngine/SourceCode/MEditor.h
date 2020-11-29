@@ -9,6 +9,7 @@ class WConfiguration;
 class WAbout;
 class WHierarchy;
 class WInspector;
+class WAssets;
 struct HardwareInfo;
 class ConfigNode;
 
@@ -47,4 +48,5 @@ public:
 	WAbout* about = nullptr;
 	WHierarchy* hierarchy = nullptr;
 	WInspector* inspector = nullptr;
+	WAssets* assets = nullptr;
 };

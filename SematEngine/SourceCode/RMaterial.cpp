@@ -1,9 +1,13 @@
-#include "Resource.h"
+//#include "Resource.h"
+#include "Color.h"
+
 #include "RMaterial.h"
+#include "RTexture.h"
 
 RMaterial::RMaterial()
 {
-
+	texture = nullptr;
+	color = nullptr;
 }
 
 RMaterial::~RMaterial()
@@ -13,35 +17,50 @@ RMaterial::~RMaterial()
 
 void RMaterial::SetId(uint id)
 {
-	this->id = id;
+	texture->id = id;
 }
 
 void RMaterial::SetHeight(uint height)
 {
-	this->height = height;
+	texture->height = height;
 }
 
 void RMaterial::SetWidth(uint width)
 {
-	this->width = width;
+	texture->width = width;
 }
 
 void RMaterial::SetPath(const char* path)
 {
-	this->path = path;
+	texture->path = path;
+}
+
+void RMaterial::SetTexture(RTexture* texture)
+{
+	this->texture = texture;
 }
 
 uint RMaterial::GetId() const
 {
-	return id;
+	return texture->id;
 }
 
 uint RMaterial::GetHeight() const
 {
-	return height;
+	return texture->height;
 }
 
 uint RMaterial::GetWidth() const
 {
-	return width;
+	return texture->width;
+}
+
+RTexture* RMaterial::GetTexture() const
+{
+	return texture;
+}
+
+void RMaterial::SetColor(float r, float g, float b, float a)
+{
+	color->Set(r,g,b,a);
 }

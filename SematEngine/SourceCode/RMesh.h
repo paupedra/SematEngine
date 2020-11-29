@@ -21,8 +21,8 @@ public:
 	};
 
 public:
-	uint buffersId[RMesh::maxBuffers];
-	uint buffersSize[RMesh::maxBuffers];
+	uint buffersId[RMesh::maxBuffers] = {};
+	uint buffersSize[RMesh::maxBuffers] = {};
 
 	uint* indices = nullptr;
 	float* vertices = nullptr;

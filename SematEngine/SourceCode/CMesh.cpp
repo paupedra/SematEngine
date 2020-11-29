@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Resource.h"
+#include "Config.h"
 
 #include "MRenderer3D.h"
 
@@ -70,6 +71,11 @@ void CMesh::DrawMesh()
 	}
 
 	App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(),nullptr, drawVertexNormals);
+}
+
+void CMesh::OnSave(ConfigNode* node)
+{
+	//save id
 }
 
 char* CMesh::GetPath()const

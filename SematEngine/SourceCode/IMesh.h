@@ -16,7 +16,7 @@ namespace Importer
 
 		void LoadNodeMesh(const aiScene* scene, const aiNode* node, std::vector<RMesh*> &meshes);
 
-		uint64 Save(const RMesh mesh);	//Store mesh info into custom format file
+		uint64 Save(const RMesh mesh,const char* name);	//Store mesh info into custom format file
 
 		void Load(const char* fileBuffer, RMesh* mesh); //Load buffer from custom format file and store into mesh
 

@@ -5,6 +5,7 @@
 #include "glmath.h"
 
 class Component;
+class ConfigNode;
 
 class CTransform : public Component
 {
@@ -15,6 +16,8 @@ public:
 	void Update() override;
 	void CleanUp() override;
 	void DrawInspector() override;
+	
+	void OnSave(ConfigNode* node);
 
 	float4x4 GetTransform() const;
 	float3 GetPosition()const;

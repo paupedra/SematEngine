@@ -3,6 +3,7 @@
 
 class Component;
 class RMesh;
+class ConfigNode;
 
 class CMesh : public Component
 {
@@ -15,6 +16,8 @@ public:
 	void CleanUp() override;
 	void DrawInspector() override;
 	void DrawMesh();
+
+	void OnSave(ConfigNode* node);
 
 	static inline ComponentType GetType() { return ComponentType::MESH; };
 

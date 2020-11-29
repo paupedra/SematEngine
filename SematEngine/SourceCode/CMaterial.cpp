@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Resource.h"
+#include "Config.h"
 
 #include "MRenderer3D.h"
 
@@ -11,6 +12,7 @@
 #include "ITexture.h"
 
 #include "RMaterial.h"
+#include "RTexture.h"
 
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/mmgr/mmgr.h"
@@ -49,6 +51,11 @@ void CMaterial::DrawInspector()
 		ImGui::Text("Texture width: %d", material->GetWidth());
 		if (ImGui::Checkbox("DrawTexture", &drawTexture)) {}
 	}
+}
+
+void CMaterial::OnSave(ConfigNode* node)
+{
+
 }
 
 const char* CMaterial::GetPath()const

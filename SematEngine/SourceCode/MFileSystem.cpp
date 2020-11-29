@@ -77,6 +77,7 @@ void MFileSystem::CreateLibraryDirectories()
 	CreateDir(TEXTURES_PATH);
 	CreateDir(MATERIALS_PATH);
 	CreateDir(SCENES_PATH);
+	CreateDir("Library/Models/");
 }
 
 // Add a new zip file or folder

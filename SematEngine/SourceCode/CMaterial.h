@@ -3,6 +3,7 @@
 
 class Component;
 class RMaterial;
+class ConfigNode;
 
 class CMaterial : public Component
 {
@@ -15,6 +16,8 @@ public:
 	void CleanUp() override;
 	void DrawInspector() override;
 
+	void OnSave(ConfigNode* node);
+
 	static inline ComponentType GetType() { return ComponentType::MATERIAL; };
 
 	const char* GetPath()const;
@@ -22,6 +25,7 @@ public:
 
 	bool IsEnabled()const ;
 	void SwitchEnabledTexture();
+
 private:
 
 	RMaterial* material = nullptr;

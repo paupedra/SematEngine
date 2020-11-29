@@ -45,7 +45,7 @@ bool MScene::Start()
 
 	//CreateGameObject("Street", "Assets/Mesh/street/Street environment_V01.FBX");
 
-	Importer::SceneImporter::Import("Assets/Mesh/street/Street environment_V01.FBX");
+	Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
 	//Importer::SceneImporter::Import("Assets/Mesh/BakerHouse/BakerHouse.fbx");
 	
 	return ret;
@@ -74,6 +74,8 @@ update_status MScene::Update(float dt)
 	//Plane p(vec3(0, 1, 0));
 	//p.axis = true;
 	//p.Render();
+
+	//ImGui::ShowDemoWindow();
 
 	App->renderer3D->DrawScenePlane(200);
 
@@ -106,9 +108,9 @@ bool MScene::Save(ConfigNode* config)
 
 void MScene::SaveScene()
 {
-	ConfigNode* sceneNode;
+	ConfigNode sceneNode;
 
-	uint64 id = Importer::SceneImporter::SaveScene(sceneNode, gameObjects);
+	uint64 id = Importer::SceneImporter::SaveScene(&sceneNode, gameObjects);
 
 	std::string path = "Library/Scenes/";
 	std::string idString = std::to_string(id);
@@ -116,7 +118,7 @@ void MScene::SaveScene()
 
 	//Create and save scene meta file
 	char* buffer;
-	uint size = sceneNode->Serialize(&buffer); //Saves for now
+	uint size = sceneNode.Serialize(&buffer); //Saves for now
 	App->fileSystem->Save(path.c_str(), buffer, size);
 }
 

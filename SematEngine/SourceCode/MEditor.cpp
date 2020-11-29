@@ -14,6 +14,7 @@
 #include "WAbout.h"
 #include "WHierarchy.h"
 #include "WInspector.h"
+#include "WAssets.h"
 
 #include "IScene.h"
 
@@ -36,12 +37,14 @@ MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 	about = new WAbout(false);
 	hierarchy = new WHierarchy(true);
 	inspector = new WInspector(true);
+	assets = new WAssets(true);
 
 	AddWindow(configuration);
 	AddWindow(console);
 	AddWindow(about);
 	AddWindow(hierarchy);
 	AddWindow(inspector);
+	AddWindow(assets);
 }
 
 MEditor::~MEditor()

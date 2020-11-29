@@ -165,14 +165,12 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
             }
         }
 
-
          App->renderer3D->GenerateBuffers(newMesh); //Crashes
          meshes.push_back(newMesh);
-
     }
 }
 
-uint64 Importer::MeshImporter::Save(const RMesh mesh)
+uint64 Importer::MeshImporter::Save(const RMesh mesh, const char* name)
 {
     Timer* timeSaving = new Timer();
 
@@ -208,20 +206,17 @@ uint64 Importer::MeshImporter::Save(const RMesh mesh)
     memcpy(cursor, mesh.textureCoords, bytes);
     cursor += bytes;
 
-    //Write buffer into file
-    int id = rand() % 50;
-    char tmp[5];
-    sprintf(tmp, "%d", id);
-    std::string fileName = "Library/Meshes/";
-    fileName += tmp;
 
-    LOG("Saved mesh in id: %s", fileName.c_str());
+    std::string fileName = "Library/Meshes/";
+    fileName += name;
+
+    LOG("Saved mesh in file: %s", fileName.c_str());
 
     App->fileSystem->Save(fileName.c_str(), fileBuffer, size);
 
     LOG("Time spent saving Mesh: %d ms", timeSaving->Read());
 
-    return id;
+    return 0;
 }
 
 void Importer::MeshImporter::Load(const char* fileBuffer, RMesh* mesh)

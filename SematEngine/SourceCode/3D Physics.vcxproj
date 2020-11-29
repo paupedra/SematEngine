@@ -177,7 +177,9 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RMaterial.h" />
     <ClInclude Include="RMesh.h" />
+    <ClInclude Include="RTexture.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="WAssets.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WAbout.h" />
     <ClInclude Include="WConfiguration.h" />
@@ -251,7 +253,9 @@
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="RMaterial.cpp" />
     <ClCompile Include="RMesh.cpp" />
+    <ClCompile Include="RTexture.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WAssets.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WAbout.cpp" />
     <ClCompile Include="WConfiguration.cpp" />

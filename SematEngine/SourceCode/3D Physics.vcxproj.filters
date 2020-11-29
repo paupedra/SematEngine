@@ -372,9 +372,6 @@
     <ClInclude Include="WAbout.h">
       <Filter>Source Code\Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="ITexture.h">
-      <Filter>Source Code\Importer</Filter>
-    </ClInclude>
     <ClInclude Include="IScene.h">
       <Filter>Source Code\Importer</Filter>
     </ClInclude>
@@ -392,6 +389,15 @@
     </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>Source Code\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="WAssets.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="RTexture.h">
+      <Filter>Source Code\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ITexture.h">
+      <Filter>Source Code\Importer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -610,6 +616,12 @@
     </ClCompile>
     <ClCompile Include="Config.cpp">
       <Filter>Source Code\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="WAssets.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="RTexture.cpp">
+      <Filter>Source Code\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

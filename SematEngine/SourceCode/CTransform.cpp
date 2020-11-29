@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "GameObject.h"
 #include "Component.h"
+#include "Config.h"
 
 #include "CTransform.h"
 
@@ -60,6 +61,25 @@ void  CTransform::DrawInspector()
 		if (ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags)) { UpdateLocalTransform(); };
 		if (ImGui::InputFloat3("Rotation", (float*)&eulerRotationUi, "%.2f",flags)) { SetEulerRotation(eulerRotationUi); }
 	}
+}
+
+void CTransform::OnSave(ConfigNode* node)
+{
+	ConfigArray _position = node->InitArray("Position");
+	_position.AddNumber(position.x);
+	_position.AddNumber(position.y);
+	_position.AddNumber(position.z);
+
+	ConfigArray _scale = node->InitArray("Scale");
+	_scale.AddNumber(scale.x);
+	_scale.AddNumber(scale.y);
+	_scale.AddNumber(scale.z);
+
+	ConfigArray _rotation = node->InitArray("Rotation");
+	_rotation.AddNumber(rotation.x);
+	_rotation.AddNumber(rotation.y);
+	_rotation.AddNumber(rotation.z);
+	_rotation.AddNumber(rotation.w);
 }
 
 void CTransform::SetEulerRotation(float3 euler_angles)
