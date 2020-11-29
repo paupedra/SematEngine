@@ -15,7 +15,6 @@ public:
 
 	void Update() override;
 	void CleanUp() override;
-	void DrawInspector() override;
 	
 	void OnSave(ConfigNode* node);
 
@@ -23,6 +22,8 @@ public:
 	float3 GetPosition()const;
 	float3 GetScale()const;
 	float4x4 GetGlobalTransform()const;
+	float3 GetEulerRotation()const;
+	float3 GetEulerRotationUI()const;
 
 	static inline ComponentType GetType() { return ComponentType::TRANSFORM; };
 
@@ -32,7 +33,8 @@ public:
 	void SetLocalTransform(float3 position, float3 scale, Quat rotation);
 
 	void UpdateLocalTransform();
-	void SetEulerRotation(float3 euler_angles);
+	void SetEulerRotation(float3 eulerAngles);
+	void SetEulerRotationUI(float3 eulerAngles);
 	void UpdateTRS();
 
 	void RecalculateEuler();

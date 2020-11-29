@@ -21,7 +21,7 @@ public:
 	GameObject* CreateGameObject(char* name,char* meshPath = "", char* texturePath = "", bool isRoot = false);
 	void SetSelectedObject(GameObject* object);
 
-	
+	//void DeleteGameObject();
 
 	bool CleanUp();
 

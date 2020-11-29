@@ -51,19 +51,19 @@ void GameObject::CleanUp()
 
 Component* GameObject::AddComponent(Component* component)
 {
-	Component::ComponentType type = component->GetType();
+	ComponentType type = component->GetType();
 	
 	switch (type)
 	{
-	case Component::ComponentType::TRANSFORM:
+	case ComponentType::TRANSFORM:
 
 			components.push_back(component);
 			transform = (CTransform*)component;
 			break;
 
-		case Component::ComponentType::MESH:
+		case ComponentType::MESH:
 			
-			if (!HasComponentType(Component::ComponentType::MESH))
+			if (!HasComponentType(ComponentType::MESH))
 			{
 				components.push_back(component);
 			}
@@ -72,15 +72,15 @@ Component* GameObject::AddComponent(Component* component)
 			
 			break;
 
-		case Component::ComponentType::MATERIAL:
+		case ComponentType::MATERIAL:
 
-			if (!HasComponentType(Component::ComponentType::MATERIAL))
+			if (!HasComponentType(ComponentType::MATERIAL))
 			{
 				components.push_back(component);
 			}
 			else
 			{
-				DeleteComponentType(Component::ComponentType::MATERIAL);
+				DeleteComponentType(ComponentType::MATERIAL);
 				components.push_back(component);
 			}
 
@@ -90,7 +90,7 @@ Component* GameObject::AddComponent(Component* component)
 	return component;
 }
 
-void GameObject::DeleteComponentType(Component::ComponentType type)
+void GameObject::DeleteComponentType(ComponentType type)
 {
 	std::vector<Component*>::iterator item = components.begin();
 	for (; item != components.end(); ++item)
@@ -104,7 +104,7 @@ void GameObject::DeleteComponentType(Component::ComponentType type)
 	}
 }
 
-bool GameObject::HasComponentType(Component::ComponentType type)
+bool GameObject::HasComponentType(ComponentType type)
 {
 	bool ret = false;
 	std::vector<Component*>::iterator item = components.begin();

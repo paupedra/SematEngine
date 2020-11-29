@@ -165,6 +165,10 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
             }
         }
 
+        //generate bounding bos
+        newMesh->aabb.SetNegativeInfinity();
+        newMesh->aabb.Enclose((float3*)newMesh->vertices, newMesh->buffersSize[RMesh::vertex]);
+
          App->renderer3D->GenerateBuffers(newMesh); //Crashes
          meshes.push_back(newMesh);
     }

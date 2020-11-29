@@ -271,16 +271,16 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 	if (drawVertexNormals)
 		DrawVertexNormals(mesh,transform);
 	if (drawBoundingBox)
-		DrawBoundingBox(mesh);
+		DrawBoundingBox(mesh,transform);
 }
 
 void MRenderer3D::DrawVertexNormals(RMesh* mesh,float4x4 transform)
 {
-	//Draw Normals
-	glBegin(GL_LINES);
-
 	glPushMatrix();
 	glMultMatrixf((float*)&transform.Transposed());
+
+	//Draw Normals
+	glBegin(GL_LINES);
 
 	uint loops = mesh->buffersSize[RMesh::vertex];
 	for (uint i = 0; i < loops; i += 3)
@@ -290,8 +290,8 @@ void MRenderer3D::DrawVertexNormals(RMesh* mesh,float4x4 transform)
 		glVertex3f(mesh->vertices[i] + mesh->normals[i], mesh->vertices[i + 1] + mesh->normals[i + 1], mesh->vertices[i + 2] + mesh->normals[i + 2]);
 	}
 
-	glPopMatrix();
 	glEnd();
+	glPopMatrix();
 }
 
 void MRenderer3D::GenerateBuffers(RMesh* newMesh)
@@ -345,11 +345,17 @@ void MRenderer3D::CreateChekerTexture()
 
 }
 
-void MRenderer3D::DrawBoundingBox(RMesh* mesh)
+void MRenderer3D::DrawBoundingBox(RMesh* mesh,float4x4 transform)
 {
 	float3 corners[8];
+	glColor4f(255, 255, 0, 255);
 	mesh->aabb.GetCornerPoints(corners);
+
+	glPushMatrix();
+	glMultMatrixf((float*)&transform.Transposed());
+
 	glBegin(GL_LINES);
+	
 		//Between-planes right
 	glVertex3fv((GLfloat*)&corners[1]);
 	glVertex3fv((GLfloat*)&corners[5]);
@@ -387,6 +393,9 @@ void MRenderer3D::DrawBoundingBox(RMesh* mesh)
 	glVertex3fv((GLfloat*)&corners[6]);
 
 	glEnd();
+
+	glPopMatrix();
+	glColor4f(255, 255, 255, 255);
 }
 
 void MRenderer3D::DrawScenePlane(int size)

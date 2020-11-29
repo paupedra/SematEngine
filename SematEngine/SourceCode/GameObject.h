@@ -30,14 +30,14 @@ public:
 	void SetName(const char* name);
 	std::vector<Component*> GetComponents()const;
 
-	void DeleteComponentType(Component::ComponentType type);
-	bool HasComponentType(Component::ComponentType type);
+	void DeleteComponentType(ComponentType type);
+	bool HasComponentType(ComponentType type);
 	void UpdatedTransform();
 
 	template<typename CTemplate>
 	const CTemplate* GetComponent() const
 	{
-		Component::ComponentType type = CTemplate::GetType();
+		ComponentType type = CTemplate::GetType();
 		for (int i = 0; i < components.size(); i++)
 		{
 			if (type == components[i]->GetType())

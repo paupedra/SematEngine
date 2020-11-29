@@ -20,6 +20,8 @@
 #include "ITexture.h"
 #include "IScene.h"
 
+#include "RMaterial.h"
+
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -150,7 +152,7 @@ GameObject* MScene::CreateGameObject(char* name, char* meshPath,char* texturePat
 		{
 			newGameObject->AddComponent(new CMesh(newGameObject, meshPath, meshes.front()));
 			if(texturePath != "")
-				newGameObject->AddComponent(new CMaterial(gameObjects.back(), texturePath, Importer::TextureImp::Import(texturePath)));
+				newGameObject->AddComponent(new CMaterial(gameObjects.back(), texturePath, new RMaterial(Importer::TextureImp::Import(texturePath))));
 		}
 		else
 		{
@@ -163,7 +165,7 @@ GameObject* MScene::CreateGameObject(char* name, char* meshPath,char* texturePat
 				childGameObject->AddComponent((Component*)newComp);
 				
 				if (texturePath != "")
-					childGameObject->AddComponent(new CMaterial(gameObjects.back(), texturePath, Importer::TextureImp::Import(texturePath)));
+					childGameObject->AddComponent(new CMaterial(gameObjects.back(), texturePath, new RMaterial(Importer::TextureImp::Import(texturePath))));
 
 				gameObjects.push_back(childGameObject);
 				newGameObject->children.push_back(childGameObject);

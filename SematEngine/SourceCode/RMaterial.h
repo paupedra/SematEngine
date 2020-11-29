@@ -10,6 +10,7 @@ class RMaterial : public Resource
 public:
 
 	RMaterial();
+	RMaterial(RTexture* texture);
 	~RMaterial();
 
 	void SetId(uint id);
@@ -26,9 +27,10 @@ public:
 	void SetColor(float r = 0, float g = 0, float b = 0, float a = 1.f);
 	
 private:
-
 	RTexture* texture;
-
 	Color* color;
+
+public:
+	bool drawTexture = false;
 }; 
 #endif //__RESOURCEMATERIAL_H__

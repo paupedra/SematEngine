@@ -14,7 +14,6 @@ public:
 
 	void Update() override;
 	void CleanUp() override;
-	void DrawInspector() override;
 	void DrawMesh();
 
 	void OnSave(ConfigNode* node);
@@ -28,7 +27,10 @@ private:
 
 	RMesh* mesh = nullptr;
 	char* path = nullptr;
+
+public:
 	bool drawVertexNormals = false;
+	bool drawAABB = false;
 
 };
 #endif //__COMPONENTMESH__

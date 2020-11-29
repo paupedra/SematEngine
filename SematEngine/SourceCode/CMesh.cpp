@@ -43,17 +43,6 @@ void CMesh::CleanUp()
 	delete mesh;
 }
 
-void  CMesh::DrawInspector()
-{
-	if (ImGui::CollapsingHeader("Mesh"))
-	{
-		ImGui::Text("Path: %s", path);
-		ImGui::Text("Vertices: %d", mesh->buffersSize[RMesh::vertex]);
-		ImGui::Checkbox("Active", &this->active);
-		ImGui::Checkbox("Draw Vertex Normals", &drawVertexNormals);
-	}
-}
-
 void CMesh::DrawMesh()
 {
 	if (!this->active)
@@ -65,12 +54,14 @@ void CMesh::DrawMesh()
 	{
 		if (owner->GetComponent<CMaterial>()->IsEnabled()) //
 		{
-			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), owner->GetComponent<CMaterial>()->GetTexture() ,drawVertexNormals);
+			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), owner->GetComponent<CMaterial>()->GetTexture() ,drawVertexNormals,drawAABB);
 			return;
 		}
 	}
 
-	App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(),nullptr, drawVertexNormals);
+	App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(),nullptr, drawVertexNormals,drawAABB);
+
+	//App->renderer3D->DrawBoundingBox(mesh,owner->transform->GetGlobalTransform());
 }
 
 void CMesh::OnSave(ConfigNode* node)

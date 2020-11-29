@@ -3,17 +3,17 @@
 
 class GameObject;
 
+enum class ComponentType
+{
+	TRANSFORM,
+	MESH,
+	MATERIAL,
+	CAMERA,
+	EMPTY
+};
+
 class Component
 {
-public:
-	enum class ComponentType
-	{
-		TRANSFORM,
-		MESH,
-		MATERIAL,
-		EMPTY
-	};
-
 public:
 	Component(ComponentType type);
 	Component(ComponentType type,GameObject* owner);
@@ -21,7 +21,6 @@ public:
 
 	virtual void Update() = 0;
 	virtual void CleanUp() = 0;
-	virtual void DrawInspector() = 0;
 	void Enable();
 	void Disable();
 

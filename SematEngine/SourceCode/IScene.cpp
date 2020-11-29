@@ -100,27 +100,20 @@ const aiNode* Importer::SceneImporter::LoadTransform(const aiNode* node, GameObj
 	{
 		node->mTransformation.Decompose(_scale, _rotation, _position);
 
-		position.x += _position.x;
-		position.y += _position.y;
-		position.z += _position.z;
+		position += _position;
 
 		scale.x *= _scale.x;
 		scale.y *= _scale.y;
 		scale.z *= _scale.z;
 
 		rotation = rotation * _rotation;
-
 		node = node->mChildren[0];
-
 		newGameObject->SetName(node->mName.C_Str());
 	}
 
 	node->mTransformation.Decompose(_scale, _rotation, _position);
 
-	scale.x += _scale.x;
-	scale.y += _scale.y;
-	scale.z += _scale.z;
-
+	scale += _scale;
 	rotation = rotation * _rotation;
 	position += _position;
 
@@ -230,12 +223,12 @@ void Importer::SceneImporter::SaveComponent(ConfigNode* node, Component* compone
 
 	switch (component->GetType())
 	{
-		case Component::ComponentType::TRANSFORM:
+		case ComponentType::TRANSFORM:
 
 
 			break;
 
-		case Component::ComponentType::MESH:
+		case ComponentType::MESH:
 			
 			cMesh = (CMesh*)component;
 
@@ -243,7 +236,7 @@ void Importer::SceneImporter::SaveComponent(ConfigNode* node, Component* compone
 
 			break;
 
-		case Component::ComponentType::MATERIAL:
+		case ComponentType::MATERIAL:
 
 			cMaterial = (CMaterial*)component;
 

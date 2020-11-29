@@ -42,17 +42,6 @@ void CMaterial::CleanUp()
 	delete material;
 }
 
-void CMaterial::DrawInspector()
-{
-	if (ImGui::CollapsingHeader("Material"))
-	{
-		ImGui::Text("Path: %s", path);
-		ImGui::Text("Texture height: %d", material->GetHeight());
-		ImGui::Text("Texture width: %d", material->GetWidth());
-		if (ImGui::Checkbox("DrawTexture", &drawTexture)) {}
-	}
-}
-
 void CMaterial::OnSave(ConfigNode* node)
 {
 

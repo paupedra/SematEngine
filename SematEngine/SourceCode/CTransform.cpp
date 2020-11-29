@@ -51,18 +51,6 @@ void CTransform::UpdateTRS()
 	RecalculateEuler();
 }
 
-void  CTransform::DrawInspector()
-{
-	if (ImGui::CollapsingHeader("Transform"))
-	{
-		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-
-		if (ImGui::InputFloat3("Transform", (float*)&position, "%.2f", flags)) { UpdateLocalTransform(); };
-		if (ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags)) { UpdateLocalTransform(); };
-		if (ImGui::InputFloat3("Rotation", (float*)&eulerRotationUi, "%.2f",flags)) { SetEulerRotation(eulerRotationUi); }
-	}
-}
-
 void CTransform::OnSave(ConfigNode* node)
 {
 	ConfigArray _position = node->InitArray("Position");
@@ -82,12 +70,12 @@ void CTransform::OnSave(ConfigNode* node)
 	_rotation.AddNumber(rotation.w);
 }
 
-void CTransform::SetEulerRotation(float3 euler_angles)
+void CTransform::SetEulerRotation(float3 eulerAngles)
 {
-	float3 delta = (euler_angles - eulerRotation) * 0.0174532925199432957f;
+	float3 delta = (eulerAngles - eulerRotation) * 0.0174532925199432957f;
 	Quat quaternion_rotation = Quat::FromEulerXYZ(delta.x, delta.y, delta.z);
 	rotation = rotation * quaternion_rotation;
-	eulerRotation = euler_angles;
+	eulerRotation = eulerAngles;
 	UpdateLocalTransform();
 }
 
@@ -109,6 +97,16 @@ float3 CTransform::GetScale()const
 float4x4 CTransform::GetGlobalTransform()const
 {
 	return globalTransform;
+}
+
+float3 CTransform::GetEulerRotation()const
+{
+	return eulerRotation;
+}
+
+float3 CTransform::GetEulerRotationUI()const
+{
+	return eulerRotationUi;
 }
 
 void CTransform::SetPosition(float3 position)
@@ -139,7 +137,7 @@ void CTransform::SetTransform(float3 position, float3 scale, Quat rotation)
 void CTransform::UpdateLocalTransform()
 {
 	transform = float4x4::FromTRS(position, rotation, scale);
-	//RecalculateEuler();
+	RecalculateEuler();
 	updateTransform = true;
 }
 
@@ -147,7 +145,11 @@ void CTransform::RecalculateEuler()
 {
 	eulerRotation = rotation.ToEulerXYZ();
 	eulerRotation *= 57.295779513082320876f;
-	eulerRotationUi = eulerRotation;
+}
+
+void CTransform::SetEulerRotationUI(float3 eulerAngles)
+{
+	eulerRotation = eulerAngles;
 }
 
 void CTransform::UpdatedTransform(float4x4 parentGlobalTransform)

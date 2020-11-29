@@ -14,6 +14,8 @@
 #include "IScene.h"
 #include "ITexture.h"
 
+#include "RMaterial.h"
+
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/imgui/imgui_internal.h"
 #include "Dependecies/imgui/imgui_impl_sdl.h"
@@ -156,7 +158,7 @@ update_status MInput::PreUpdate(float dt)
 					{
 						LOG("There is no GameObject selected"); break;
 					}
-					App->scene->selectedObject->AddComponent(new CMaterial(App->scene->selectedObject, e.drop.file, Importer::TextureImp::Import(e.drop.file)));
+					App->scene->selectedObject->AddComponent(new CMaterial(App->scene->selectedObject, e.drop.file, new RMaterial(Importer::TextureImp::Import(e.drop.file))));
 				}
 
 				break;

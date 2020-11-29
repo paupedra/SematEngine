@@ -31,7 +31,7 @@ public:
 	void DrawVertexNormals(RMesh* mesh, float4x4 transform);
 	void GenerateBuffers(RMesh* newMesh);
 	void CreateChekerTexture();
-	void DrawBoundingBox(RMesh* mesh);
+	void DrawBoundingBox(RMesh* mesh,float4x4 transform);
 	void DrawScenePlane(int size);
 
 	void SwitchCullFace(); //This is ugly sorry

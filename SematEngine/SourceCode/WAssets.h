@@ -3,7 +3,7 @@
 
 //#include "Window.h"
 class Window;
-class RMaterial;
+class RTexture;
 
 class WAssets : public Window
 {
@@ -27,5 +27,5 @@ private:
 
 	std::string selectedFolder = "Assets";
 
-	RMaterial* folder;
+	RTexture* folder = nullptr;
 };

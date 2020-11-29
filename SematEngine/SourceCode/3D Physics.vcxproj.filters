@@ -399,6 +399,12 @@
     <ClInclude Include="ITexture.h">
       <Filter>Source Code\Importer</Filter>
     </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Source Code\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="CCamera.h">
+      <Filter>Source Code\GameObject\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -622,6 +628,12 @@
     </ClCompile>
     <ClCompile Include="RTexture.cpp">
       <Filter>Source Code\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Source Code\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="CCamera.cpp">
+      <Filter>Source Code\GameObject\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

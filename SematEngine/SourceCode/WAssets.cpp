@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Window.h"
+#include "Resource.h"
 
 #include "MFileSystem.h"
 
@@ -7,10 +8,9 @@
 
 #include "ITexture.h"
 
-#include "RMaterial.h"
+#include "RTexture.h"
 
 #include "Dependecies/Glew/include/glew.h"
-
 
 #include "Dependecies/imgui/imgui.h"
 
@@ -28,7 +28,7 @@ WAssets::~WAssets()
 
 void WAssets::Init()
 {
-	folder->SetTexture(Importer::TextureImp::Import("Assets/Icons/folder.png"));
+	folder = Importer::TextureImp::Import("Assets/Icons/folder.png");
 }
 
 void WAssets::Draw()

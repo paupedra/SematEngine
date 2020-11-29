@@ -14,7 +14,6 @@ public:
 
 	void Update() override;
 	void CleanUp() override;
-	void DrawInspector() override;
 
 	void OnSave(ConfigNode* node);
 
