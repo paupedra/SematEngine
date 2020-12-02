@@ -19,6 +19,8 @@
 #include "RMesh.h"
 #include "RMaterial.h"
 
+#include "Dependecies/SDL/include/SDL.h"
+
 #include "Dependecies/Glew/include/glew.h"
 #include "Dependecies/SDL/include/SDL_opengl.h" 
 #include <gl/GL.h>
@@ -36,7 +38,9 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "Dependecies/Glew/libx86/glew32.lib")
 
+#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
 #include "Dependecies/mmgr/mmgr.h"
+
 
 MRenderer3D::MRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
@@ -230,10 +234,18 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 	{
 		if (material != nullptr)
 		{
-			if (material->GetId() == 0)
-				glBindTexture(GL_TEXTURE_2D, checkersId);
+			if (material->GetTexture() != nullptr)
+			{
+				if (material->GetId() == 0)
+					glBindTexture(GL_TEXTURE_2D, checkersId);
+				else
+					glBindTexture(GL_TEXTURE_2D, material->GetId());
+			}
 			else
-				glBindTexture(GL_TEXTURE_2D, material->GetId());
+			{
+				Color color = material->GetColor()->Convert255();
+				glColor4f(color.r, color.g, color.b, color.a);
+			}
 		}
 		else
 		{
@@ -271,7 +283,11 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 	if (drawVertexNormals)
 		DrawVertexNormals(mesh,transform);
 	if (drawBoundingBox)
-		DrawBoundingBox(mesh,transform);
+	{
+		float3 corners[8];
+		mesh->aabb.GetCornerPoints(corners);
+		DrawBox(corners, transform);
+	}
 }
 
 void MRenderer3D::DrawVertexNormals(RMesh* mesh,float4x4 transform)
@@ -345,11 +361,10 @@ void MRenderer3D::CreateChekerTexture()
 
 }
 
-void MRenderer3D::DrawBoundingBox(RMesh* mesh,float4x4 transform)
+void MRenderer3D::DrawBox(float3* corners,float4x4 transform)
 {
-	float3 corners[8];
 	glColor4f(255, 255, 0, 255);
-	mesh->aabb.GetCornerPoints(corners);
+	//mesh->aabb.GetCornerPoints(corners);
 
 	glPushMatrix();
 	glMultMatrixf((float*)&transform.Transposed());
@@ -411,6 +426,11 @@ void MRenderer3D::DrawScenePlane(int size)
 		glVertex3d(-size, 0, i);
 	}
 	glEnd();
+}
+
+void MRenderer3D::DrawFrustum(Frustum frustum)
+{
+	
 }
 
 void MRenderer3D::SwitchCullFace()

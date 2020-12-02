@@ -14,7 +14,6 @@ CTransform::CTransform(GameObject* owner) : Component(ComponentType::TRANSFORM,o
 	position = float3(0.f, 0.f, 0.f);
 	scale = float3(1.f, 1.f, 1.f);
 
-	eulerRotationUi = float3(0.f, 0.f, 0.f);
 	eulerRotation = float3(0.f, 0.f, 0.f);
 	rotation = Quat::identity;
 
@@ -104,11 +103,6 @@ float3 CTransform::GetEulerRotation()const
 	return eulerRotation;
 }
 
-float3 CTransform::GetEulerRotationUI()const
-{
-	return eulerRotationUi;
-}
-
 void CTransform::SetPosition(float3 position)
 {
 	this->position = position;
@@ -147,18 +141,10 @@ void CTransform::RecalculateEuler()
 	eulerRotation *= 57.295779513082320876f;
 }
 
-void CTransform::SetEulerRotationUI(float3 eulerAngles)
-{
-	eulerRotation = eulerAngles;
-}
-
 void CTransform::UpdatedTransform(float4x4 parentGlobalTransform)
 {
 	globalTransform = parentGlobalTransform * transform;
 	UpdateTRS();
 
-	//LOG("Updated Transform of: %s", owner->GetName());
-
 	updateTransform = false;
-	//LOG("set update transform to false -------------");
 }

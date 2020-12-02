@@ -49,14 +49,14 @@ public:
 	}
 
 private:
-	bool active;
+	bool active = false;
 	std::string name;
 	std::vector<Component*> components;
 	
 public:
 	CTransform* transform = nullptr;
 	std::vector<GameObject*> children;
-	GameObject* parent;
+	GameObject* parent = nullptr;
 };
 
 #endif //__GAMEOBJECT__

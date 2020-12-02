@@ -94,20 +94,20 @@ void WInspector::DrawTransform(CTransform* component)
 		float3 scale = component->GetScale();
 		float3 rotation = component->GetEulerRotation();
 
-		if (ImGui::InputFloat3("Transform", (float*)&position, "%.2f", flags)) 
+		if (ImGui::DragFloat3("Position", (float*)&position, 0.25)) 
 		{ 
 			component->SetPosition(position);
 			component->UpdateLocalTransform(); 
 		};
-		if (ImGui::InputFloat3("Scale", (float*)&scale, "%.2f", flags)) 
+		if (ImGui::DragFloat3("Scale", (float*)&scale, 0.25,0.1f,100.f))
 		{ 
 			component->SetScale(scale);
 			component->UpdateLocalTransform(); 
 		};
-		if (ImGui::InputFloat3("Rotation", (float*)&rotation, "%.2f", flags)) 
+		if (ImGui::DragFloat3("Rotation", (float*)&rotation, 1))
 		{ 
-			component->SetEulerRotationUI(rotation);
-			component->SetEulerRotation(component->GetEulerRotation()); 
+			//component->SetEulerRotationUI(rotation);
+			component->SetEulerRotation(rotation);
 		}
 	}
 }

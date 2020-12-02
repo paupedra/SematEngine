@@ -3,9 +3,9 @@
 #include <vector>
 #include <string>
 #include "Globals.h"
-#include "Timer.h"
-#include "Module.h"
 
+class Timer;
+class Module;
 class MWindow;
 class MInput;
 class MScene;
@@ -35,8 +35,8 @@ private:
 	bool wantToExit;
 	bool wantToSave;
 
-	Timer	frameTimer;
-	Timer	secondsTimer;
+	Timer*	frameTimer;
+	Timer*	secondsTimer;
 	uint	frameCapMs;
 	float	dt;
 	float	frameCap;

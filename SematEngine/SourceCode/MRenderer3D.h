@@ -5,12 +5,13 @@
 #include "glmath.h"
 #include "Globals.h"
 #include "Light.h"
-#include "Dependecies/SDL/include/SDL.h"
+
 #include <vector>
 #include "Dependecies/MathGeoLib/src/MathGeoLib.h"
 
 class RMesh;
 class RMaterial;
+typedef void* SDL_GLContext;
 
 #define MAX_LIGHTS 8
 
@@ -31,8 +32,9 @@ public:
 	void DrawVertexNormals(RMesh* mesh, float4x4 transform);
 	void GenerateBuffers(RMesh* newMesh);
 	void CreateChekerTexture();
-	void DrawBoundingBox(RMesh* mesh,float4x4 transform);
+	void DrawBox(float3* corners, float4x4 transform);
 	void DrawScenePlane(int size);
+	void DrawFrustum(Frustum frustum);
 
 	void SwitchCullFace(); //This is ugly sorry
 	void SwitchDepthTest();

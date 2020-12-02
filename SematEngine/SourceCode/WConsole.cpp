@@ -9,7 +9,7 @@
 
 WConsole::WConsole(bool _active) : Window(_active)
 {
-	scrollToBottom = false;
+
 }
 
 WConsole::~WConsole()

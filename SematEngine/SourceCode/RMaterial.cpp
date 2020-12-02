@@ -65,6 +65,11 @@ RTexture* RMaterial::GetTexture() const
 	return texture;
 }
 
+Color* RMaterial::GetColor()const
+{
+	return color;
+}
+
 void RMaterial::SetColor(float r, float g, float b, float a)
 {
 	color->Set(r,g,b,a);

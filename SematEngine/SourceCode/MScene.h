@@ -1,5 +1,4 @@
 #include "Module.h"
-#include "Globals.h"
 #include <vector>
 
 class Primitive;
@@ -28,6 +27,6 @@ public:
 public:
 
 	std::vector<GameObject*> gameObjects;
-	GameObject* rootObject;
+	GameObject* rootObject = nullptr;
 	GameObject* selectedObject = nullptr;
 };

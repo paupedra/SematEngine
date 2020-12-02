@@ -17,7 +17,6 @@ void log(const char file[], int line, const char* format, ...);
 #define RADTODEG 57.295779513082320876f
 #define HAVE_M_PI
 
-
 typedef unsigned int uint;
 typedef unsigned __int64 uint64;
 typedef unsigned __int32 UID;
@@ -40,14 +39,23 @@ enum update_status
 #define VSYNC false
 #define TITLE "3D Physics Playground"
 
-// File System
-
+// File System -----------
 #define LIBRARY_PATH "Library/"
 #define FOLDERS_PATH "Library/Folders/"
 #define MESHES_PATH "Library/Meshes/"
 #define MATERIALS_PATH "Library/Materials/"
 #define TEXTURES_PATH "Library/Textures/"
 #define SCENES_PATH "Library/Scenes/"
+
+// Deletes a buffer -----------
+#define RELEASE( x )\
+    {\
+       if( x != nullptr )\
+       {\
+         delete x;\
+	     x = nullptr;\
+       }\
+    }
 
 class Application;
 

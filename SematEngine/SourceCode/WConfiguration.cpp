@@ -8,6 +8,8 @@
 
 #include "WConfiguration.h"
 
+#include "Dependecies/SDL/include/SDL.h"
+
 #include "Dependecies/imgui/imgui.h"
 
 #include "Dependecies/mmgr/mmgr.h"
@@ -15,7 +17,6 @@
 WConfiguration::WConfiguration(bool _active) : Window(_active)
 {
 	FPS[19] = 0;
-	maxInputs = 20;
 }
 
 WConfiguration::~WConfiguration()

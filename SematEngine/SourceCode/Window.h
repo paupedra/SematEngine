@@ -18,7 +18,7 @@ public:
 	virtual void CleanUp() = 0;
 
 public:
-	bool active;
+	bool active = false;
 };
 
 #endif //__WINDOW__

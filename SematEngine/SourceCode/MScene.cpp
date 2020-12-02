@@ -15,6 +15,7 @@
 #include "CMesh.h"
 #include "CMaterial.h"
 #include "CTransform.h"
+#include "CCamera.h"
 
 #include "IMesh.h"
 #include "ITexture.h"
@@ -42,10 +43,10 @@ bool MScene::Start()
 
 	rootObject = CreateGameObject("rootObject","","",true);
 
-	//Loading Baker House
-	//CreateGameObject("BakerHouse","Assets/Mesh/BakerHouse/BakerHouse.fbx", "Assets/Mesh/BakerHouse/BakerHouse.png");
-
-	//CreateGameObject("Street", "Assets/Mesh/street/Street environment_V01.FBX");
+	GameObject* obj = new GameObject(rootObject,"camera bro");
+	rootObject->children.push_back(obj);
+	obj->AddComponent(new CCamera(obj));
+	gameObjects.push_back(obj);
 
 	Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
 	//Importer::SceneImporter::Import("Assets/Mesh/BakerHouse/BakerHouse.fbx");

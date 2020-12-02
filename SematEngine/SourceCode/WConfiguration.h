@@ -39,6 +39,6 @@ private:
 	HardwareInfo hardware;
 
 	std::vector<const char*> inputs;
-	int maxInputs;
+	int maxInputs = 20;
 	bool scrollToBottomInputs = false;
 };

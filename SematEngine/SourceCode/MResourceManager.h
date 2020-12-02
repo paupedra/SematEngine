@@ -5,7 +5,7 @@
 #include "Module.h"
 #include "Dependecies/SDL/include/SDL.h"
 
-class Application;
+
 class Resource;
 enum class ResourceType;
 

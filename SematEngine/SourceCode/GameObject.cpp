@@ -85,6 +85,17 @@ Component* GameObject::AddComponent(Component* component)
 			}
 
 			break;
+
+		case ComponentType::CAMERA:
+
+			if (!HasComponentType(ComponentType::CAMERA))
+			{
+				components.push_back(component);
+			}
+			else
+				LOG("(ERROR) Error adding Camera: Object already has camera");
+
+			break;
 	}
 
 	return component;

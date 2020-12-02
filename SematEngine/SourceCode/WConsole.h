@@ -35,7 +35,7 @@ public:
 private:
 
 	std::vector<Logs> logs;
-	bool scrollToBottom;
+	bool scrollToBottom = false;
 
 };
 #endif //__WINDOW_CONSOLE__

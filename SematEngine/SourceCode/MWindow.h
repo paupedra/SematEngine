@@ -2,9 +2,11 @@
 #define __ModuleWindow_H__
 
 #include "Module.h"
-#include "Dependecies/SDL/include/SDL.h"
+
 
 class Application;
+struct SDL_Window;
+struct SDL_Surface;
 
 class MWindow : public Module
 {

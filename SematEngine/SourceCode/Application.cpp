@@ -1,5 +1,7 @@
 #include "Application.h"
 #include "Config.h"
+#include "Module.h"
+#include "Timer.h"
 
 #include "MCamera3D.h"
 #include "MInput.h"
@@ -76,8 +78,8 @@ bool Application::Init()
 		ret = (*item)->Start();
 	}
 	
-	frameTimer.Start();
-	secondsTimer.Start();
+	frameTimer = new Timer();
+	secondsTimer = new Timer();
 	frameCap = 120;
 
 	vsync = VSYNC;
@@ -88,8 +90,8 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	dt = (float)frameTimer.Read() / 1000.0f;
-	frameTimer.Start();
+	dt = (float)frameTimer->Read() / 1000.0f;
+	frameTimer->Start();
 }
 
 // ---------------------------------------------
@@ -104,18 +106,18 @@ void Application::FinishUpdate()
 void Application::FrameCalculations()
 {
 	frameCapMs = 1000 / frameCap;
-	uint current_frame_ms = frameTimer.Read();
+	uint current_frame_ms = frameTimer->Read();
 
 	if (!vsync && current_frame_ms < frameCapMs)
 	{
 		SDL_Delay(frameCapMs - current_frame_ms);
 	}
 
-	App->editor->UpdateConfigMS(frameTimer.Read());
+	App->editor->UpdateConfigMS(frameTimer->Read());
 
-	if (secondsTimer.Read() >= 1000)
+	if (secondsTimer->Read() >= 1000)
 	{
-		secondsTimer.Start();
+		secondsTimer->Start();
 		App->editor->UpdateConfigFPS(frameCount);
 
 		frameCount = 0;
@@ -191,6 +193,9 @@ bool Application::CleanUp()
 	}
 
 	modules.clear();
+
+	delete frameTimer;
+	delete secondsTimer;
 
 	return ret;
 }

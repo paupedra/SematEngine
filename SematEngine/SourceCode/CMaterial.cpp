@@ -44,7 +44,9 @@ void CMaterial::CleanUp()
 
 void CMaterial::OnSave(ConfigNode* node)
 {
+	//color
 
+	//id textura?
 }
 
 const char* CMaterial::GetPath()const

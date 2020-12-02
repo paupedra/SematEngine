@@ -1,3 +1,4 @@
+
 #include "Globals.h"
 #include "Application.h"
 #include "GameObject.h"
@@ -8,6 +9,8 @@
 #include "MScene.h"
 
 #include "CTransform.h"
+
+#include "Dependecies/SDL/include/SDL.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 

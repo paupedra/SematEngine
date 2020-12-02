@@ -16,6 +16,8 @@
 
 #include "RMaterial.h"
 
+#include "Dependecies/SDL/include/SDL.h"
+
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/imgui/imgui_internal.h"
 #include "Dependecies/imgui/imgui_impl_sdl.h"
@@ -148,6 +150,7 @@ update_status MInput::PreUpdate(float dt)
 				if (strstr(e.drop.file, ".fbx") != nullptr || strstr(e.drop.file, ".FBX") != nullptr)
 				{
 					LOG("Loading .FBX file");
+					//std::string export 
 					Importer::SceneImporter::Import(e.drop.file);
 				}
 

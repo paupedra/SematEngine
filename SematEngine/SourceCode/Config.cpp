@@ -3,7 +3,6 @@
 
 #include "MFileSystem.h"
 
-
 ConfigNode::ConfigNode()
 {
 
@@ -32,13 +31,11 @@ uint ConfigNode::Serialize(char** buffer)
 	return size;
 }
 
-
 ConfigArray ConfigNode::InitArray(const char* name) //Create a array storing into class -> addthings to array
 {
 	json_object_set_value(node, name, json_value_init_array());
 	return ConfigArray(json_object_get_array(node,name));
 }
-
 
 //ConfigArray ----------------------------------------------
 ConfigArray::ConfigArray(JSON_Array* array) : arr(array)

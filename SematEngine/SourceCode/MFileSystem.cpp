@@ -28,7 +28,7 @@ MFileSystem::MFileSystem(bool start_enabled) //: Module("FileSystem", true)
 	if (PHYSFS_setWriteDir(basePath) == 0)
 		LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
 
-	SDL_free(basePath);
+	//SDL_free(basePath);
 	
 	AddPath(basePath); //Adding ProjectFolder (working directory)
 	AddPath("Assets");
@@ -383,7 +383,7 @@ bool MFileSystem::DuplicateFile(const char* srcFile, const char* dstFile)
 int close_sdl_rwops(SDL_RWops* rw)
 {
 	//RELEASE_ARRAY(rw->hidden.mem.base);
-	SDL_FreeRW(rw);
+	//SDL_FreeRW(rw);
 	return 0;
 }
 

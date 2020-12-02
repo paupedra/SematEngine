@@ -23,7 +23,7 @@ public:
 	float3 GetScale()const;
 	float4x4 GetGlobalTransform()const;
 	float3 GetEulerRotation()const;
-	float3 GetEulerRotationUI()const;
+
 
 	static inline ComponentType GetType() { return ComponentType::TRANSFORM; };
 
@@ -34,7 +34,6 @@ public:
 
 	void UpdateLocalTransform();
 	void SetEulerRotation(float3 eulerAngles);
-	void SetEulerRotationUI(float3 eulerAngles);
 	void UpdateTRS();
 
 	void RecalculateEuler();
@@ -53,7 +52,6 @@ private:
 	Quat rotation;
 
 	float3 eulerRotation;
-	float3 eulerRotationUi;
 
 public:
 	bool updateTransform = false; //should be private

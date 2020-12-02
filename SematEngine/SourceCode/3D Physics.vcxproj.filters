@@ -111,9 +111,6 @@
     <ClInclude Include="Dependecies\MathGeoLib\src\MathGeoLibFwd.h">
       <Filter>Dependencies\MathGeoLib</Filter>
     </ClInclude>
-    <ClInclude Include="Dependecies\MathGeoLib\src\Time\Clock.h">
-      <Filter>Dependencies\MathGeoLib\Time</Filter>
-    </ClInclude>
     <ClInclude Include="Dependecies\MathGeoLib\src\Algorithm\Random\LCG.h">
       <Filter>Dependencies\MathGeoLib\Algorithm</Filter>
     </ClInclude>
@@ -405,6 +402,9 @@
     <ClInclude Include="CCamera.h">
       <Filter>Source Code\GameObject\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Dependecies\MathGeoLib\src\Time\Clock.h">
+      <Filter>Dependencies\MathGeoLib\Time</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -427,9 +427,6 @@
     </ClCompile>
     <ClCompile Include="glmath.cpp">
       <Filter>Source Code\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependecies\MathGeoLib\src\Time\Clock.cpp">
-      <Filter>Dependencies\MathGeoLib\Time</Filter>
     </ClCompile>
     <ClCompile Include="Dependecies\MathGeoLib\src\Algorithm\Random\LCG.cpp">
       <Filter>Dependencies\MathGeoLib\Algorithm</Filter>
@@ -634,6 +631,9 @@
     </ClCompile>
     <ClCompile Include="CCamera.cpp">
       <Filter>Source Code\GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependecies\MathGeoLib\src\Time\Clock.cpp">
+      <Filter>Dependencies\MathGeoLib\Time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

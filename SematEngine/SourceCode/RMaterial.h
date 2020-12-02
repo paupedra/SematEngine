@@ -23,6 +23,7 @@ public:
 	uint GetHeight() const;
 	uint GetWidth() const;
 	RTexture* GetTexture()const;
+	Color* GetColor()const;
 
 	void SetColor(float r = 0, float g = 0, float b = 0, float a = 1.f);
 	

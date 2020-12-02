@@ -4,6 +4,7 @@
 #include "MWindow.h"
 #include "MRenderer3D.h"
 
+#include "Dependecies/SDL/include/SDL.h"
 #include "Dependecies/mmgr/mmgr.h"
 
 MWindow::MWindow(bool start_enabled) : Module(start_enabled)
