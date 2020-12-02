@@ -18,7 +18,7 @@
 #include "WInspector.h"
 
 #include "Dependecies/imgui/imgui.h"
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 #include "Dependecies/mmgr/mmgr.h"
 
 WInspector::WInspector(bool _active) : Window(_active)
@@ -137,7 +137,13 @@ void WInspector::DrawMaterial(CMaterial* component)
 
 void WInspector::DrawCamera(CCamera* component)
 {
-
+	ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
+	
+	if (ImGui::CollapsingHeader("Camera"))
+	{
+		float3 pos = component->GetPos();
+		ImGui::InputFloat3("Position",(float*)&pos ,"%.2f" , ImGuiInputTextFlags_ReadOnly);
+	}
 }
 
 void WInspector::CleanUp()

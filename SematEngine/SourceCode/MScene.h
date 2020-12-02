@@ -14,6 +14,7 @@ public:
 	bool Start();
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
+	bool CleanUp() override;
 	bool Save(ConfigNode* config) override;
 	void SaveScene();
 
@@ -22,7 +23,7 @@ public:
 
 	//void DeleteGameObject();
 
-	bool CleanUp();
+	
 
 public:
 

@@ -15,6 +15,7 @@
 #include "ITexture.h"
 
 #include "CMaterial.h"
+#include "CCamera.h"
 
 #include "RMesh.h"
 #include "RMaterial.h"
@@ -38,7 +39,7 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "Dependecies/Glew/libx86/glew32.lib")
 
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 #include "Dependecies/mmgr/mmgr.h"
 
 
@@ -168,8 +169,11 @@ update_status MRenderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-
-	glLoadMatrixf(App->camera->GetRawViewMatrix());
+	if (App->camera->currentCamera != nullptr)
+	{
+		glLoadMatrixf(App->camera->currentCamera->GetViewMatrix());
+	}
+	//glLoadMatrixf(App->camera->GetRawViewMatrix());
 		
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
@@ -430,7 +434,52 @@ void MRenderer3D::DrawScenePlane(int size)
 
 void MRenderer3D::DrawFrustum(Frustum frustum)
 {
-	
+	float3 corners[8];
+	frustum.GetCornerPoints(corners);
+	glColor4f(255, 255, 0, 255);
+
+	glBegin(GL_LINES);
+
+	//Between-planes right
+	glVertex3fv((GLfloat*)&corners[1]);
+	glVertex3fv((GLfloat*)&corners[5]);
+	glVertex3fv((GLfloat*)&corners[7]);
+	glVertex3fv((GLfloat*)&corners[3]);
+
+	//Between-planes left
+	glVertex3fv((GLfloat*)&corners[4]);
+	glVertex3fv((GLfloat*)&corners[0]);
+	glVertex3fv((GLfloat*)&corners[2]);
+	glVertex3fv((GLfloat*)&corners[6]);
+
+	//Far plane horizontal
+	glVertex3fv((GLfloat*)&corners[5]);
+	glVertex3fv((GLfloat*)&corners[4]);
+	glVertex3fv((GLfloat*)&corners[6]);
+	glVertex3fv((GLfloat*)&corners[7]);
+
+	//Near plane horizontal
+	glVertex3fv((GLfloat*)&corners[0]);
+	glVertex3fv((GLfloat*)&corners[1]);
+	glVertex3fv((GLfloat*)&corners[3]);
+	glVertex3fv((GLfloat*)&corners[2]);
+
+	//Near plane vertical
+	glVertex3fv((GLfloat*)&corners[1]);
+	glVertex3fv((GLfloat*)&corners[3]);
+	glVertex3fv((GLfloat*)&corners[0]);
+	glVertex3fv((GLfloat*)&corners[2]);
+
+	//Far plane vertical
+	glVertex3fv((GLfloat*)&corners[5]);
+	glVertex3fv((GLfloat*)&corners[7]);
+	glVertex3fv((GLfloat*)&corners[4]);
+	glVertex3fv((GLfloat*)&corners[6]);
+
+	glEnd();
+
+	glPopMatrix();
+	glColor4f(255, 255, 255, 255);
 }
 
 void MRenderer3D::SwitchCullFace()

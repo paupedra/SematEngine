@@ -7,10 +7,11 @@
 #include "Light.h"
 
 #include <vector>
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 
 class RMesh;
 class RMaterial;
+class CCamera;
 typedef void* SDL_GLContext;
 
 #define MAX_LIGHTS 8

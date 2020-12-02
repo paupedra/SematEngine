@@ -48,13 +48,13 @@ void CMesh::DrawMesh()
 	if (!this->active)
 		return;
 
-	//LOG("Drawing %s mesh", owner->GetName());
+	const CMaterial* material = owner->GetComponent<CMaterial>();
 
-	if (owner->GetComponent<CMaterial>() != nullptr)
+	if (material != nullptr)
 	{
-		if (owner->GetComponent<CMaterial>()->IsEnabled()) //
+		if (material->IsEnabled())
 		{
-			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), owner->GetComponent<CMaterial>()->GetTexture() ,drawVertexNormals,drawAABB);
+			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), material->GetTexture() ,drawVertexNormals,drawAABB);
 			return;
 		}
 	}

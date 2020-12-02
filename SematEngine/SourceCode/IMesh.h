@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 #include <vector>
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 
 struct aiScene;
 struct aiNode;

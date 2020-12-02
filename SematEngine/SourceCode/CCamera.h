@@ -1,5 +1,5 @@
+#include "Dependecies/MathGeoLib/include/Geometry/Frustum.h"
 
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
 class Component;
 
 class CCamera : public Component
@@ -7,19 +7,21 @@ class CCamera : public Component
 public:
 	CCamera(GameObject* owner);
 
-	//near/far planes
-
-
-
-	//get view/projection
-
-
-
 	void Update()override;
 	void CleanUp() override;
+
+	//near/far planes
+
+	void Setposition(float3 pos);
+
+	Frustum GetFrustum()const;
+	float3 GetPos()const;
+
+	//get view/projection
+	float* GetViewMatrix();
 
 public:
 	
 	Frustum frustum;
-	bool currentCamera = false;
+	bool isCurrentCamera = false;
 };

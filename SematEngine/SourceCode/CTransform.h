@@ -1,8 +1,8 @@
 #ifndef __COMPONENTTRANSFORM__
 #define __COMPONENTTRANSFORM__
 
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
-#include "glmath.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
+
 
 class Component;
 class ConfigNode;

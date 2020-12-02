@@ -1,6 +1,6 @@
 #ifndef __RESOURCEMESH_H__
 #define __RESOURCEMESH_H__
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 
 class Resource;
 

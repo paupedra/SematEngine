@@ -24,7 +24,7 @@
 #include "Dependecies/Assimp/include/scene.h"
 #include "Dependecies/Assimp/include/postprocess.h"
 
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 #include "Dependecies/mmgr/mmgr.h"
 
 void Importer::SceneImporter::Import(const char* file) //Load buffer with .fbx scene

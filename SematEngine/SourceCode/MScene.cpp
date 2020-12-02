@@ -38,8 +38,8 @@ bool MScene::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
-	App->camera->LookAt(vec3(0, 0, 0));
+	App->camera->Move(float3(1.0f, 1.0f, 0.0f));
+	App->camera->LookAt(float3(0, 0, 0));
 
 	rootObject = CreateGameObject("rootObject","","",true);
 
@@ -49,12 +49,30 @@ bool MScene::Start()
 	gameObjects.push_back(obj);
 
 	Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
-	//Importer::SceneImporter::Import("Assets/Mesh/BakerHouse/BakerHouse.fbx");
 	
 	return ret;
 }
 
-// Load assets
+// Update
+update_status MScene::Update(float dt)
+{
+	//ImGui::ShowDemoWindow();
+
+	App->renderer3D->DrawScenePlane(200);
+
+	//Update GameObjects in scene
+	std::vector<GameObject*>::iterator item = gameObjects.begin();
+	for (; item != gameObjects.end(); ++item)
+		(*item)->Update();
+
+	return UPDATE_CONTINUE;
+}
+
+update_status MScene::PostUpdate(float dt)
+{
+	return UPDATE_CONTINUE;
+}
+
 bool MScene::CleanUp()
 {
 	LOG("Unloading Intro scene");
@@ -69,34 +87,6 @@ bool MScene::CleanUp()
 	gameObjects.clear();
 
 	return true;
-}
-
-// Update
-update_status MScene::Update(float dt)
-{
-	//Plane p(vec3(0, 1, 0));
-	//p.axis = true;
-	//p.Render();
-
-	//ImGui::ShowDemoWindow();
-
-	App->renderer3D->DrawScenePlane(200);
-
-	//LOG("before update GOs");
-	//Update GameObjects in scene
-	std::vector<GameObject*>::iterator item = gameObjects.begin();
-	for (; item != gameObjects.end(); ++item)
-	{
-		(*item)->Update();
-	}
-	//LOG("after update GOs");
-
-	return UPDATE_CONTINUE;
-}
-
-update_status MScene::PostUpdate(float dt)
-{
-	return UPDATE_CONTINUE;
 }
 
 bool MScene::Save(ConfigNode* config)

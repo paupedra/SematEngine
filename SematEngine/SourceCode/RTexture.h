@@ -1,6 +1,6 @@
 #ifndef __RESOURCETEXTURE_H__
 #define __RESOURCETEXTURE_H__
-#include "Dependecies/MathGeoLib/src/MathGeoLib.h"
+#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 
 class Resource;
 

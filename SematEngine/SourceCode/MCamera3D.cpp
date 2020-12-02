@@ -9,21 +9,26 @@
 #include "MScene.h"
 
 #include "CTransform.h"
+#include "CCamera.h"
 
 #include "Dependecies/SDL/include/SDL.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 
+#define _USE_MATH_DEFINES
+
+#include <math.h>
+
 MCamera3D::MCamera3D(bool start_enabled) : Module(start_enabled)
 {
 	CalculateViewMatrix();
 
-	X = vec3(1.0f, 0.0f, 0.0f);
-	Y = vec3(0.0f, 1.0f, 0.0f);
-	Z = vec3(0.0f, 0.0f, 1.0f);
+	X = float3(1.0f, 0.0f, 0.0f);
+	Y = float3(0.0f, 1.0f, 0.0f);
+	Z = float3(0.0f, 0.0f, 1.0f);
 
-	position = vec3(0.0f, 0.0f, 5.0f);
-	reference = vec3(0.0f, 0.0f, 0.0f);
+	position = float3(0.0f, 0.0f, 5.0f);
+	reference = float3(0.0f, 0.0f, 0.0f);
 
 	cameraMoveSpeed = 7.5f;
 	cameraRotateSpeed = 60.f;
@@ -52,44 +57,43 @@ bool MCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status MCamera3D::Update(float dt)
 {
-	vec3 newPos(0,0,0);
+	float3 newPos(0,0,0);
 	float speed = cameraMoveSpeed * dt;
 
 	if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = (cameraMoveSpeed * 2.f) * dt;
 
-	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
+	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += currentCamera->frustum.Front() * speed;
+	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= currentCamera->frustum.Front() * speed;
 
 
-	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
-	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
+	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= currentCamera->frustum.WorldRight() * speed;
+	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += currentCamera->frustum.WorldRight() * speed;
 
 	FocusOnObject();
 
 	ZoomIn(dt);
 
-	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)
+	/*if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)
 		RotateCameraStatic();
 
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
-		OrbitObject();
+		OrbitObject();*/
 
-	position += newPos;
-	reference += newPos;
+	currentCamera->Setposition(currentCamera->frustum.Pos() + newPos);
 
 	return UPDATE_CONTINUE;
 }
 
 // -----------------------------------------------------------------
-void MCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
+void MCamera3D::Look(const float3&Position, const float3&Reference, bool RotateAroundReference)
 {
 	this->position = Position;
 	this->reference = Reference;
 
-	Z = normalize(Position - Reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
+	Z = (Position - Reference).Normalized();
+	X = (float3(0.0f, 1.0f, 0.0f).Cross(Z)).Normalized();
+	Y = Z.Cross(X);
 
 	if(!RotateAroundReference)
 	{
@@ -99,17 +103,18 @@ void MCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAro
 }
 
 // -----------------------------------------------------------------
-void MCamera3D::LookAt( const vec3 &Spot)
+void MCamera3D::LookAt( const float3&Spot)
 {
 	reference = Spot;
+	
 
-	Z = normalize(position - reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
+	Z = (position - reference).Normalized();
+	X = (float3(0.0f, 1.0f, 0.0f).Cross(Z)).Normalized();
+	Y = Z.Cross(X);
 }
 
 // -----------------------------------------------------------------
-void MCamera3D::Move(const vec3 &Movement)
+void MCamera3D::Move(const float3&Movement)
 {
 	position += Movement;
 	reference += Movement;
@@ -122,12 +127,40 @@ void MCamera3D::ZoomIn(float dt)
 
 	if (scrollWheel > 0)
 	{
-		position -= Z * speed;
+		currentCamera->Setposition(currentCamera->GetPos() - (Z * speed));
 	}
 	if (scrollWheel < 0)
 	{
-		position += Z * speed;
+		currentCamera->Setposition(currentCamera->GetPos() + (Z * speed));
 	}
+}
+
+float4x4 rotate(float angle, const float3& u)
+{
+	float4x4 Rotate;
+
+	angle = angle / 180.0f * (float)M_PI;
+
+	float3 v = u.Normalized();
+
+	float c = 1.0f - cos(angle), s = sin(angle);
+
+	Rotate.At(0, 0) = 1.0f + c * (v.x * v.x - 1.0f);
+	Rotate.At(0, 1) = c * v.x * v.y + v.z * s;
+	Rotate.At(0, 2) = c * v.x * v.z - v.y * s;
+	Rotate.At(1, 0) = c * v.x * v.y - v.z * s;
+	Rotate.At(1, 1) = 1.0f + c * (v.y * v.y - 1.0f);
+	Rotate.At(1, 2) = c * v.y * v.z + v.x * s;
+	Rotate.At(2, 0) = c * v.x * v.z + v.y * s;
+	Rotate.At(2, 1) = c * v.y * v.z - v.x * s;
+	Rotate.At(2, 2) = 1.0f + c * (v.z * v.z - 1.0f);
+
+	return Rotate;
+}
+
+float3 rotate(const float3& u, float angle, const float3& v)
+{
+	return *(float3*)&(rotate(angle, v) * float4(u, 1.0f));
 }
 
 void MCamera3D::RotateCameraStatic()
@@ -141,9 +174,9 @@ void MCamera3D::RotateCameraStatic()
 	{
 		float DeltaX = (float)dx * Sensitivity;
 
-		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		X = rotate(X, DeltaX, float3(0.0f, 1.0f, 0.0f));
+		Y = rotate(Y, DeltaX, float3(0.0f, 1.0f, 0.0f));
+		Z = rotate(Z, DeltaX, float3(0.0f, 1.0f, 0.0f));
 	}
 
 	if (dy != 0)
@@ -155,8 +188,8 @@ void MCamera3D::RotateCameraStatic()
 
 		if (Y.y < 0.0f)
 		{
-			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-			Y = cross(Z, X);
+			Z = float3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+			Y = Z.Cross(X);
 		}
 	}
 
@@ -176,6 +209,8 @@ void MCamera3D::FocusOnObject()
 		}
 	}
 }
+
+
 
 void MCamera3D::OrbitObject()
 {
@@ -197,9 +232,12 @@ void MCamera3D::OrbitObject()
 	{
 		float DeltaX = (float)dx * Sensitivity;
 
-		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		float4x4 mat;
+
+
+		X = rotate(X, DeltaX, float3(0.0f, 1.0f, 0.0f));
+		Y = rotate(Y, DeltaX, float3(0.0f, 1.0f, 0.0f));
+		Z = rotate(Z, DeltaX, float3(0.0f, 1.0f, 0.0f));
 	}
 
 	if (dy != 0)
@@ -211,23 +249,23 @@ void MCamera3D::OrbitObject()
 
 		if (Y.y < 0.0f)
 		{
-			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-			Y = cross(Z, X);
+			Z = float3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+			Y = Z.Cross(X);
+			
 		}
 	}
 
-	position = reference + Z * length(position);
-		
+	position = reference + Z * position.Length();
 }
 
 // -----------------------------------------------------------------
 float* MCamera3D::GetRawViewMatrix()
 {
 	CalculateViewMatrix();
-	return &viewMatrix;
+	return (float*)&viewMatrix;
 }
 
-mat4x4 MCamera3D::GetViewMatrix()
+float4x4 MCamera3D::GetViewMatrix()
 {
 	CalculateViewMatrix();
 	return viewMatrix;
@@ -236,6 +274,6 @@ mat4x4 MCamera3D::GetViewMatrix()
 // -----------------------------------------------------------------
 void MCamera3D::CalculateViewMatrix()
 {
-	viewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, position), -dot(Y, position), -dot(Z, position), 1.0f);
-	viewMatrixInverse = inverse(viewMatrix);
+	viewMatrix = float4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -X.Dot(position), -Y.Dot(position), -Z.Dot(position), 1.0f);
+	viewMatrixInverse = viewMatrix.Inverted();
 }
