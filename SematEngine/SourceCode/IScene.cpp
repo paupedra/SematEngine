@@ -149,17 +149,19 @@ void Importer::SceneImporter::LoadMaterial(const aiScene* scene, const aiNode* n
 		uint index = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
 		aiString path;
 
-		aiColor3D color;
-		if (scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color))
-		{
+		std::string fileName, extension;
 
+		aiColor4D color;
+		if (scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
+		{
+			material->SetColor(color.r,color.g,color.b,color.a);
 		}
 
 		if (index >= 0)
 		{
 			if (scene->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
-				std::string fileName, extension;
+				
 				App->fileSystem->SplitFilePath(path.C_Str(), nullptr, &fileName, &extension);
 
 				fileName += "." + extension;
@@ -169,15 +171,14 @@ void Importer::SceneImporter::LoadMaterial(const aiScene* scene, const aiNode* n
 
 				material->SetTexture(Importer::TextureImp::Import(fileName.c_str()));
 
-				material->SetColor(color.r, color.g, color.b);
-
-				newGameObject->AddComponent(new CMaterial(newGameObject, fileName.c_str(), material));
 			}
 			else
 			{
 				LOG("(ERROR) Failed loading node texture: %s in node %s",path.C_Str(),node->mName.C_Str());
 			}
 		}
+
+		newGameObject->AddComponent(new CMaterial(newGameObject, fileName.c_str(), material));
 
 	}
 }
@@ -195,12 +196,7 @@ uint64 Importer::SceneImporter::SaveScene(ConfigNode* config, std::vector<GameOb
 	for (; item != gameObjects.end(); item++)
 	{
 		ConfigNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
-		//ConfigArray transform = newObject.InitArray("Transform"); //Transform array
-
-		//transform.AddNumber((*item)->transform->GetPosition().x);
-		//transform.AddNumber((*item)->transform->GetPosition().x);
-		//transform.AddNumber((*item)->transform->GetPosition().x);
-
+		
 		//Components -----------------------
 		ConfigArray components = newObject.InitArray("Components"); //Create array in GO node
 		std::vector<Component*> comps = (*item)->GetComponents();
@@ -240,7 +236,7 @@ void Importer::SceneImporter::SaveComponent(ConfigNode* node, Component* compone
 
 			cMaterial = (CMaterial*)component;
 
-			node->AddNumber("UID", cMaterial->GetTexture()->GetUID());
+			node->AddNumber("UID", cMaterial->GetMaterial()->GetUID());
 
 			break;
 	}

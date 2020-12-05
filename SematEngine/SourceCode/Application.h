@@ -34,6 +34,7 @@ private:
 
 	bool wantToExit;
 	bool wantToSave;
+	bool cleaningUp = false;
 
 	Timer*	frameTimer;
 	Timer*	secondsTimer;
@@ -66,7 +67,7 @@ public:
 	const char* GetTitle() const;
 	float GetFrameCap() const;
 
-	bool WantsToExit() const;
+	bool IsCleaningUp() const;
 
 private:
 

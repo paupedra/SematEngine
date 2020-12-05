@@ -6,8 +6,6 @@
 
 #include "CCamera.h"
 
-
-
 CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
@@ -18,14 +16,25 @@ CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 	frustum.SetViewPlaneDistances(0.1f, 10.0f);
 	frustum.SetPerspective(1.0f, 1.0f);
 
-	App->camera->currentCamera = this;
-	isCurrentCamera = true;
+	UpdatePlanes();
+
+	//App->camera->mainCamera = this;
+	//isCurrentCamera = true;
+
+	App->renderer3D->currentCamera = this;
 }
 
 void CCamera::Update()
 {
-	if(!isCurrentCamera)
-		App->renderer3D->DrawFrustum(frustum);
+	if (!isCurrentCamera)
+	{
+		vec* corners = new vec[8];
+		frustum.GetCornerPoints(corners);
+		App->renderer3D->DrawBox(corners);
+
+	}
+
+	
 }
 
 void CCamera::CleanUp()
@@ -39,9 +48,42 @@ float* CCamera::GetViewMatrix()
 	return (float*)mat.Transposed().v; //v is array pointer
 }
 
+void CCamera::UpdatePlanes()
+{
+	frustum.GetPlanes(planes);
+}
+
 void CCamera::Setposition(float3 pos)
 {
 	frustum.SetPos(pos);
+	UpdatePlanes();
+}
+
+void CCamera::SetNearPlane(float distance)
+{
+	frustum.SetViewPlaneDistances(distance,GetFarPlaneDistance());
+	UpdatePlanes();
+}
+
+void CCamera::SetFarPlane(float distance)
+{
+	frustum.SetViewPlaneDistances(GetNearPlaneDistance(), distance);
+	UpdatePlanes();
+}
+
+void CCamera::SetVerticalFov(float verticalFov)
+{
+	frustum.SetVerticalFovAndAspectRatio(verticalFov, frustum.AspectRatio());
+}
+
+void CCamera::SetHorizontalFov(float horizontalFov)
+{
+	frustum.SetHorizontalFovAndAspectRatio(horizontalFov,frustum.AspectRatio());
+}
+
+float CCamera::ComputeAspectRatio(float verticalFov,float horizontalFov)
+{
+	return (Tan(verticalFov / 2) / Tan(horizontalFov / 2));
 }
 
 Frustum CCamera::GetFrustum() const
@@ -52,4 +94,24 @@ Frustum CCamera::GetFrustum() const
 float3 CCamera::GetPos()const
 {
 	return frustum.Pos();
+}
+
+float CCamera::GetNearPlaneDistance()const
+{
+	return frustum.NearPlaneDistance();
+}
+
+float CCamera::GetFarPlaneDistance()const
+{
+	return frustum.FarPlaneDistance();
+}
+
+float CCamera::GetVerticalFov()const
+{
+	return frustum.VerticalFov();
+}
+
+float CCamera::GetHorizontalFov()const
+{
+	return frustum.HorizontalFov();
 }

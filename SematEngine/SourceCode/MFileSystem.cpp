@@ -64,7 +64,7 @@ bool MFileSystem::Init() //Config& config
 // Called before quitting
 bool MFileSystem::CleanUp()
 {
-	//LOG("Freeing File System subsystem");
+	LOG("Freeing File System");
 
 	return true;
 }

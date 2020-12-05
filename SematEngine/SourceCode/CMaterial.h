@@ -20,7 +20,7 @@ public:
 	static inline ComponentType GetType() { return ComponentType::MATERIAL; };
 
 	const char* GetPath()const;
-	RMaterial* GetTexture() const;
+	RMaterial* GetMaterial() const;
 
 	bool IsEnabled()const ;
 	void SwitchEnabledTexture();

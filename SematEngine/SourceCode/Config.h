@@ -1,4 +1,3 @@
-
 #include "Globals.h"
 #include "Dependecies/parson/parson.h"
 

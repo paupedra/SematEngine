@@ -183,15 +183,14 @@
     <ClInclude Include="ITexture.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Module.h" />
-    <ClInclude Include="MCamera3D.h" />
     <ClInclude Include="MFileSystem.h" />
     <ClInclude Include="MInput.h" />
+    <ClInclude Include="MCamera3D.h" />
     <ClInclude Include="MRenderer3D.h" />
     <ClInclude Include="MScene.h" />
     <ClInclude Include="MWindow.h" />
     <ClInclude Include="MResourceManager.h" />
     <ClInclude Include="PathNode.h" />
-    <ClInclude Include="Primitive.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RMaterial.h" />
@@ -205,6 +204,7 @@
     <ClInclude Include="WConsole.h" />
     <ClInclude Include="WHierarchy.h" />
     <ClInclude Include="WInspector.h" />
+    <ClInclude Include="WPlay.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -274,14 +274,13 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MCamera3D.cpp" />
     <ClCompile Include="MFileSystem.cpp" />
     <ClCompile Include="MInput.cpp" />
+    <ClCompile Include="MCamera3D.cpp" />
     <ClCompile Include="MRenderer3D.cpp" />
     <ClCompile Include="MScene.cpp" />
     <ClCompile Include="MWindow.cpp" />
     <ClCompile Include="MResourceManager.cpp" />
-    <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="RMaterial.cpp" />
@@ -295,6 +294,7 @@
     <ClCompile Include="WConsole.cpp" />
     <ClCompile Include="WHierarchy.cpp" />
     <ClCompile Include="WInspector.cpp" />
+    <ClCompile Include="WPlay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependecies\MathGeoLib\include\Geometry\KDTree.inl" />

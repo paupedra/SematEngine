@@ -43,6 +43,17 @@ void WConfiguration::Draw()
 		return;
 	}
 
+	DrawApplication();
+	DrawWindow();
+	DrawRender();
+	DrawInput();
+	DrawHardware();
+	
+	ImGui::End();
+}
+
+void WConfiguration::DrawApplication()
+{
 	if (ImGui::CollapsingHeader("Application"))
 	{
 		char appName[100];
@@ -66,7 +77,10 @@ void WConfiguration::Draw()
 
 		ImGui::PlotHistogram("MS", MS, IM_ARRAYSIZE(MS), 0, msStr, 0.0f, 100.0f, ImVec2(0, 80));
 	}
+}
 
+void WConfiguration::DrawWindow()
+{
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		int w = App->window->GetWidth();
@@ -74,30 +88,37 @@ void WConfiguration::Draw()
 		if (ImGui::SliderInt("Width", &w, 0, 1920)) { App->window->SetWidth(w); }
 		if (ImGui::SliderInt("Height", &h, 0, 1080)) { App->window->SetHeight(h); }
 	}
+}
 
+void WConfiguration::DrawRender()
+{
 	if (ImGui::CollapsingHeader("Render"))
 	{
-		if (ImGui::Checkbox("Vsync", &App->vsync )) { App->SwitchVsync(); }
-		if (ImGui::Checkbox("Wireframe Mode", &App->renderer3D->wireframeMode)) {  }
+		if (ImGui::Checkbox("Vsync", &App->vsync)) { App->SwitchVsync(); }
+		if (ImGui::Checkbox("Wireframe Mode", &App->renderer3D->wireframeMode)) {}
 		if (ImGui::Checkbox("GL_CULL_FACE", &App->renderer3D->glCullFace)) { App->renderer3D->SwitchCullFace(); }
 		if (ImGui::Checkbox("GL_DEPTH_TEST", &App->renderer3D->glDepthTest)) { App->renderer3D->SwitchDepthTest(); }
 		if (ImGui::Checkbox("GL_LIGHT", &App->renderer3D->glLighting)) { App->renderer3D->SwitchLighting(); }
 		if (ImGui::Checkbox("GL_COLOR_MATERIAL", &App->renderer3D->glColorMaterial)) { App->renderer3D->SwitchColorMaterial(); }
 		if (ImGui::Checkbox("GL_TEXTURE_2D", &App->renderer3D->glTexture2d)) { App->renderer3D->SwitchTexture2d(); }
+		if (ImGui::Checkbox("Draw All Bounding Boxes", &App->renderer3D->drawAllBoundingBoxes)) {}
 	}
+}
 
+void WConfiguration::DrawInput()
+{
 	if (ImGui::CollapsingHeader("Input"))
 	{
 		ImGui::Text("Mouse Position: %i,%i", App->input->GetMouseX(), App->input->GetMouseY());
 		ImGui::Text("Mouse motion: %i, %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
 		ImGui::Text("Mouse wheel: %i", App->input->GetMouseZ());
-		
+
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-			
+
 		ImGui::BeginChild("Input", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f, 260), false, window_flags);
-		
+
 		std::vector<const char*>::iterator item = inputs.begin();
-		for(; item != inputs.end(); ++item)
+		for (; item != inputs.end(); ++item)
 			ImGui::Text((*item));
 
 		if (scrollToBottomInputs)
@@ -107,7 +128,10 @@ void WConfiguration::Draw()
 		}
 		ImGui::EndChild();
 	}
+}
 
+void WConfiguration::DrawHardware()
+{
 	if (ImGui::CollapsingHeader("Hardware Detection and Software Versions"))
 	{
 		ImGui::Text("Cpu Count: %d cores", hardware.cpuCount);
@@ -116,8 +140,6 @@ void WConfiguration::Draw()
 		ImGui::Text("GPU vendor: %s", hardware.cpuVendor.c_str());
 		ImGui::Text("Renderer: %s", hardware.renderer.c_str());
 	}
-
-	ImGui::End();
 }
 
 void WConfiguration::UpdateFPS(int _FPS)

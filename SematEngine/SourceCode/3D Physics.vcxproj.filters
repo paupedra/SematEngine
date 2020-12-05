@@ -141,9 +141,6 @@
     <ClInclude Include="Dependecies\imgui\imgui_impl_sdl.h">
       <Filter>Dependencies\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Primitive.h">
-      <Filter>Source Code\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="PathNode.h">
       <Filter>Source Code\Containers</Filter>
     </ClInclude>
@@ -160,9 +157,6 @@
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="MFileSystem.h">
-      <Filter>Source Code\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="MCamera3D.h">
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="MEditor.h">
@@ -456,6 +450,12 @@
     <ClInclude Include="glmath.h">
       <Filter>Source Code\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="WPlay.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="MCamera3D.h">
+      <Filter>Source Code\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -509,9 +509,6 @@
     <ClCompile Include="Dependecies\imgui\imgui_impl_sdl.cpp">
       <Filter>Dependencies\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Primitive.cpp">
-      <Filter>Source Code\Helpers</Filter>
-    </ClCompile>
     <ClCompile Include="MResourceManager.cpp">
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
@@ -525,9 +522,6 @@
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="MFileSystem.cpp">
-      <Filter>Source Code\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="MCamera3D.cpp">
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="MEditor.cpp">
@@ -721,6 +715,12 @@
     </ClCompile>
     <ClCompile Include="glmath.cpp">
       <Filter>Source Code\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="WPlay.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="MCamera3D.cpp">
+      <Filter>Source Code\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -54,7 +54,7 @@ const char* CMaterial::GetPath()const
 	return path;
 }
 
-RMaterial* CMaterial::GetTexture() const
+RMaterial* CMaterial::GetMaterial() const
 {
 	return material;
 }

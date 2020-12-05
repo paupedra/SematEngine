@@ -70,7 +70,12 @@ Color* RMaterial::GetColor()const
 	return color;
 }
 
-void RMaterial::SetColor(float r, float g, float b, float a)
+void RMaterial::SetColor(Color color)
 {
-	color->Set(r,g,b,a);
+	this->color->Set(color);
+}
+
+void RMaterial::SetColor(float r, float g, float b , float a)
+{
+	this->color->Set(r, g, b, a);
 }

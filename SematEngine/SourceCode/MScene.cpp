@@ -4,8 +4,6 @@
 #include "GameObject.h"
 #include "Config.h"
 
-#include "Primitive.h"
-
 #include "MScene.h"
 #include "MCamera3D.h"
 #include "MInput.h"
@@ -38,8 +36,8 @@ bool MScene::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->Move(float3(1.0f, 1.0f, 0.0f));
-	App->camera->LookAt(float3(0, 0, 0));
+	App->camera->Move((1.0f, 1.0f, 0.0f));
+	App->camera->LookAt((0, 0, 0));
 
 	rootObject = CreateGameObject("rootObject","","",true);
 
@@ -56,7 +54,7 @@ bool MScene::Start()
 // Update
 update_status MScene::Update(float dt)
 {
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 
 	App->renderer3D->DrawScenePlane(200);
 

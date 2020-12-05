@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Resource.h"
+#include "glmath.h"
 
 #include "MWindow.h"
 #include "MCamera3D.h"
@@ -169,14 +170,11 @@ update_status MRenderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	if (App->camera->currentCamera != nullptr)
-	{
-		glLoadMatrixf(App->camera->currentCamera->GetViewMatrix());
-	}
-	//glLoadMatrixf(App->camera->GetRawViewMatrix());
+
+	glLoadMatrixf(App->camera->GetRawViewMatrix());
 		
 	// light 0 on cam pos
-	lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
+	//lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
 
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
@@ -220,8 +218,11 @@ void MRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,bool drawVertexNormals, bool drawBoundingBox)
+void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,bool drawVertexNormals, bool drawBoundingBox,GameObject* gameObject)
 {
+	if (!IsObjectInScreen(gameObject) && currentCamera->cull)
+		return;
+
 	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
 	
 	glPushMatrix();
@@ -247,13 +248,13 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 			}
 			else
 			{
-				Color color = material->GetColor()->Convert255();
-				glColor4f(color.r, color.g, color.b, color.a);
+				Color* color = material->GetColor();
+				glColor4f(color->r, color->g, color->b, color->a);
 			}
 		}
 		else
 		{
-			glColor4f(255, 100, 100, 255);
+			glColor4f(1, 1, 1, 1);
 		}
 	}
 
@@ -272,7 +273,7 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 	{
-		LOG("(ERROR) Problem drawing mesh: %s\n", gluErrorString(error));
+		//LOG("(ERROR) Problem drawing mesh: %s\n", gluErrorString(error));
 	}
 
 	glPopMatrix();
@@ -286,12 +287,23 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 
 	if (drawVertexNormals)
 		DrawVertexNormals(mesh,transform);
-	if (drawBoundingBox)
+
+	if (drawBoundingBox || drawAllBoundingBoxes)
 	{
-		float3 corners[8];
-		mesh->aabb.GetCornerPoints(corners);
-		DrawBox(corners, transform);
+		if(gameObject != nullptr)
+
+		if (gameObject->HasComponentType(ComponentType::MESH))
+		{
+			vec* corners = new vec[8];
+			gameObject->OBB.GetCornerPoints(corners);
+			DrawBox(corners);
+			gameObject->AABB.GetCornerPoints(corners);
+			DrawBox(corners);
+
+		}
 	}
+
+	glColor4f(1, 1, 1, 1);
 }
 
 void MRenderer3D::DrawVertexNormals(RMesh* mesh,float4x4 transform)
@@ -365,81 +377,13 @@ void MRenderer3D::CreateChekerTexture()
 
 }
 
-void MRenderer3D::DrawBox(float3* corners,float4x4 transform)
+void MRenderer3D::DrawBox(float3* corners)
 {
 	glColor4f(255, 255, 0, 255);
 	//mesh->aabb.GetCornerPoints(corners);
 
-	glPushMatrix();
-	glMultMatrixf((float*)&transform.Transposed());
-
 	glBegin(GL_LINES);
 	
-		//Between-planes right
-	glVertex3fv((GLfloat*)&corners[1]);
-	glVertex3fv((GLfloat*)&corners[5]);
-	glVertex3fv((GLfloat*)&corners[7]);
-	glVertex3fv((GLfloat*)&corners[3]);
-
-	//Between-planes left
-	glVertex3fv((GLfloat*)&corners[4]);
-	glVertex3fv((GLfloat*)&corners[0]);
-	glVertex3fv((GLfloat*)&corners[2]);
-	glVertex3fv((GLfloat*)&corners[6]);
-
-	//Far plane horizontal
-	glVertex3fv((GLfloat*)&corners[5]);
-	glVertex3fv((GLfloat*)&corners[4]);
-	glVertex3fv((GLfloat*)&corners[6]);
-	glVertex3fv((GLfloat*)&corners[7]);
-
-	//Near plane horizontal
-	glVertex3fv((GLfloat*)&corners[0]);
-	glVertex3fv((GLfloat*)&corners[1]);
-	glVertex3fv((GLfloat*)&corners[3]);
-	glVertex3fv((GLfloat*)&corners[2]);
-
-	//Near plane vertical
-	glVertex3fv((GLfloat*)&corners[1]);
-	glVertex3fv((GLfloat*)&corners[3]);
-	glVertex3fv((GLfloat*)&corners[0]);
-	glVertex3fv((GLfloat*)&corners[2]);
-
-	//Far plane vertical
-	glVertex3fv((GLfloat*)&corners[5]);
-	glVertex3fv((GLfloat*)&corners[7]);
-	glVertex3fv((GLfloat*)&corners[4]);
-	glVertex3fv((GLfloat*)&corners[6]);
-
-	glEnd();
-
-	glPopMatrix();
-	glColor4f(255, 255, 255, 255);
-}
-
-void MRenderer3D::DrawScenePlane(int size)
-{
-	glLineWidth(1.0f);
-	glBegin(GL_LINES);
-
-	for (int i = -size; i <= size; i++)
-	{
-		glVertex3d(i, 0,-size);
-		glVertex3d(i, 0, size);
-		glVertex3d(size, 0, i);
-		glVertex3d(-size, 0, i);
-	}
-	glEnd();
-}
-
-void MRenderer3D::DrawFrustum(Frustum frustum)
-{
-	float3 corners[8];
-	frustum.GetCornerPoints(corners);
-	glColor4f(255, 255, 0, 255);
-
-	glBegin(GL_LINES);
-
 	//Between-planes right
 	glVertex3fv((GLfloat*)&corners[1]);
 	glVertex3fv((GLfloat*)&corners[5]);
@@ -477,9 +421,57 @@ void MRenderer3D::DrawFrustum(Frustum frustum)
 	glVertex3fv((GLfloat*)&corners[6]);
 
 	glEnd();
-
-	glPopMatrix();
 	glColor4f(255, 255, 255, 255);
+}
+
+void MRenderer3D::DrawScenePlane(int size)
+{
+	glLineWidth(1.0f);
+	glBegin(GL_LINES);
+
+	for (int i = -size; i <= size; i++)
+	{
+		glVertex3d(i, 0,-size);
+		glVertex3d(i, 0, size);
+		glVertex3d(size, 0, i);
+		glVertex3d(-size, 0, i);
+	}
+	glEnd();
+}
+
+bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
+{
+	float3 corners[8];
+	int iTotalIn = 0;
+	gameObject->AABB.GetCornerPoints(corners); // get the corners of the box into the vCorner array
+
+	// test all 8 corners against the 6 sides
+	// if all points are behind 1 specific plane, we are out
+	// if we are in with all points, then we are fully in
+
+	for (int plane = 0; plane < 6; ++plane) {
+
+		int iInCount = 8;
+		int iPtIn = 1;
+
+		for (int i = 0; i < 8; ++i) {
+			// test this point against the planes
+			if (currentCamera->planes[plane].IsOnPositiveSide(corners[i])) { //<-- “IsOnPositiveSide” from MathGeoLib
+				iPtIn = 0;
+				--iInCount;
+			}
+		}
+		// were all the points outside of plane p?
+		if(iInCount == 0)
+			return(false);
+		// check if they were all on the right side of the plane
+		iTotalIn += iPtIn;
+	}
+	// so if iTotalIn is 6, then all are inside the view
+	if (iTotalIn == 6)
+		return(true);
+	// we must be partly in then otherwise
+	return(true);
 }
 
 void MRenderer3D::SwitchCullFace()

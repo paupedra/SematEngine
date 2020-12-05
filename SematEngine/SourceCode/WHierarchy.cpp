@@ -41,6 +41,25 @@ void WHierarchy::Draw()
 	std::vector<GameObject*>::iterator item = App->scene->rootObject->children.begin();
 	for (; item != App->scene->rootObject->children.end(); ++item)
 		DrawTree((*item));
+
+	//Right click
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+	{
+		if (ImGui::IsWindowHovered())
+		{
+			ImGui::OpenPopup("HierarchyRightClick");
+		}
+	}
+
+	if(ImGui::BeginPopup("HierarchyRightClick"))
+	{
+		if(ImGui::Selectable("Create Empty"))
+		{
+			LOG("Create Emty child here");
+		}
+
+		ImGui::EndPopup();
+	}
 		
 	ImGui::End();
 }

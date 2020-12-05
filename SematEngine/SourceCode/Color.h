@@ -19,6 +19,8 @@ struct Color
 		this->a = a;
 	}
 
+	void Set(Color color);
+
 	Color Convert255();
 
 	float* operator & ()

@@ -25,8 +25,9 @@ public:
 	RTexture* GetTexture()const;
 	Color* GetColor()const;
 
-	void SetColor(float r = 0, float g = 0, float b = 0, float a = 1.f);
-	
+	void SetColor(float r = 1, float g = 1, float b = 1, float a = 1.f);
+	void SetColor(Color color);
+
 private:
 	RTexture* texture;
 	Color* color;

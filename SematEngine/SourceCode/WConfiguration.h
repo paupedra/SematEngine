@@ -22,6 +22,12 @@ public:
 	void Init() override;
 	void Draw() override;
 
+	void DrawApplication();
+	void DrawWindow();
+	void DrawRender();
+	void DrawInput();
+	void DrawHardware();
+
 	void UpdateFPS(int _FPS);
 	void UpdateMS(int _ms);
 	void AddInput(const char* input);

@@ -1,9 +1,12 @@
 #include "Globals.h"
 #include "GameObject.h"
 #include "Component.h"
+#include "Resource.h"
 
 #include "CTransform.h"
 #include "CMesh.h"
+
+#include "RMesh.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -24,6 +27,8 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
+	UpdateBoundingBoxes();
+
 	if (!components.empty())
 	{
 		std::vector<Component*>::iterator item = components.begin();
@@ -55,7 +60,7 @@ Component* GameObject::AddComponent(Component* component)
 	
 	switch (type)
 	{
-	case ComponentType::TRANSFORM:
+		case ComponentType::TRANSFORM:
 
 			components.push_back(component);
 			transform = (CTransform*)component;
@@ -63,12 +68,9 @@ Component* GameObject::AddComponent(Component* component)
 
 		case ComponentType::MESH:
 			
-			if (!HasComponentType(ComponentType::MESH))
-			{
-				components.push_back(component);
-			}
-			else
-				LOG("(ERROR) Error adding Mesh: Object already has Mesh");
+			
+			components.push_back(component);
+			
 			
 			break;
 
@@ -129,6 +131,18 @@ bool GameObject::HasComponentType(ComponentType type)
 	}
 
 	return ret;
+}
+
+void GameObject::UpdateBoundingBoxes()
+{
+	if (HasComponentType(ComponentType::MESH))
+	{
+		OBB = GetComponent<CMesh>()->GetMesh()->aabb;
+		OBB.Transform(transform->GetGlobalTransform());
+
+		AABB.SetNegativeInfinity();
+		AABB.Enclose(OBB);
+	}
 }
 
 void GameObject::Enable()

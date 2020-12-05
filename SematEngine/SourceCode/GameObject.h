@@ -5,6 +5,9 @@
 #include <vector>
 
 #include "Component.h"
+#include "Dependecies/MathGeoLib/include/Geometry/AABB.h"
+#include "Dependecies/MathGeoLib/include/Geometry/OBB.h"
+
 enum class ComponentType;
 class CTransform;
 class CMesh;
@@ -34,6 +37,8 @@ public:
 	bool HasComponentType(ComponentType type);
 	void UpdatedTransform();
 
+	void UpdateBoundingBoxes();
+
 	template<typename CTemplate>
 	const CTemplate* GetComponent() const
 	{
@@ -57,6 +62,9 @@ public:
 	CTransform* transform = nullptr;
 	std::vector<GameObject*> children;
 	GameObject* parent = nullptr;
+
+	OBB OBB;
+	AABB AABB;
 };
 
 #endif //__GAMEOBJECT__

@@ -54,12 +54,12 @@ void CMesh::DrawMesh()
 	{
 		if (material->IsEnabled())
 		{
-			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), material->GetTexture() ,drawVertexNormals,drawAABB);
+			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), material->GetMaterial() ,drawVertexNormals,drawAABB,owner);
 			return;
 		}
 	}
 
-	App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(),nullptr, drawVertexNormals,drawAABB);
+	App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(),nullptr, drawVertexNormals,drawAABB,owner);
 
 	//App->renderer3D->DrawBoundingBox(mesh,owner->transform->GetGlobalTransform());
 }

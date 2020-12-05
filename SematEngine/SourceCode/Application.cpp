@@ -186,6 +186,8 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
+	cleaningUp = true;
+
 	for( auto item = modules.begin(); item != modules.end() && ret == true; ++item)
 	{
 		ret = (*item)->CleanUp();
@@ -270,9 +272,9 @@ void Application::AddModule(Module* mod)
 	modules.push_back(mod);
 }
 
-bool Application::WantsToExit() const
+bool Application::IsCleaningUp() const
 {
-	return wantToExit;
+	return cleaningUp;
 }
 
 Application* App = nullptr;

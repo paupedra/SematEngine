@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Window.h"
 #include "Resource.h"
+#include "Color.h"
 
 #include "MScene.h"
 
@@ -128,10 +129,18 @@ void WInspector::DrawMaterial(CMaterial* component)
 {
 	if (ImGui::CollapsingHeader("Material"))
 	{
-		ImGui::Text("Path: %s", component->GetPath());
-		ImGui::Text("Texture height: %d", component->GetTexture()->GetHeight());
-		ImGui::Text("Texture width: %d", component->GetTexture()->GetWidth());
-		if (ImGui::Checkbox("DrawTexture", &component->GetTexture()->drawTexture)) {}
+		if (component->GetMaterial()->GetTexture() != nullptr)
+		{
+			ImGui::Text("Path: %s", component->GetPath());
+			ImGui::Text("Texture height: %d", component->GetMaterial()->GetHeight());
+			ImGui::Text("Texture width: %d", component->GetMaterial()->GetWidth());
+			if (ImGui::Checkbox("DrawTexture", &component->GetMaterial()->drawTexture)) {}
+		}
+
+		Color* color = component->GetMaterial()->GetColor();
+		if (ImGui::DragFloat3("Color", (float*)color, 0.1f)) { component->GetMaterial()->SetColor(*color); }
+
+
 	}
 }
 
@@ -142,7 +151,36 @@ void WInspector::DrawCamera(CCamera* component)
 	if (ImGui::CollapsingHeader("Camera"))
 	{
 		float3 pos = component->GetPos();
-		ImGui::InputFloat3("Position",(float*)&pos ,"%.2f" , ImGuiInputTextFlags_ReadOnly);
+		if (ImGui::DragFloat3("Position", (float*)&pos,0.5))
+		{
+			component->Setposition(pos);
+		}
+
+		float nearPlane = component->GetNearPlaneDistance();
+		if (ImGui::DragFloat("Near Plane Distance", &nearPlane, 0.5f,0.f))
+		{
+			component->SetNearPlane(nearPlane);
+		}
+
+		float farPlane = component->GetFarPlaneDistance();
+		if (ImGui::DragFloat("Far Plane Distance", &farPlane, 0.5f,0.1f))
+		{
+			component->SetFarPlane(farPlane);
+		}
+
+		float verticalFov = component->GetVerticalFov();
+		if (ImGui::DragFloat("Vertical Fov", &verticalFov, 0.1f, 0.1f))
+		{
+			component->SetVerticalFov(verticalFov);
+		}
+
+		float horizontalFov = component->GetHorizontalFov();
+		if (ImGui::DragFloat("Horizontal Fov", &horizontalFov, 0.1f, 0.1f))
+		{
+			component->SetHorizontalFov(horizontalFov);
+		}
+
+		ImGui::Checkbox("CUlling", &component->cull);
 	}
 }
 

@@ -12,6 +12,7 @@
 class RMesh;
 class RMaterial;
 class CCamera;
+class GameObject;
 typedef void* SDL_GLContext;
 
 #define MAX_LIGHTS 8
@@ -29,13 +30,14 @@ public:
 	bool CleanUp();
 
 	void OnResize(int width, int height);
-	void DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material, bool drawVertexNormals = false, bool drawBoundingBox = false);
+	void DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material, bool drawVertexNormals = false, bool drawBoundingBox = false, GameObject* gameObject = nullptr);
 	void DrawVertexNormals(RMesh* mesh, float4x4 transform);
 	void GenerateBuffers(RMesh* newMesh);
 	void CreateChekerTexture();
-	void DrawBox(float3* corners, float4x4 transform);
+	void DrawBox(float3* corners);
 	void DrawScenePlane(int size);
-	void DrawFrustum(Frustum frustum);
+
+	bool IsObjectInScreen(GameObject* gameObject);
 
 	void SwitchCullFace(); //This is ugly sorry
 	void SwitchDepthTest();
@@ -50,9 +52,13 @@ public:
 	mat3x3 normalMatrix;
 	mat4x4 projectionMatrix;
 
+	CCamera* currentCamera = nullptr;
+
 	uint checkersId;	//Default texture id
 
 	bool wireframeMode;
+
+	bool drawAllBoundingBoxes = false;
 
 	bool glCullFace;
 	bool glLighting;

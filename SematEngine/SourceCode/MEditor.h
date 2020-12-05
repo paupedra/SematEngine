@@ -10,6 +10,7 @@ class WAbout;
 class WHierarchy;
 class WInspector;
 class WAssets;
+class WPlay;
 struct HardwareInfo;
 class ConfigNode;
 
@@ -49,4 +50,5 @@ public:
 	WHierarchy* hierarchy = nullptr;
 	WInspector* inspector = nullptr;
 	WAssets* assets = nullptr;
+	WPlay* play = nullptr;
 };

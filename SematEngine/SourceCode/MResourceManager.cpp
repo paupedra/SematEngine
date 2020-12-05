@@ -22,7 +22,8 @@ bool MResourceManager::Init()
 
 bool MResourceManager::CleanUp()
 {
-	return true;
+	LOG("Cleaning Resource System");
+	return true;;
 }
 
 uint ImportFile(const char* newFileInAssets)

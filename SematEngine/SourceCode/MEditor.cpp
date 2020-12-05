@@ -16,6 +16,7 @@
 #include "WHierarchy.h"
 #include "WInspector.h"
 #include "WAssets.h"
+#include "WPlay.h"
 
 #include "IScene.h"
 
@@ -39,6 +40,7 @@ MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 	hierarchy = new WHierarchy(true);
 	inspector = new WInspector(true);
 	assets = new WAssets(true);
+	play = new WPlay(true);
 
 	AddWindow(configuration);
 	AddWindow(console);
@@ -46,6 +48,7 @@ MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 	AddWindow(hierarchy);
 	AddWindow(inspector);
 	AddWindow(assets);
+	AddWindow(play);
 }
 
 MEditor::~MEditor()
@@ -90,13 +93,15 @@ bool MEditor::CleanUp()
 
 	std::vector<Window*>::iterator item = windows.begin();
 	for (item; item != windows.end(); ++item)
+	{
 		(*item)->CleanUp();
+	}
 
-	delete console;
-	delete configuration;
-	delete about;
-	delete hierarchy;
-	delete inspector;
+	RELEASE(console);
+	RELEASE(configuration);
+	RELEASE(about);
+	RELEASE(hierarchy);
+	RELEASE(inspector);
 
 	windows.clear();
 
