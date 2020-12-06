@@ -6,6 +6,8 @@
 
 #include "CCamera.h"
 
+#include "Dependecies/mmgr/mmgr.h"
+
 CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
@@ -22,13 +24,15 @@ CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 	//isCurrentCamera = true;
 
 	App->renderer3D->currentCamera = this;
+
+	corners = new vec[8];
 }
 
 void CCamera::Update()
 {
 	if (!isCurrentCamera)
 	{
-		vec* corners = new vec[8];
+		
 		frustum.GetCornerPoints(corners);
 		App->renderer3D->DrawBox(corners);
 
@@ -39,7 +43,7 @@ void CCamera::Update()
 
 void CCamera::CleanUp()
 {
-
+	delete[] corners;
 }
 
 float* CCamera::GetViewMatrix()

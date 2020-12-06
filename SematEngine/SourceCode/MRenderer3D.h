@@ -37,6 +37,8 @@ public:
 	void DrawBox(float3* corners);
 	void DrawScenePlane(int size);
 
+	void DrawStencilScaled(RMesh* mesh, float4x4 transform, RMaterial* material, bool drawVertexNormals = false, bool drawBoundingBox = false, GameObject* gameObject = nullptr);
+
 	bool IsObjectInScreen(GameObject* gameObject);
 
 	void SwitchCullFace(); //This is ugly sorry

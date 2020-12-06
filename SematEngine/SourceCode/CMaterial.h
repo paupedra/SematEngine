@@ -4,6 +4,7 @@
 class Component;
 class RMaterial;
 class ConfigNode;
+class RTexture;
 
 class CMaterial : public Component
 {
@@ -18,6 +19,8 @@ public:
 	void OnSave(ConfigNode* node);
 
 	static inline ComponentType GetType() { return ComponentType::MATERIAL; };
+
+	void SetTexture(RTexture* texture);
 
 	const char* GetPath()const;
 	RMaterial* GetMaterial() const;

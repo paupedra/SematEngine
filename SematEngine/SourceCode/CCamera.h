@@ -45,4 +45,5 @@ public:
 	bool isCurrentCamera = false;
 	bool cull = true;
 	Plane planes[6];
+	vec* corners;
 };

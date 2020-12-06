@@ -2,12 +2,19 @@
 
 #include "RTexture.h"
 
+#include "Dependecies/mmgr/mmgr.h"
+
 RTexture::RTexture()
 {
 
 }
 
 RTexture::~RTexture()
+{
+
+}
+
+void RTexture::CleanUp()
 {
 
 }

@@ -68,6 +68,9 @@ void WConfiguration::DrawApplication()
 		char fpsStr[20] = "FPS: ";
 		strcat(fpsStr, string);
 
+		std::string str = std::to_string(FPS[19]);
+		
+
 		ImGui::PlotHistogram("FPS", FPS, IM_ARRAYSIZE(FPS), 0, fpsStr, 0.0f, 144.0f, ImVec2(0, 80));
 		if (ImGui::SliderInt("FPS Slider", &fps, 5, 144)) { App->SetFrameCap(fps); }
 

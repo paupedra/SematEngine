@@ -22,6 +22,7 @@ public:
 	bool CleanUp();
 
 	uint Find(const char* file_in_assets) const;
+	void Import(const char* path);
 	uint ImportFile(const char* newFileInAssets);
 	uint GenerateNewUID();
 

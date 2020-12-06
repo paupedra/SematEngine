@@ -4,6 +4,8 @@
 #include "RMaterial.h"
 #include "RTexture.h"
 
+#include "Dependecies/mmgr/mmgr.h"
+
 RMaterial::RMaterial()
 {
 	texture = nullptr;
@@ -18,6 +20,15 @@ RMaterial::RMaterial(RTexture* texture) : texture(texture)
 RMaterial::~RMaterial()
 {
 
+}
+
+void RMaterial::CleanUp()
+{
+	if(texture != nullptr)
+		texture->CleanUp();
+
+	delete color;
+	delete texture;
 }
 
 void RMaterial::SetId(uint id)

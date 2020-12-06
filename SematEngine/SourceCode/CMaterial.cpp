@@ -39,6 +39,8 @@ void CMaterial::Update()
 
 void CMaterial::CleanUp()
 {
+	material->CleanUp();
+
 	delete material;
 }
 
@@ -47,6 +49,11 @@ void CMaterial::OnSave(ConfigNode* node)
 	//color
 
 	//id textura?
+}
+
+void CMaterial::SetTexture(RTexture* texture)
+{
+	material->SetTexture(texture);
 }
 
 const char* CMaterial::GetPath()const

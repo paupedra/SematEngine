@@ -11,6 +11,8 @@ public:
 	RTexture();
 	~RTexture();
 
+	void CleanUp() override;
+
 	void SetId(uint id);
 	void SetHeight(uint height);
 	void SetWidth(uint width);

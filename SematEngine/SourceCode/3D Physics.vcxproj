@@ -88,6 +88,11 @@
     <ClInclude Include="Dependecies\Glew\include\glew.h" />
     <ClInclude Include="Dependecies\Glew\include\glxew.h" />
     <ClInclude Include="Dependecies\Glew\include\wglew.h" />
+    <ClInclude Include="Dependecies\ImGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="Dependecies\ImGuizmo\ImGradient.h" />
+    <ClInclude Include="Dependecies\ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="Dependecies\ImGuizmo\ImSequencer.h" />
+    <ClInclude Include="Dependecies\ImGuizmo\ImZoomSlider.h" />
     <ClInclude Include="Dependecies\imgui\imconfig.h" />
     <ClInclude Include="Dependecies\imgui\imgui.h" />
     <ClInclude Include="Dependecies\imgui\imgui_impl_opengl3.h" />
@@ -215,6 +220,10 @@
     <ClCompile Include="CMaterial.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CTransform.cpp" />
+    <ClCompile Include="Dependecies\ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="Dependecies\ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="Dependecies\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="Dependecies\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_draw.cpp" />

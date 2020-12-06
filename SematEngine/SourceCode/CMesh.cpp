@@ -40,6 +40,7 @@ void CMesh::Update()
 
 void CMesh::CleanUp()
 {
+	mesh->CleanUp();
 	delete mesh;
 }
 

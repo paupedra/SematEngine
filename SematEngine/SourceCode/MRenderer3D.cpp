@@ -142,6 +142,7 @@ bool MRenderer3D::Init()
 		
 		glEnable(GL_LINE);
 		glEnable(GL_DEPTH_TEST);
+	
 		glEnable(GL_CULL_FACE);
 		//glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
@@ -150,8 +151,13 @@ bool MRenderer3D::Init()
 
 		//glEnable(GL_ALPHA_TEST);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		//glAlphaFunc(GL_GREATER, 0.3);
+
+		//glDepthFunc(GL_LESS); //hmmmm
+		glEnable(GL_STENCIL_TEST); //Stencil things
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+
 	}
 
 	// Projection matrix for
@@ -166,12 +172,15 @@ bool MRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status MRenderer3D::PreUpdate(float dt)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
 
 	glLoadMatrixf(App->camera->GetRawViewMatrix());
+
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		
 	// light 0 on cam pos
 	//lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
@@ -187,6 +196,9 @@ update_status MRenderer3D::PostUpdate(float dt)
 {
 	//ImGui::ShowDemoWindow();
 
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	
 	BROFILER_CATEGORY("Draw imgui", Profiler::Color::AliceBlue)
 	App->editor->Draw();
 
@@ -220,6 +232,16 @@ void MRenderer3D::OnResize(int width, int height)
 
 void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,bool drawVertexNormals, bool drawBoundingBox,GameObject* gameObject)
 {
+	glStencilMask(0x00);
+
+	bool doStencil = false;
+	if (gameObject == App->scene->selectedObject && gameObject != nullptr) //Stencil selection
+	{
+		doStencil = true;
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+	}
+
 	if (!IsObjectInScreen(gameObject) && currentCamera->cull)
 		return;
 
@@ -270,12 +292,6 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[RMesh::index]);
 	glDrawElements(GL_TRIANGLES, mesh->buffersSize[RMesh::index], GL_UNSIGNED_INT, nullptr);
 
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR)
-	{
-		//LOG("(ERROR) Problem drawing mesh: %s\n", gluErrorString(error));
-	}
-
 	glPopMatrix();
 
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -303,7 +319,66 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 		}
 	}
 
+	if (doStencil)
+	{
+		DrawStencilScaled(mesh,transform,material,drawVertexNormals,drawBoundingBox,gameObject);
+	}
+
 	glColor4f(1, 1, 1, 1);
+}
+
+void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, RMaterial* material, bool drawVertexNormals, bool drawBoundingBox, GameObject* gameObject)
+{
+	glColor4f(0.5, 0.5, 1, 1);
+
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	//glDisable(GL_DEPTH_TEST);
+	float scaleFactor = 1.03f;
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//------------------------------------------ Draw object bigger
+	glPushMatrix();
+	float3 position, scale;
+	Quat rotation;
+	float4x4 scaledTransform = transform;
+
+	scaledTransform.Decompose(position,rotation,scale);
+	scale *= scaleFactor;
+	scaledTransform = float4x4::FromTRS(position, rotation, scale);
+
+	glMultMatrixf((float*)&scaledTransform.Transposed());
+
+	glLineWidth(2);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::texture]);
+	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::normal]);
+	glNormalPointer(GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::vertex]);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[RMesh::index]);
+	glDrawElements(GL_TRIANGLES, mesh->buffersSize[RMesh::index], GL_UNSIGNED_INT, nullptr);
+
+	glPopMatrix();
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//------------------------------------------
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 void MRenderer3D::DrawVertexNormals(RMesh* mesh,float4x4 transform)

@@ -5,6 +5,8 @@
 
 #include "Dependecies/imgui/imgui.h"
 
+#include "Dependecies/mmgr/mmgr.h"
+
 WPlay::WPlay(bool _active) : Window(_active)
 {
 

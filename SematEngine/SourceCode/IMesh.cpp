@@ -74,32 +74,6 @@ std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
                 }
             }
 
-            ////Save and load trying
-            //uint64 id = Importer::MeshImporter::Save(*newMesh);
-
-            ////Load shit
-            //std::string filename = "Library/Meshes/";
-
-            //char tmp[5];
-            //sprintf(tmp, "%d", id); //id into char
-            //filename += tmp;
-            //LOG("Loading filename: %s", filename.c_str());
-            //char* buffer;
-
-            //App->fileSystem->Load(filename.c_str(), &buffer);
-
-            //Mesh* newNewMesh = new Mesh();
-
-            //Importer::MeshImporter::Load(buffer,newNewMesh);
-
-            //newMesh->path = file;
-
-            //newMesh->buffersSize[0] = newNewMesh->buffersSize[0];
-            //newMesh->buffersSize[1] = newNewMesh->buffersSize[1];
-            //newMesh->buffersSize[2] = newNewMesh->buffersSize[2];
-            //newMesh->buffersSize[3] = newNewMesh->buffersSize[3];
-            ////
-
             App->renderer3D->GenerateBuffers(newMesh);
 
             ret.push_back(newMesh);
@@ -113,6 +87,7 @@ std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
     }
 
     delete timeImporting;
+
 
     return ret;
 }
@@ -165,7 +140,7 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
             }
         }
 
-        //generate bounding bos
+        //generate bounding box
         newMesh->aabb.SetNegativeInfinity();
         newMesh->aabb.Enclose((float3*)newMesh->vertices, newMesh->buffersSize[RMesh::vertex]);
 

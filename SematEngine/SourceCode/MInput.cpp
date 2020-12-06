@@ -7,6 +7,7 @@
 #include "MRenderer3D.h"
 #include "MScene.h"
 #include "MEditor.h"
+#include "MResourceManager.h"
 
 #include "CMaterial.h"
 
@@ -145,25 +146,10 @@ update_status MInput::PreUpdate(float dt)
 
 			case (SDL_DROPFILE):
 
-				LOG("File was dropped");
+				LOG("File was dropped: %s",e.drop.file);
 
-				if (strstr(e.drop.file, ".fbx") != nullptr || strstr(e.drop.file, ".FBX") != nullptr)
-				{
-					LOG("Loading .FBX file");
-					//std::string export 
-					Importer::SceneImporter::Import(e.drop.file);
-				}
-
-				if (strstr(e.drop.file, ".png") != nullptr || strstr(e.drop.file, ".dds") != nullptr || strstr(e.drop.file, ".PNG") != nullptr || strstr(e.drop.file, ".DDS") != nullptr)
-				{
-					LOG("Loading .png /.dds file");
-					if (App->scene->selectedObject == nullptr)
-					{
-						LOG("There is no GameObject selected"); break;
-					}
-					App->scene->selectedObject->AddComponent(new CMaterial(App->scene->selectedObject, e.drop.file, new RMaterial(Importer::TextureImp::Import(e.drop.file))));
-				}
-
+				App->resourceManager->Import(e.drop.file);
+				
 				break;
 		}
 	}

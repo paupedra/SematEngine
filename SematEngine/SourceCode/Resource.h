@@ -17,6 +17,8 @@ public:
 	Resource();
 	~Resource();
 
+	virtual void CleanUp()=0;
+
 	void SetUID(uint UID);
 
 	uint GetUID()const;

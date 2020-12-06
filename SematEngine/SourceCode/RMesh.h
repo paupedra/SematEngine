@@ -11,6 +11,8 @@ public:
 	RMesh();
 	~RMesh();
 
+	void CleanUp() override;
+
 	enum Buffers
 	{
 		index,
@@ -28,7 +30,6 @@ public:
 	float* vertices = nullptr;
 	float* normals = nullptr;
 	float* textureCoords = nullptr;
-
 
 	const char* path;
 
