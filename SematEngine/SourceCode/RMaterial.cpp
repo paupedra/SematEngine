@@ -17,6 +17,11 @@ RMaterial::RMaterial(RTexture* texture) : texture(texture)
 	color = new Color(1, 1, 1, 1);
 }
 
+RMaterial::RMaterial(uint UID) : Resource(UID)
+{
+	color = new Color(1, 1, 1, 1);
+}
+
 RMaterial::~RMaterial()
 {
 

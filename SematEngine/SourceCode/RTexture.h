@@ -9,6 +9,7 @@ class RTexture : public Resource
 public:
 
 	RTexture();
+	RTexture(uint UID);
 	~RTexture();
 
 	void CleanUp() override;

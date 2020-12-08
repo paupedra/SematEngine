@@ -20,6 +20,7 @@
 #include "IScene.h"
 
 #include "RMaterial.h"
+#include "RMesh.h"
 
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/mmgr/mmgr.h"
@@ -36,8 +37,8 @@ bool MScene::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->Move((1.0f, 1.0f, 0.0f));
-	App->camera->LookAt((0, 0, 0));
+	App->camera->Move(float3(1.0f, 1.0f, 0.0f));
+	//App->camera->LookAt(float3(0, 0, 0));
 
 	rootObject = CreateGameObject("rootObject","","",true);
 
@@ -59,9 +60,23 @@ update_status MScene::Update(float dt)
 	App->renderer3D->DrawScenePlane(200);
 
 	//Update GameObjects in scene
-	std::vector<GameObject*>::iterator item = gameObjects.begin();
-	for (; item != gameObjects.end(); ++item)
-		(*item)->Update();
+	//std::vector<GameObject*>::iterator item = gameObjects.begin();
+	for (int i = 0; i < gameObjects.size(); ++i)
+	{
+		if (gameObjects[i]->IsToBeDestroyed())
+		{
+			LOG("%s was destroyed!", gameObjects[i]->GetName());
+			gameObjects[i]->CleanUp(); 
+			RELEASE(gameObjects[i]);
+
+			gameObjects.erase(gameObjects.begin() + i);
+
+			i--;
+			continue;
+		}
+
+		gameObjects[i]->Update();
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -79,7 +94,8 @@ bool MScene::CleanUp()
 	for (; item != gameObjects.end(); ++item)
 	{
 		(*item)->CleanUp();
-		delete (*item);
+		RELEASE(*item);
+		
 	}
 
 	gameObjects.clear();
@@ -92,16 +108,15 @@ bool MScene::Save(ConfigNode* config)
 	bool ret = true;
 	LOG("Saving scene");
 
-	
-	
 	return ret;
 }
 
 void MScene::SaveScene()
 {
+	LOG("Started saving current scene");
 	ConfigNode sceneNode;
 
-	uint64 id = Importer::SceneImporter::SaveScene(&sceneNode, gameObjects);
+	uint64 id = SaveSceneNode(&sceneNode, gameObjects);
 
 	std::string path = "Library/Scenes/";
 	std::string idString = std::to_string(id);
@@ -112,6 +127,69 @@ void MScene::SaveScene()
 	uint size = sceneNode.Serialize(&buffer); //Saves for now
 	App->fileSystem->Save(path.c_str(), buffer, size);
 }
+
+uint MScene::SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObjects)
+{
+	JSON_Value* currentNode;
+	config->rootNode = json_value_init_object(); //root
+	config->node = json_value_get_object(config->rootNode);
+
+	//gameObjects -----------------------
+	ConfigArray gameObjectsJson = config->InitArray("GameObjects");
+
+	std::vector<GameObject*>::iterator item = gameObjects.begin();
+	for (; item != gameObjects.end(); item++)
+	{
+		ConfigNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
+
+		//Components -----------------------
+		ConfigArray components = newObject.InitArray("Components"); //Create array in GO node
+		std::vector<Component*> comps = (*item)->GetComponents();
+		for (int i = 0; i < comps.size(); i++)
+		{
+			ConfigNode newComponent = components.AddNode(); //Add Component object
+
+			newComponent.AddNumber("Type", (double)comps[i]->GetType());
+			SaveSceneComponent(&newComponent, comps[i]);
+		}
+	}
+
+	return 5467;
+}
+
+void MScene::SaveSceneComponent(ConfigNode* node, Component* component)
+{
+	CMesh* cMesh = nullptr;
+	CMaterial* cMaterial = nullptr;
+	CTransform* cTransform = nullptr;
+
+	switch (component->GetType())
+	{
+		case ComponentType::TRANSFORM:
+
+			cTransform = (CTransform*)component;
+			cTransform->OnSave(node);
+
+			break;
+
+		case ComponentType::MESH:
+
+			cMesh = (CMesh*)component;
+			node->AddNumber("UID", cMesh->GetMesh()->GetUID());
+			cMesh->OnSave(node);
+
+			break;
+
+		case ComponentType::MATERIAL:
+
+			cMaterial = (CMaterial*)component;
+			node->AddNumber("UID", cMaterial->GetMaterial()->GetUID());
+			cMaterial->OnSave(node);
+
+			break;
+	}
+}
+
 
 GameObject* MScene::CreateGameObject(char* name, char* meshPath,char* texturePath, bool isRoot)
 {
@@ -172,4 +250,35 @@ void MScene::SetSelectedObject(GameObject* object)
 		selectedObject = object;
 		LOG("Object selected: %s", selectedObject->GetName());
 	}
+	else
+	{
+		selectedObject = nullptr;
+	}
+}
+
+std::vector<GameObject*>::iterator MScene::FindGameObject(GameObject* gameObject)
+{
+
+	return gameObjects.begin();
+}
+
+void MScene::PrepareToDestroyGameObject(GameObject* gameObject)
+{
+	gameObject->parent->EraseChild(gameObject);
+	SetToDestroyGameObject(gameObject);
+}
+
+void MScene::SetToDestroyGameObject(GameObject* gameObject)
+{
+	gameObject->SetToBeDestroyed();
+
+	for (std::vector<GameObject*>::iterator child = gameObject->children.begin(); child != gameObject->children.end(); child++)
+	{
+		SetToDestroyGameObject((*child));
+	}
+}
+
+void MScene::EraseGameObject(std::vector<GameObject*>::iterator gameObject)
+{
+	gameObjects.erase(gameObject);
 }

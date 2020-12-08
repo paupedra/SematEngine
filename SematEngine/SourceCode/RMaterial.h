@@ -11,6 +11,7 @@ public:
 
 	RMaterial();
 	RMaterial(RTexture* texture);
+	RMaterial(uint UID);
 	~RMaterial();
 
 	void CleanUp() override;

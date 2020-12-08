@@ -9,6 +9,7 @@ class RMesh : public Resource
 public:
 
 	RMesh();
+	RMesh(uint UID);
 	~RMesh();
 
 	void CleanUp() override;

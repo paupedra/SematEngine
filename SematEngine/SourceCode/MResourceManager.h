@@ -5,7 +5,6 @@
 #include "Module.h"
 #include "Dependecies/SDL/include/SDL.h"
 
-
 class Resource;
 enum class ResourceType;
 
@@ -26,13 +25,14 @@ public:
 	uint ImportFile(const char* newFileInAssets);
 	uint GenerateNewUID();
 
+
 	const Resource* RequestResource(uint uid) const;
 	Resource* RequestResource(uint uid);
 	void ReleaseResource(uint uid);
 
 private:
 
-	Resource* CreateNewResource(const char* assetsFile, ResourceType type);
+	Resource* CreateNewResource(const char* assetsFile, ResourceType type); //Create and store info in new resource (UID, path ,libraryFile)
 
 private:
 	std::map<uint, Resource*> resources;

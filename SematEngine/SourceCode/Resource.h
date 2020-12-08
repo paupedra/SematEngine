@@ -7,6 +7,7 @@ enum class ResourceType
 {
 	material,
 	texture,
+	mesh,
 	none
 };
 
@@ -15,6 +16,7 @@ class Resource
 public:
 
 	Resource();
+	Resource(uint UID);
 	~Resource();
 
 	virtual void CleanUp()=0;

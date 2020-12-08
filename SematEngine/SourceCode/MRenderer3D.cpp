@@ -178,7 +178,7 @@ update_status MRenderer3D::PreUpdate(float dt)
 
 	glMatrixMode(GL_MODELVIEW);
 
-	glLoadMatrixf(App->camera->GetRawViewMatrix());
+	glLoadMatrixf(App->camera->mainCamera->GetViewMatrix());
 
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		
@@ -517,12 +517,7 @@ void MRenderer3D::DrawScenePlane(int size)
 bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 {
 	float3 corners[8];
-	int iTotalIn = 0;
-	gameObject->AABB.GetCornerPoints(corners); // get the corners of the box into the vCorner array
-
-	// test all 8 corners against the 6 sides
-	// if all points are behind 1 specific plane, we are out
-	// if we are in with all points, then we are fully in
+	gameObject->AABB.GetCornerPoints(corners); // get the corners of the box into the corners array
 
 	for (int plane = 0; plane < 6; ++plane) {
 
@@ -539,12 +534,8 @@ bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 		// were all the points outside of plane p?
 		if(iInCount == 0)
 			return(false);
-		// check if they were all on the right side of the plane
-		iTotalIn += iPtIn;
 	}
-	// so if iTotalIn is 6, then all are inside the view
-	if (iTotalIn == 6)
-		return(true);
+
 	// we must be partly in then otherwise
 	return(true);
 }

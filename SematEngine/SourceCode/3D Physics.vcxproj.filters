@@ -456,9 +456,6 @@
     <ClInclude Include="WPlay.h">
       <Filter>Source Code\Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="MCamera3D.h">
-      <Filter>Source Code\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="Dependecies\ImGuizmo\ImCurveEdit.h">
       <Filter>Dependencies\ImGuizmo</Filter>
     </ClInclude>
@@ -473,6 +470,9 @@
     </ClInclude>
     <ClInclude Include="Dependecies\ImGuizmo\ImZoomSlider.h">
       <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="MCamera3D.h">
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -737,9 +737,6 @@
     <ClCompile Include="WPlay.cpp">
       <Filter>Source Code\Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="MCamera3D.cpp">
-      <Filter>Source Code\Modules</Filter>
-    </ClCompile>
     <ClCompile Include="Dependecies\ImGuizmo\ImCurveEdit.cpp">
       <Filter>Dependencies\ImGuizmo</Filter>
     </ClCompile>
@@ -751,6 +748,9 @@
     </ClCompile>
     <ClCompile Include="Dependecies\ImGuizmo\ImSequencer.cpp">
       <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="MCamera3D.cpp">
+      <Filter>Source Code\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

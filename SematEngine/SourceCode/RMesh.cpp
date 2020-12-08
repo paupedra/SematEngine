@@ -8,6 +8,11 @@ RMesh::RMesh()
 
 }
 
+RMesh::RMesh(uint UID) : Resource(UID)
+{
+
+}
+
 RMesh::~RMesh()
 {
 

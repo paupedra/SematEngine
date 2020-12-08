@@ -9,6 +9,11 @@ RTexture::RTexture()
 
 }
 
+RTexture::RTexture(uint UID) : Resource(UID)
+{
+
+}
+
 RTexture::~RTexture()
 {
 

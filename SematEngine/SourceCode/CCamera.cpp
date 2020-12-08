@@ -20,10 +20,8 @@ CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 
 	UpdatePlanes();
 
-	//App->camera->mainCamera = this;
-	//isCurrentCamera = true;
-
-	App->renderer3D->currentCamera = this;
+	if(owner != nullptr)
+		App->renderer3D->currentCamera = this;
 
 	corners = new vec[8];
 }

@@ -41,7 +41,7 @@ void GameObject::Update()
 
 void GameObject::CleanUp()
 {
-
+	
 	std::vector<Component*>::iterator item = components.begin();
 	for (; item != components.end(); ++item)
 	{
@@ -52,6 +52,31 @@ void GameObject::CleanUp()
 	components.clear();
 
 	children.clear();
+}
+
+void GameObject::EraseChild(GameObject* gameObject)
+{
+	for (std::vector<GameObject*>::iterator child = children.begin(); child != children.end(); child++)
+	{
+		if ((*child) == gameObject)
+		{
+			children.erase(child);
+			break;
+		}
+	}
+}
+
+bool GameObject::IsToBeDestroyed()const
+{
+	return toBeDestroyed;
+}
+
+void GameObject::SetToBeDestroyed()
+{
+	LOG("%s has been set to be destroyed", name.c_str());
+	
+
+	toBeDestroyed = true;
 }
 
 Component* GameObject::AddComponent(Component* component)
@@ -101,6 +126,26 @@ Component* GameObject::AddComponent(Component* component)
 	}
 
 	return component;
+}
+
+void GameObject::OnDelete()
+{
+	for (std::vector<GameObject*>::iterator child = children.begin(); child != children.end(); child++)
+	{
+		(*child)->OnDelete();
+		RELEASE((*child));
+	}
+
+	for (std::vector<Component*>::iterator component = components.begin(); component != components.end(); component++)
+	{
+		(*component)->CleanUp();
+		RELEASE((*component));
+	}
+
+	children.clear();
+	components.clear();
+
+	CleanUp();
 }
 
 void GameObject::DeleteComponentType(ComponentType type)

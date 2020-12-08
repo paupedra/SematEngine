@@ -33,10 +33,17 @@ public:
 	void SetName(const char* name);
 	std::vector<Component*> GetComponents()const;
 
+	void EraseChild(GameObject* gameObject);		//Erase a GO from the chidlren list
+
+	bool IsToBeDestroyed()const; 
+	void SetToBeDestroyed();						//Sets dirty flag to destroy this GO
+	//void DeleteAllChildren();
+	void OnDelete();
+
 	void DeleteComponentType(ComponentType type);
 	bool HasComponentType(ComponentType type);
-	void UpdatedTransform();
 
+	void UpdatedTransform();
 	void UpdateBoundingBoxes();
 
 	template<typename CTemplate>
@@ -55,6 +62,7 @@ public:
 
 private:
 	bool active = false;
+	bool toBeDestroyed = false; //Dirty flag, if true will destroy GO
 	std::string name;
 	std::vector<Component*> components;
 	

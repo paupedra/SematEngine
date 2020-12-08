@@ -4,6 +4,7 @@
 class Primitive;
 class GameObject;
 class ConfigNode;
+class Component;
 
 class MScene : public Module
 {
@@ -16,12 +17,18 @@ public:
 	update_status PostUpdate(float dt) override;
 	bool CleanUp() override;
 	bool Save(ConfigNode* config) override;
+
 	void SaveScene();
+	uint SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObjects);
+	void SaveSceneComponent(ConfigNode* node, Component* component);
 
 	GameObject* CreateGameObject(char* name,char* meshPath = "", char* texturePath = "", bool isRoot = false);
-	void SetSelectedObject(GameObject* object);
+	void SetSelectedObject(GameObject* gameObject);
+	std::vector<GameObject*>::iterator FindGameObject(GameObject* gameObject);
 
-	//void DeleteGameObject();
+	void PrepareToDestroyGameObject(GameObject* gameObject);
+	void SetToDestroyGameObject(GameObject* gameObject);
+	void EraseGameObject(std::vector<GameObject*>::iterator gameObject);
 
 	
 

@@ -45,6 +45,7 @@ void WHierarchy::Draw()
 	//Right click
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 	{
+
 		if (ImGui::IsWindowHovered())
 		{
 			ImGui::OpenPopup("HierarchyRightClick");
@@ -57,6 +58,15 @@ void WHierarchy::Draw()
 		{
 			LOG("Create Emty child here");
 		}
+
+		if (ImGui::Selectable("Delete"))
+		{
+			LOG("Delete selected GameObject");
+			App->scene->PrepareToDestroyGameObject(App->scene->selectedObject);
+
+			App->scene->SetSelectedObject(nullptr);
+		}
+
 
 		ImGui::EndPopup();
 	}
@@ -75,6 +85,14 @@ void WHierarchy::DrawTree(GameObject* object)
 	{ 
         if (ImGui::IsItemClicked())
         	App->scene->SetSelectedObject(object);
+
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+		{
+			if (ImGui::IsWindowHovered())
+			{
+				App->scene->SetSelectedObject(object);
+			}
+		}
         
 		if (ImGui::BeginDragDropSource())
 		{

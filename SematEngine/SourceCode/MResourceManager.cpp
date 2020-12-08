@@ -9,6 +9,8 @@
 #include "CMaterial.h"
 
 #include "RMaterial.h"
+#include "RMesh.h"
+#include "RTexture.h"
 
 #include "IScene.h"
 #include "ITexture.h"
@@ -69,8 +71,28 @@ uint MResourceManager::ImportFile(const char* newFileInAssets)
 	return 0;
 }
 
+uint MResourceManager::GenerateNewUID()
+{
+	return 0;
+}
+
 Resource* MResourceManager::CreateNewResource(const char* assetsFile, ResourceType type)
 {
+	Resource* ret = nullptr;
+	UID uid = GenerateNewUID();
+
+	switch (type) {
+		case ResourceType::texture: ret = (Resource*) new RTexture(uid); break;
+		case ResourceType::mesh: ret = (Resource*) new RMesh(uid); break;
+		case ResourceType::material: ret = (Resource*) new RMaterial(uid); break;
+	}
+	if (ret != nullptr)
+	{
+		//resources[uid] = ret;
+		//resource->assetsFile = assetsPath;
+		//resource->libraryFile = GenLibraryFile(resource);
+	}
+	return ret;
 
 	return nullptr;
 }

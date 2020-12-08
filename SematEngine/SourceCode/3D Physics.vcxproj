@@ -180,6 +180,7 @@
     <ClInclude Include="Dependecies\mmgr\nommgr.h" />
     <ClInclude Include="Dependecies\parson\parson.h" />
     <ClInclude Include="glmath.h" />
+    <ClInclude Include="MCamera3D.h" />
     <ClInclude Include="MEditor.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
@@ -190,7 +191,6 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="MFileSystem.h" />
     <ClInclude Include="MInput.h" />
-    <ClInclude Include="MCamera3D.h" />
     <ClInclude Include="MRenderer3D.h" />
     <ClInclude Include="MScene.h" />
     <ClInclude Include="MWindow.h" />
@@ -275,6 +275,7 @@
     <ClCompile Include="Dependecies\mmgr\mmgr.cpp" />
     <ClCompile Include="Dependecies\parson\parson.c" />
     <ClCompile Include="glmath.cpp" />
+    <ClCompile Include="MCamera3D.cpp" />
     <ClCompile Include="MEditor.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="IMesh.cpp" />
@@ -285,7 +286,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MFileSystem.cpp" />
     <ClCompile Include="MInput.cpp" />
-    <ClCompile Include="MCamera3D.cpp" />
     <ClCompile Include="MRenderer3D.cpp" />
     <ClCompile Include="MScene.cpp" />
     <ClCompile Include="MWindow.cpp" />
