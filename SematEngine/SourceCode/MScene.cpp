@@ -22,11 +22,15 @@
 #include "RMaterial.h"
 #include "RMesh.h"
 
+#include "Random.h"
+
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/mmgr/mmgr.h"
 
 MScene::MScene(bool start_enabled) : Module(start_enabled)
-{}
+{
+	rootObject = CreateGameObject("rootObject", nullptr, true);
+}
 
 MScene::~MScene()
 {}
@@ -40,12 +44,10 @@ bool MScene::Start()
 	App->camera->Move(float3(1.0f, 1.0f, 0.0f));
 	//App->camera->LookAt(float3(0, 0, 0));
 
-	rootObject = CreateGameObject("rootObject","","",true);
-
-	GameObject* obj = new GameObject(rootObject,"camera bro");
-	rootObject->children.push_back(obj);
-	obj->AddComponent(new CCamera(obj));
-	gameObjects.push_back(obj);
+	//GameObject* obj = new GameObject(rootObject,"camera bro");
+	//rootObject->children.push_back(obj);
+	//obj->AddComponent(new CCamera(obj));
+	//AddGameObject(obj);
 
 	Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
 	
@@ -91,7 +93,7 @@ bool MScene::CleanUp()
 	LOG("Unloading Intro scene");
 
 	std::vector<GameObject*>::iterator item = gameObjects.begin();
-	for (; item != gameObjects.end(); ++item)
+	for (; item != gameObjects.end(); item++)
 	{
 		(*item)->CleanUp();
 		RELEASE(*item);
@@ -126,6 +128,7 @@ void MScene::SaveScene()
 	char* buffer;
 	uint size = sceneNode.Serialize(&buffer); //Saves for now
 	App->fileSystem->Save(path.c_str(), buffer, size);
+	delete[] buffer;
 }
 
 uint MScene::SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObjects)
@@ -141,6 +144,8 @@ uint MScene::SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObje
 	for (; item != gameObjects.end(); item++)
 	{
 		ConfigNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
+
+		newObject.AddString("Name", (*item)->GetName());
 
 		//Components -----------------------
 		ConfigArray components = newObject.InitArray("Components"); //Create array in GO node
@@ -190,57 +195,51 @@ void MScene::SaveSceneComponent(ConfigNode* node, Component* component)
 	}
 }
 
-
-GameObject* MScene::CreateGameObject(char* name, char* meshPath,char* texturePath, bool isRoot)
+GameObject* MScene::CreateGameObject(char* name, GameObject* parent, bool isRoot)
 {
-	GameObject* newGameObject = nullptr;
+	GameObject* newGameObject;
+	uint repeats = GetNameRepeats(name);
 
 	if (isRoot)
 	{
-		newGameObject = new GameObject(nullptr, name);
-		return newGameObject;
+		newGameObject = new GameObject(nullptr, "Root Object");
+	}
+	else
+	{
+
+		std::string finalName = name;
+		if(repeats >0)
+			finalName += "(" + std::to_string(repeats) + ")";
+
+		newGameObject = new GameObject(parent,finalName.c_str());
 	}
 
-	if (meshPath != "")
+	gameObjects.push_back(newGameObject);
+
+	return newGameObject;
+}
+
+uint MScene::GetNameRepeats(const char* name)
+{
+	uint repeats = 0;
+	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
 	{
-		std::vector<RMesh*> meshes = Importer::MeshImporter::Import(meshPath);
-
-		if (meshes.size() == 0)
+		//get rid of the (n)
+		std::string str2;
+		std::string str = (*item)->GetName();
+		if (str.find("(") == std::string::npos) 
 		{
-			LOG("(ERROR) No meshes found in %s", meshPath);
-			return newGameObject;
-		}
-
-		newGameObject = new GameObject(rootObject, name);
-		gameObjects.push_back(newGameObject);
-		rootObject->children.push_back(newGameObject);
-
-		if (meshes.size() == 1)
-		{
-			newGameObject->AddComponent(new CMesh(newGameObject, meshPath, meshes.front()));
-			if(texturePath != "")
-				newGameObject->AddComponent(new CMaterial(gameObjects.back(), texturePath, new RMaterial(Importer::TextureImp::Import(texturePath))));
+			str2 = str;
 		}
 		else
 		{
-			std::vector<RMesh*>::iterator item = meshes.begin();
-			for (; item != meshes.end(); ++item)
-			{
-				GameObject* childGameObject = new GameObject(newGameObject,"MeshObject");
-				CMesh* newComp = new CMesh(childGameObject, meshPath, (*item));
-
-				childGameObject->AddComponent((Component*)newComp);
-				
-				if (texturePath != "")
-					childGameObject->AddComponent(new CMaterial(gameObjects.back(), texturePath, new RMaterial(Importer::TextureImp::Import(texturePath))));
-
-				gameObjects.push_back(childGameObject);
-				newGameObject->children.push_back(childGameObject);
-			}
+			str2 = str.substr(0, str.find_last_of("("));
 		}
-	}
 
-	return newGameObject;
+		if (strcmp(name, str2.c_str()) == 0)
+			repeats += 1;
+	}
+	return repeats;
 }
 
 void MScene::SetSelectedObject(GameObject* object)
@@ -264,6 +263,9 @@ std::vector<GameObject*>::iterator MScene::FindGameObject(GameObject* gameObject
 
 void MScene::PrepareToDestroyGameObject(GameObject* gameObject)
 {
+	if (gameObject == nullptr)
+		return;
+
 	gameObject->parent->EraseChild(gameObject);
 	SetToDestroyGameObject(gameObject);
 }
@@ -281,4 +283,9 @@ void MScene::SetToDestroyGameObject(GameObject* gameObject)
 void MScene::EraseGameObject(std::vector<GameObject*>::iterator gameObject)
 {
 	gameObjects.erase(gameObject);
+}
+
+void MScene::AddGameObject(GameObject* gameObject)
+{
+	gameObjects.push_back(gameObject);
 }

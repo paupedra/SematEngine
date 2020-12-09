@@ -50,25 +50,6 @@ void CTransform::UpdateTRS()
 	RecalculateEuler();
 }
 
-void CTransform::OnSave(ConfigNode* node)
-{
-	ConfigArray _position = node->InitArray("Position");
-	_position.AddNumber(position.x);
-	_position.AddNumber(position.y);
-	_position.AddNumber(position.z);
-
-	ConfigArray _scale = node->InitArray("Scale");
-	_scale.AddNumber(scale.x);
-	_scale.AddNumber(scale.y);
-	_scale.AddNumber(scale.z);
-
-	ConfigArray _rotation = node->InitArray("Rotation");
-	_rotation.AddNumber(rotation.x);
-	_rotation.AddNumber(rotation.y);
-	_rotation.AddNumber(rotation.z);
-	_rotation.AddNumber(rotation.w);
-}
-
 void CTransform::SetEulerRotation(float3 eulerAngles)
 {
 	float3 delta = (eulerAngles - eulerRotation) * 0.0174532925199432957f;
@@ -131,7 +112,7 @@ void CTransform::SetTransform(float3 position, float3 scale, Quat rotation)
 void CTransform::UpdateLocalTransform()
 {
 	transform = float4x4::FromTRS(position, rotation, scale);
-	RecalculateEuler();
+	//RecalculateEuler();
 	updateTransform = true;
 }
 
@@ -147,4 +128,23 @@ void CTransform::UpdatedTransform(float4x4 parentGlobalTransform)
 	UpdateTRS();
 
 	updateTransform = false;
+}
+
+void CTransform::OnSave(ConfigNode* node)
+{
+	ConfigArray _position = node->InitArray("Position");
+	_position.AddNumber(position.x);
+	_position.AddNumber(position.y);
+	_position.AddNumber(position.z);
+
+	ConfigArray _scale = node->InitArray("Scale");
+	_scale.AddNumber(scale.x);
+	_scale.AddNumber(scale.y);
+	_scale.AddNumber(scale.z);
+
+	ConfigArray _rotation = node->InitArray("Rotation");
+	_rotation.AddNumber(rotation.x);
+	_rotation.AddNumber(rotation.y);
+	_rotation.AddNumber(rotation.z);
+	_rotation.AddNumber(rotation.w);
 }

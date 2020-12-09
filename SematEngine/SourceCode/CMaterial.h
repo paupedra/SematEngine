@@ -10,7 +10,7 @@ class CMaterial : public Component
 {
 public:
 	CMaterial(GameObject* owner);
-	CMaterial(GameObject* owner, const char* path, RMaterial* material);
+	CMaterial(GameObject* owner, const char* path, RMaterial* material = nullptr,RTexture* texture = nullptr);
 	~CMaterial();
 
 	void Update() override;
@@ -24,6 +24,7 @@ public:
 
 	const char* GetPath()const;
 	RMaterial* GetMaterial() const;
+	RTexture* GetTexture()const;
 
 	bool IsEnabled()const ;
 	void SwitchEnabledTexture();
@@ -31,7 +32,9 @@ public:
 private:
 
 	RMaterial* material = nullptr;
+	RTexture* texture = nullptr;
 	const char* path = "";
+public:
 	bool drawTexture = true;
 
 };

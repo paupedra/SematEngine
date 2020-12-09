@@ -24,6 +24,7 @@ public:
 	void CleanUp();
 
 	Component* AddComponent(Component* component);
+	Component* AddComponent(ComponentType type);
 
 	void Enable();
 	void Disable();
@@ -33,11 +34,12 @@ public:
 	void SetName(const char* name);
 	std::vector<Component*> GetComponents()const;
 
+	void AddChild(GameObject* gameObject);
 	void EraseChild(GameObject* gameObject);		//Erase a GO from the chidlren list
 
 	bool IsToBeDestroyed()const; 
 	void SetToBeDestroyed();						//Sets dirty flag to destroy this GO
-	//void DeleteAllChildren();
+
 	void OnDelete();
 
 	void DeleteComponentType(ComponentType type);
@@ -46,8 +48,12 @@ public:
 	void UpdatedTransform();
 	void UpdateBoundingBoxes();
 
+	void Reparent(GameObject* newParent);
+	void SetParent(GameObject* newParent);
+	bool FindChild(GameObject* newParent);
+
 	template<typename CTemplate>
-	const CTemplate* GetComponent() const
+	CTemplate* GetComponent()
 	{
 		ComponentType type = CTemplate::GetType();
 		for (int i = 0; i < components.size(); i++)

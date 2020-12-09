@@ -21,7 +21,12 @@ void Resource::SetUID(uint UID)
 	this->UID = UID;
 }
 
-uint Resource::GetUID()const
+UID Resource::GetUID()const
 {
 	return UID;
+}
+
+ResourceType Resource::GetType()const
+{
+	return type;
 }

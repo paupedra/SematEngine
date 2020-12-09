@@ -57,6 +57,12 @@ void WHierarchy::Draw()
 		if(ImGui::Selectable("Create Empty"))
 		{
 			LOG("Create Emty child here");
+			if (App->scene->selectedObject == nullptr)
+			{
+				App->scene->rootObject->AddChild(App->scene->CreateGameObject("New Object"));
+			}
+			else
+				App->scene->selectedObject->AddChild(App->scene->CreateGameObject("New Object"));
 		}
 
 		if (ImGui::Selectable("Delete"))
@@ -109,6 +115,7 @@ void WHierarchy::DrawTree(GameObject* object)
 			{
 				//do thing with object
 				LOG("Dropped %s on %s", draggedObject->GetName(),object->GetName());
+				draggedObject->Reparent(object);
 			}
 
 			//LOG("Dropped %s", object->GetName());

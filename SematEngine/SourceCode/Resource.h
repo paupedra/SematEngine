@@ -2,6 +2,7 @@
 #define __RESOURCE_H__
 
 #include "Globals.h"
+#include <string>
 
 enum class ResourceType
 {
@@ -24,10 +25,17 @@ public:
 	void SetUID(uint UID);
 
 	uint GetUID()const;
+	ResourceType GetType()const;
 
-private:
+public:
 
-	uint UID = 0;
+	UID UID = 0;
 	ResourceType type = ResourceType::none;
+
+	std::string assetsFile;	 //File loaded from
+	std::string libraryFile; //uint string
+
+	uint referenceCount = 0; //Amount of times this resource is referenced
+
 };
 #endif //__RESOURCE_H__

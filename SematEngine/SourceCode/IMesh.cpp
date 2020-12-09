@@ -88,7 +88,6 @@ std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
 
     delete timeImporting;
 
-
     return ret;
 }
 
@@ -97,11 +96,11 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
     for (int i = 0; i < node->mNumMeshes; i++)
     {
         RMesh* newMesh = new RMesh();
-
+        
         newMesh->buffersSize[RMesh::vertex] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
         newMesh->vertices = new float[newMesh->buffersSize[RMesh::vertex] * 3];
         memcpy(newMesh->vertices, scene->mMeshes[node->mMeshes[i]]->mVertices, sizeof(float) * newMesh->buffersSize[RMesh::vertex] * 3);
-        LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
+        //LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
 
         if (scene->mMeshes[node->mMeshes[i]]->HasFaces())
         {
@@ -195,6 +194,8 @@ uint64 Importer::MeshImporter::Save(const RMesh mesh, const char* name)
 
     LOG("Time spent saving Mesh: %d ms", timeSaving->Read());
 
+    RELEASE(timeSaving);
+    delete[] fileBuffer;
     return 0;
 }
 
@@ -239,4 +240,6 @@ void Importer::MeshImporter::Load(const char* fileBuffer, RMesh* mesh)
     cursor += bytes;
 
     LOG("Time spent loading Mesh: %d ms", timeLoading->Read());
+
+    RELEASE(timeLoading);
 }

@@ -14,15 +14,6 @@ public:
 
 	void CleanUp() override;
 
-	void SetId(uint id);
-	void SetHeight(uint height);
-	void SetWidth(uint width);
-	void SetPath(const char* path);
-
-	uint GetId() const;
-	uint GetHeight() const;
-	uint GetWidth() const;
-
 	enum Buffers
 	{
 		index,
@@ -32,6 +23,17 @@ public:
 		maxBuffers
 	};
 
+	void SetId(uint id); //OpenGl id
+	void SetHeight(uint height);
+	void SetWidth(uint width);
+	void SetPath(const char* path);
+	//void SetTexture(RTexture* texture);
+
+	uint GetId() const;
+	uint GetHeight() const;
+	uint GetWidth() const;
+	//RTexture* GetTexture()const;
+
 public:
 	
 	uint width = 0;
@@ -39,6 +41,8 @@ public:
 
 	uint id = 0; //Open gl texture ID
 
-	const char* path = nullptr;
+	bool usesTexture = false;
+
+	const char* path = "";
 };
 #endif //__RESOURCETEXTURE_H__

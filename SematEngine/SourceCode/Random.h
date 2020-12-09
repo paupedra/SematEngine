@@ -1,10 +1,8 @@
 #include "Globals.h"
 
 
-class Random
+namespace Random
 {
-public:
-	Random();
 
 	UID GenerateUID();
 

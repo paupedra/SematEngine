@@ -20,6 +20,7 @@
 
 #include "RMesh.h"
 #include "RMaterial.h"
+#include "RTexture.h"
 
 #include "Dependecies/SDL/include/SDL.h"
 
@@ -42,7 +43,6 @@
 
 #include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 #include "Dependecies/mmgr/mmgr.h"
-
 
 MRenderer3D::MRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
@@ -166,6 +166,7 @@ bool MRenderer3D::Init()
 	CreateChekerTexture();
 	Importer::TextureImp::InitDevil();
 
+
 	return ret;
 }
 
@@ -178,7 +179,7 @@ update_status MRenderer3D::PreUpdate(float dt)
 
 	glMatrixMode(GL_MODELVIEW);
 
-	glLoadMatrixf(App->camera->mainCamera->GetViewMatrix());
+	glLoadMatrixf(App->camera->currentCamera->GetViewMatrix());
 
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		
@@ -230,7 +231,7 @@ void MRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,bool drawVertexNormals, bool drawBoundingBox,GameObject* gameObject)
+void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, CMaterial* material,bool drawVertexNormals, bool drawBoundingBox,GameObject* gameObject)
 {
 	glStencilMask(0x00);
 
@@ -242,7 +243,7 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 		glStencilMask(0xFF);
 	}
 
-	if (!IsObjectInScreen(gameObject) && currentCamera->cull)
+	if (!IsObjectInScreen(gameObject) && App->camera->currentCamera->cull)
 		return;
 
 	wireframeMode == false ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : (glPolygonMode(GL_FRONT_AND_BACK, GL_LINE), glColor4f(255,255, 0, 255));
@@ -263,15 +264,15 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 		{
 			if (material->GetTexture() != nullptr)
 			{
-				if (material->GetId() == 0)
+				if (material->GetTexture()->GetId() == 0)
 					glBindTexture(GL_TEXTURE_2D, checkersId);
 				else
-					glBindTexture(GL_TEXTURE_2D, material->GetId());
+					glBindTexture(GL_TEXTURE_2D, material->GetTexture()->GetId());
 			}
 			else
 			{
-				Color* color = material->GetColor();
-				glColor4f(color->r, color->g, color->b, color->a);
+				Color color = material->GetMaterial()->GetColor();
+				glColor4f(color.r, color.g, color.b, color.a);
 			}
 		}
 		else
@@ -327,7 +328,7 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material,
 	glColor4f(1, 1, 1, 1);
 }
 
-void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, RMaterial* material, bool drawVertexNormals, bool drawBoundingBox, GameObject* gameObject)
+void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, CMaterial* material, bool drawVertexNormals, bool drawBoundingBox, GameObject* gameObject)
 {
 	glColor4f(0.5, 0.5, 1, 1);
 
@@ -496,7 +497,20 @@ void MRenderer3D::DrawBox(float3* corners)
 	glVertex3fv((GLfloat*)&corners[6]);
 
 	glEnd();
-	glColor4f(255, 255, 255, 255);
+	glColor4f(1, 1, 1, 1);
+}
+
+void MRenderer3D::DrawLine(float3 a, float3 b)
+{
+	glColor4f(1, 0, 0, 1);
+	glLineWidth(1.0f);
+	glBegin(GL_LINES);
+
+	glVertex3fv((GLfloat*)&a);
+	glVertex3fv((GLfloat*)&b);
+
+	glEnd();
+	glColor4f(1, 1, 1, 1);
 }
 
 void MRenderer3D::DrawScenePlane(int size)
@@ -526,7 +540,7 @@ bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 
 		for (int i = 0; i < 8; ++i) {
 			// test this point against the planes
-			if (currentCamera->planes[plane].IsOnPositiveSide(corners[i])) { //<-- “IsOnPositiveSide” from MathGeoLib
+			if (App->camera->currentCamera->planes[plane].IsOnPositiveSide(corners[i])) { //<-- “IsOnPositiveSide” from MathGeoLib
 				iPtIn = 0;
 				--iInCount;
 			}

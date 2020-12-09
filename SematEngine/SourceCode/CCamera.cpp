@@ -1,10 +1,12 @@
 #include "Component.h"
 #include "Application.h"
+#include "GameObject.h"
 
 #include "MRenderer3D.h"
 #include "MCamera3D.h"
 
 #include "CCamera.h"
+#include "CTransform.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -20,9 +22,6 @@ CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 
 	UpdatePlanes();
 
-	if(owner != nullptr)
-		App->renderer3D->currentCamera = this;
-
 	corners = new vec[8];
 }
 
@@ -30,13 +29,11 @@ void CCamera::Update()
 {
 	if (!isCurrentCamera)
 	{
-		
 		frustum.GetCornerPoints(corners);
 		App->renderer3D->DrawBox(corners);
-
 	}
 
-	
+	//frustum.ComputeViewMatrix();
 }
 
 void CCamera::CleanUp()
@@ -46,8 +43,26 @@ void CCamera::CleanUp()
 
 float* CCamera::GetViewMatrix()
 {
-	float4x4 mat = frustum.ViewMatrix();
-	return (float*)mat.Transposed().v; //v is array pointer
+	static float4x4 m;
+
+	m = frustum.ComputeViewMatrix();
+
+	m.Transpose();
+
+	return (float*)m.v;
+}
+
+void CCamera::OnUpdateTransform(float4x4 globalTransform)
+{
+	/*frustum.SetFront(owner->transform->GetGlobalTransform().WorldZ());
+	frustum.SetUp(owner->transform->GetGlobalTransform().WorldY());
+
+	float3 position, scale = float3::zero;
+	Quat rotation = Quat::identity;
+	owner->transform->GetGlobalTransform().Decompose(position, rotation, scale);
+
+	frustum.SetPos(position);
+	UpdatePlanes();*/
 }
 
 void CCamera::UpdatePlanes()

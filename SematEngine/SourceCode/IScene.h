@@ -16,11 +16,11 @@ namespace Importer
 
 		void ProcessAiNode(const aiScene* scene,const aiNode* node,GameObject* parentObject, const char* file);
 
-		const aiNode* LoadTransform( const aiNode* node,GameObject* newGameObject);
-		void LoadMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject);
-		void LoadMaterial(const aiScene* scene, const aiNode* node, GameObject* newGameObject, const char* file);
+		const aiNode* ProcessTransform( const aiNode* node,GameObject* newGameObject);
+		void ProcessMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject);
+		void ProcessMaterial(const aiScene* scene, const aiNode* node, GameObject* newGameObject, const char* file);
 
-		void Load(); //Load buffer from custom format file and store into mesh
+		//void Load(); //Load buffer from custom format file and store into mesh
 
 	}
 }

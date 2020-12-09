@@ -2,6 +2,7 @@
 #include "Config.h"
 
 #include "MFileSystem.h"
+#include "Dependecies/mmgr/mmgr.h"
 
 ConfigNode::ConfigNode()
 {
@@ -28,6 +29,7 @@ uint ConfigNode::Serialize(char** buffer)
 	uint size = json_serialization_size_pretty(rootNode);
 	*buffer = new char[size];
 	json_serialize_to_buffer_pretty(rootNode,*buffer,size);
+
 	return size;
 }
 

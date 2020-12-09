@@ -28,6 +28,43 @@ void Importer::TextureImp::InitDevil()
 	ilutRenderer(ILUT_OPENGL);
 }
 
+RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint size)
+{
+	uint i;
+
+	ilGenImages(1, &i);
+	ilBindImage(i);
+
+	if (ilLoadL(IL_TYPE_UNKNOWN, buffer, size))
+	{
+		ILinfo ImgInfo;
+		iluGetImageInfo(&ImgInfo);
+
+		if (ImgInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+			iluFlipImage();
+
+		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
+		{
+			newTexture->SetId(Importer::TextureImp::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
+			newTexture->SetHeight(ilGetInteger(IL_IMAGE_HEIGHT));
+			newTexture->SetWidth(ilGetInteger(IL_IMAGE_WIDTH));
+			//newTexture->SetPath(path);
+
+			//LOG("Successfully loaded Texture from: %s", path);
+		}
+		else
+		{
+			//LOG("(ERROR)Could not convert image %s", path);
+		}
+	}
+	else
+	{
+		//LOG("(ERROR) Error loading Image %s", path);
+	}
+	delete[] buffer;
+	return newTexture;
+}
+
 RTexture* Importer::TextureImp::Import(const char* path)
 {
 	char* buffer;
@@ -65,7 +102,7 @@ RTexture* Importer::TextureImp::Import(const char* path)
 	{
 		LOG("(ERROR) Error loading Image %s", path);
 	}
-
+	delete[] buffer;
 	return newTexture;
 }
 
@@ -90,7 +127,7 @@ uint Importer::TextureImp::CreateTexture(const void* data,uint width, uint heigh
 	return id;
 }
 
-uint64 Importer::TextureImp::Save(RMaterial* material)
+uint64 Importer::TextureImp::Save(RTexture* material)
 {
 	uint64 ret = 0;
 
@@ -107,7 +144,7 @@ uint64 Importer::TextureImp::Save(RMaterial* material)
 		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
 		{
 			fileBuffer = (char*)data;
-			App->fileSystem->Save(material->GetTexture()->path,fileBuffer,size);
+			App->fileSystem->Save(material->path,fileBuffer,size);
 		}
 	}
 

@@ -1,24 +1,25 @@
 {
     "GameObjects": [
         {
+            "Name": "MainCameraObject",
             "Components": [
                 {
                     "Type": 0,
                     "Position": [
-                        0,
-                        0,
-                        0
+                        3.7935371398925781,
+                        51.932647705078125,
+                        -66.697128295898438
                     ],
                     "Scale": [
-                        1,
-                        1,
-                        1
+                        0.99999207258224487,
+                        1.0000003576278687,
+                        1.0000017881393433
                     ],
                     "Rotation": [
-                        0,
-                        0,
-                        0,
-                        1
+                        0.36407706141471863,
+                        -0.00011635637929430231,
+                        0.095719590783119202,
+                        0.92643707990646362
                     ]
                 },
                 {
@@ -27,6 +28,7 @@
             ]
         },
         {
+            "Name": "Street environment_V01",
             "Components": [
                 {
                     "Type": 0,
@@ -50,6 +52,7 @@
             ]
         },
         {
+            "Name": "Sky001",
             "Components": [
                 {
                     "Type": 0,
@@ -73,6 +76,7 @@
             ]
         },
         {
+            "Name": "Dummy001",
             "Components": [
                 {
                     "Type": 0,
@@ -96,6 +100,7 @@
             ]
         },
         {
+            "Name": "City_building_004",
             "Components": [
                 {
                     "Type": 0,
@@ -127,6 +132,7 @@
             ]
         },
         {
+            "Name": "City_building_001",
             "Components": [
                 {
                     "Type": 0,
@@ -158,6 +164,7 @@
             ]
         },
         {
+            "Name": "City_building_007",
             "Components": [
                 {
                     "Type": 0,
@@ -189,6 +196,7 @@
             ]
         },
         {
+            "Name": "City_building_008",
             "Components": [
                 {
                     "Type": 0,
@@ -220,6 +228,7 @@
             ]
         },
         {
+            "Name": "Line002",
             "Components": [
                 {
                     "Type": 0,
@@ -251,6 +260,7 @@
             ]
         },
         {
+            "Name": "Plane001",
             "Components": [
                 {
                     "Type": 0,
@@ -282,6 +292,7 @@
             ]
         },
         {
+            "Name": "City_building_010",
             "Components": [
                 {
                     "Type": 0,
@@ -317,6 +328,7 @@
             ]
         },
         {
+            "Name": "City_building_011",
             "Components": [
                 {
                     "Type": 0,
@@ -348,6 +360,7 @@
             ]
         },
         {
+            "Name": "City_building_013",
             "Components": [
                 {
                     "Type": 0,
@@ -379,6 +392,7 @@
             ]
         },
         {
+            "Name": "City_building_014",
             "Components": [
                 {
                     "Type": 0,
@@ -410,6 +424,7 @@
             ]
         },
         {
+            "Name": "City_building_016",
             "Components": [
                 {
                     "Type": 0,
@@ -445,6 +460,7 @@
             ]
         },
         {
+            "Name": "City_building_017",
             "Components": [
                 {
                     "Type": 0,
@@ -480,6 +496,7 @@
             ]
         },
         {
+            "Name": "City_building_022",
             "Components": [
                 {
                     "Type": 0,
@@ -511,6 +528,7 @@
             ]
         },
         {
+            "Name": "City_building_023",
             "Components": [
                 {
                     "Type": 0,
@@ -542,6 +560,7 @@
             ]
         },
         {
+            "Name": "City_building_024",
             "Components": [
                 {
                     "Type": 0,
@@ -573,6 +592,7 @@
             ]
         },
         {
+            "Name": "City_building_026",
             "Components": [
                 {
                     "Type": 0,
@@ -604,6 +624,7 @@
             ]
         },
         {
+            "Name": "City_building_028",
             "Components": [
                 {
                     "Type": 0,
@@ -635,6 +656,7 @@
             ]
         },
         {
+            "Name": "Object010",
             "Components": [
                 {
                     "Type": 0,
@@ -666,6 +688,7 @@
             ]
         },
         {
+            "Name": "City_building_030",
             "Components": [
                 {
                     "Type": 0,
@@ -697,6 +720,7 @@
             ]
         },
         {
+            "Name": "City_building_031",
             "Components": [
                 {
                     "Type": 0,
@@ -728,6 +752,7 @@
             ]
         },
         {
+            "Name": "City_building_032",
             "Components": [
                 {
                     "Type": 0,
@@ -759,6 +784,7 @@
             ]
         },
         {
+            "Name": "City_building_033",
             "Components": [
                 {
                     "Type": 0,
@@ -790,6 +816,7 @@
             ]
         },
         {
+            "Name": "City_building_034",
             "Components": [
                 {
                     "Type": 0,
@@ -821,6 +848,7 @@
             ]
         },
         {
+            "Name": "City_building_035",
             "Components": [
                 {
                     "Type": 0,
@@ -852,6 +880,7 @@
             ]
         },
         {
+            "Name": "City_building_036",
             "Components": [
                 {
                     "Type": 0,
@@ -883,6 +912,7 @@
             ]
         },
         {
+            "Name": "City_building_037",
             "Components": [
                 {
                     "Type": 0,
@@ -914,6 +944,7 @@
             ]
         },
         {
+            "Name": "City_building_038",
             "Components": [
                 {
                     "Type": 0,
@@ -945,6 +976,7 @@
             ]
         },
         {
+            "Name": "City_building_039",
             "Components": [
                 {
                     "Type": 0,
@@ -976,6 +1008,7 @@
             ]
         },
         {
+            "Name": "City_building_040",
             "Components": [
                 {
                     "Type": 0,
@@ -1007,6 +1040,7 @@
             ]
         },
         {
+            "Name": "City_building_041",
             "Components": [
                 {
                     "Type": 0,
@@ -1038,6 +1072,7 @@
             ]
         },
         {
+            "Name": "Camera001",
             "Components": [
                 {
                     "Type": 0,
@@ -1061,6 +1096,7 @@
             ]
         },
         {
+            "Name": "Camera001.Target",
             "Components": [
                 {
                     "Type": 0,
@@ -1084,6 +1120,7 @@
             ]
         },
         {
+            "Name": "Spot001",
             "Components": [
                 {
                     "Type": 0,
@@ -1107,6 +1144,7 @@
             ]
         },
         {
+            "Name": "Spot001.Target",
             "Components": [
                 {
                     "Type": 0,

@@ -19,12 +19,15 @@
 
 CMaterial::CMaterial(GameObject* owner) : Component(ComponentType::MATERIAL, owner)
 {
-
+	material = new RMaterial();
+	texture = new RTexture();
+	texture->usesTexture = false;
 }
 
-CMaterial::CMaterial(GameObject* owner, const char* path, RMaterial* material = nullptr) : Component(ComponentType::MATERIAL, owner), material(material), path(path)
+CMaterial::CMaterial(GameObject* owner, const char* path, RMaterial* material,RTexture* texture) : Component(ComponentType::MATERIAL, owner), material(material), path(path) , texture(texture)
 {
-
+	if(material == nullptr)
+		this->material = new RMaterial();
 }
 
 CMaterial::~CMaterial()
@@ -53,7 +56,8 @@ void CMaterial::OnSave(ConfigNode* node)
 
 void CMaterial::SetTexture(RTexture* texture)
 {
-	material->SetTexture(texture);
+	this->texture = texture;
+	this->texture->usesTexture = true;
 }
 
 const char* CMaterial::GetPath()const
@@ -64,6 +68,11 @@ const char* CMaterial::GetPath()const
 RMaterial* CMaterial::GetMaterial() const
 {
 	return material;
+}
+
+RTexture* CMaterial::GetTexture()const
+{
+	return texture;
 }
 
 bool CMaterial::IsEnabled() const

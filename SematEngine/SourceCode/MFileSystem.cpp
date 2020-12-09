@@ -14,6 +14,8 @@
 
 #pragma comment( lib, "Dependecies/PhysFS/libx86/physfs.lib" )
 
+#include "Dependecies/mmgr/mmgr.h"
+
 MFileSystem::MFileSystem(bool start_enabled) //: Module("FileSystem", true)
 {
 	// needs to be created before Init so other modules can use it

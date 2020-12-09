@@ -13,6 +13,7 @@ class RMesh;
 class RMaterial;
 class CCamera;
 class GameObject;
+class CMaterial;
 typedef void* SDL_GLContext;
 
 #define MAX_LIGHTS 8
@@ -30,14 +31,15 @@ public:
 	bool CleanUp();
 
 	void OnResize(int width, int height);
-	void DrawMesh(RMesh* mesh, float4x4 transform, RMaterial* material, bool drawVertexNormals = false, bool drawBoundingBox = false, GameObject* gameObject = nullptr);
+	void DrawMesh(RMesh* mesh, float4x4 transform, CMaterial* material, bool drawVertexNormals = false, bool drawBoundingBox = false, GameObject* gameObject = nullptr);
 	void DrawVertexNormals(RMesh* mesh, float4x4 transform);
 	void GenerateBuffers(RMesh* newMesh);
 	void CreateChekerTexture();
 	void DrawBox(float3* corners);
+	void DrawLine(float3 a, float3 b);
 	void DrawScenePlane(int size);
 
-	void DrawStencilScaled(RMesh* mesh, float4x4 transform, RMaterial* material, bool drawVertexNormals = false, bool drawBoundingBox = false, GameObject* gameObject = nullptr);
+	void DrawStencilScaled(RMesh* mesh, float4x4 transform, CMaterial* material, bool drawVertexNormals = false, bool drawBoundingBox = false, GameObject* gameObject = nullptr);
 
 	bool IsObjectInScreen(GameObject* gameObject);
 
@@ -54,7 +56,6 @@ public:
 	mat3x3 normalMatrix;
 	mat4x4 projectionMatrix;
 
-	CCamera* currentCamera = nullptr;
 
 	uint checkersId;	//Default texture id
 

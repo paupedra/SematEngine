@@ -6,6 +6,7 @@
 #include "Color.h"
 
 #include "MScene.h"
+#include "MCamera3D.h"
 
 #include "CTransform.h"
 #include "CMesh.h"
@@ -15,6 +16,7 @@
 #include "RMesh.h"
 #include "RMaterial.h"
 #include "RTexture.h"
+
 
 #include "WInspector.h"
 
@@ -56,8 +58,31 @@ void WInspector::Draw()
 		{
 			DrawComponent((*item));
 		}
-	}
 
+		ImGui::Separator();
+
+		if (ImGui::Button("Add new component"))
+		{
+			ImGui::OpenPopup("Add Component");
+		}
+
+		if (ImGui::BeginPopup("Add Component"))
+		{
+			if (ImGui::Selectable("Mesh"))
+			{
+				App->scene->selectedObject->AddComponent(ComponentType::MESH);
+			}
+			if (ImGui::Selectable("Material"))
+			{
+				App->scene->selectedObject->AddComponent(ComponentType::MATERIAL);
+			}
+			if (ImGui::Selectable("Camera"))
+			{
+				App->scene->selectedObject->AddComponent(ComponentType::CAMERA);
+			}
+			ImGui::EndPopup();
+		}
+	}
 	ImGui::End();
 }
 
@@ -118,10 +143,14 @@ void WInspector::DrawMesh(CMesh* component)
 	if (ImGui::CollapsingHeader("Mesh"))
 	{
 		ImGui::Text("Path: %s", component->GetPath());
-		ImGui::Text("Vertices: %d", component->GetMesh()->buffersSize[RMesh::vertex]);
 		ImGui::Checkbox("Active", &component->active);
 		ImGui::Checkbox("Draw Vertex Normals", &component->drawVertexNormals);
 		ImGui::Checkbox("Draw AABB", &component->drawAABB);
+		ImGui::Separator();
+		if (component->GetMesh() != nullptr)
+		{
+			ImGui::Text("Vertices: %d", component->GetMesh()->buffersSize[RMesh::vertex]);
+		}
 	}
 }
 
@@ -129,16 +158,16 @@ void WInspector::DrawMaterial(CMaterial* component)
 {
 	if (ImGui::CollapsingHeader("Material"))
 	{
-		if (component->GetMaterial()->GetTexture() != nullptr)
+		if (component->GetTexture() != nullptr)
 		{
 			ImGui::Text("Path: %s", component->GetPath());
-			ImGui::Text("Texture height: %d", component->GetMaterial()->GetHeight());
-			ImGui::Text("Texture width: %d", component->GetMaterial()->GetWidth());
-			if (ImGui::Checkbox("DrawTexture", &component->GetMaterial()->drawTexture)) {}
+			ImGui::Text("Texture height: %d", component->GetTexture()->GetHeight());
+			ImGui::Text("Texture width: %d", component->GetTexture()->GetWidth());
+			if (ImGui::Checkbox("DrawTexture", &component->drawTexture)) {}
 		}
 
-		Color* color = component->GetMaterial()->GetColor();
-		if (ImGui::DragFloat3("Color", (float*)color, 0.1f)) { component->GetMaterial()->SetColor(*color); }
+		Color color = component->GetMaterial()->GetColor();
+		if (ImGui::DragFloat3("Color", (float*)&color, 0.1f)) { component->GetMaterial()->SetColor(color); }
 
 
 	}
@@ -151,7 +180,7 @@ void WInspector::DrawCamera(CCamera* component)
 	if (ImGui::CollapsingHeader("Camera"))
 	{
 		float3 pos = component->GetPos();
-		if (ImGui::DragFloat3("Position", (float*)&pos,0.5))
+		if (ImGui::DragFloat3("Camera Position", (float*)&pos,0.5))
 		{
 			component->Setposition(pos);
 		}
@@ -180,7 +209,11 @@ void WInspector::DrawCamera(CCamera* component)
 			component->SetHorizontalFov(horizontalFov);
 		}
 
-		ImGui::Checkbox("CUlling", &component->cull);
+		ImGui::Checkbox("Culling", &component->cull);
+		if(ImGui::Button("Set As Current Camera"))
+		{
+			App->camera->SetCurrentCamera(component);
+		}
 	}
 }
 

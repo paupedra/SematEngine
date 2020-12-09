@@ -1,8 +1,8 @@
 
-//#include "Dependecies/MathGeoLib/include/Geometry/Plane.h"
-//#include "Dependecies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependecies/MathGeoLib/include/Geometry/Plane.h"
+#include "Dependecies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependecies/MathGeoLib/include/Math/float4x4.h"
 
-#include "Dependecies/MathGeoLib/include/MathGeoLib.h"
 
 class Component;
 
@@ -13,6 +13,8 @@ public:
 
 	void Update()override;
 	void CleanUp() override;
+
+	static inline ComponentType GetType() { return ComponentType::CAMERA; };
 
 	//near/far planes
 
@@ -25,6 +27,8 @@ public:
 	void SetHorizontalFov(float horizontalFov);
 
 	float ComputeAspectRatio(float verticalFov, float horizontalFov);
+
+	void OnUpdateTransform(float4x4 globalTransform);
 
 	//get view/projection
 	float* GetViewMatrix();

@@ -40,7 +40,9 @@ void CMesh::Update()
 
 void CMesh::CleanUp()
 {
-	mesh->CleanUp();
+	if(mesh!= nullptr)
+		mesh->CleanUp();
+
 	delete mesh;
 }
 
@@ -49,13 +51,13 @@ void CMesh::DrawMesh()
 	if (!this->active)
 		return;
 
-	const CMaterial* material = owner->GetComponent<CMaterial>();
+	CMaterial* material = owner->GetComponent<CMaterial>();
 
 	if (material != nullptr)
 	{
 		if (material->IsEnabled())
 		{
-			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), material->GetMaterial() ,drawVertexNormals,drawAABB,owner);
+			App->renderer3D->DrawMesh(mesh, owner->transform->GetGlobalTransform(), material ,drawVertexNormals,drawAABB,owner);
 			return;
 		}
 	}

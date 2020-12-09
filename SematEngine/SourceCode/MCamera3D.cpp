@@ -7,12 +7,12 @@
 #include "MCamera3D.h"
 #include "MInput.h"
 #include "MScene.h"
+#include "MRenderer3D.h"
 
 #include "CTransform.h"
 #include "CCamera.h"
 
 #include "Dependecies/SDL/include/SDL.h"
-
 #include "Dependecies/mmgr/mmgr.h"
 
 #define _USE_MATH_DEFINES
@@ -21,18 +21,19 @@
 
 MCamera3D::MCamera3D(bool start_enabled) : Module(start_enabled)
 {
-	mainCamera = new CCamera(nullptr);
+	currentCamera = new CCamera(nullptr);
+	currentCamera->frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
+	currentCamera->frustum.SetPos(float3(0, 0, 0));
+	currentCamera->frustum.SetFront(float3::unitZ);
+	currentCamera->frustum.SetUp(float3::unitY);
 
-	mainCamera->frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	mainCamera->frustum.SetPos(float3(0, 0, 0));
-	mainCamera->frustum.SetFront(float3::unitZ);
-	mainCamera->frustum.SetUp(float3::unitY);
-
-	mainCamera->frustum.SetViewPlaneDistances(0.1f, 10.0f);
-	mainCamera->frustum.SetPerspective(1.0f, 1.0f);
+	currentCamera->frustum.SetViewPlaneDistances(0.1f, 1000.0f);
+	currentCamera->frustum.SetPerspective(1.0f, 1.0f);
 
 	cameraMoveSpeed = 7.5f;
 	cameraRotateSpeed = 60.f;
+
+	SetCurrentCamera(currentCamera);
 }
 
 MCamera3D::~MCamera3D()
@@ -43,6 +44,9 @@ bool MCamera3D::Start()
 {
 	LOG("Setting up the camera");
 	bool ret = true;
+
+	mainCameraObject = App->scene->CreateGameObject("MainCameraObject",App->scene->rootObject);
+	mainCameraObject->AddComponent(currentCamera);
 
 	return ret;
 }
@@ -64,104 +68,46 @@ update_status MCamera3D::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = (cameraMoveSpeed * 2.f) * dt;
 
-	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += mainCamera->frustum.Front() * speed;
-	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= mainCamera->frustum.Front() * speed;
+	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += currentCamera->frustum.Front() * speed;
+	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= currentCamera->frustum.Front() * speed;
 
-
-	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= mainCamera->frustum.WorldRight() * speed;
-	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += mainCamera->frustum.WorldRight() * speed;
+	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= currentCamera->frustum.WorldRight() * speed;
+	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += currentCamera->frustum.WorldRight() * speed;
 
 	FocusOnObject();
 
 	ZoomIn(dt);
 
-	//if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)
-		//RotateCameraStatic();
+	if(App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+		RaycastSelect();
+
+	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)
+		RotateCameraStatic();
 
 	/*if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
 		OrbitObject();*/
 
-	mainCamera->Setposition(mainCamera->frustum.Pos() + newPos);
+	
+	currentCamera->Setposition(currentCamera->frustum.Pos() + newPos);
 
 	return UPDATE_CONTINUE;
 }
 
-// -----------------------------------------------------------------
-void MCamera3D::Look(const float3&Position, const float3&Reference, bool RotateAroundReference)
+void MCamera3D::RaycastSelect()
 {
-	/*this->position = Position;
-	this->reference = Reference;
+	float2 mousePos = float2(App->input->GetMouseX(), App->input->GetMouseY());
+	mousePos.Normalize();
+	LineSegment selectRay = currentCamera->GetFrustum().UnProjectLineSegment(mousePos.x , mousePos.y);
+	LOG("Casted ray at: x %.2f y %.2f", selectRay.a, selectRay.b);
 
-	Z = (Position - Reference).Normalized();
-	X = (float3(0.0f, 1.0f, 0.0f).Cross(Z)).Normalized();
-	Y = Z.Cross(X);
+	App->renderer3D->DrawLine(selectRay.a, selectRay.b);
 
-	if(!RotateAroundReference)
-	{
-		this->reference = this->position;
-		this->position += Z * 0.05f;
-	}*/
+	CheckIntersetions(&selectRay);
 }
 
-// -----------------------------------------------------------------
-void MCamera3D::LookAt( const float3&Spot)
+void MCamera3D::CheckIntersetions(LineSegment* selectRay)
 {
-	/*reference = Spot;
-	
-
-	Z = (position - reference).Normalized();
-	X = (float3(0.0f, 1.0f, 0.0f).Cross(Z)).Normalized();
-	Y = Z.Cross(X);*/
-}
-
-// -----------------------------------------------------------------
-void MCamera3D::Move(const float3&Movement)
-{
-	//position += Movement;
-	//reference += Movement;
-}
-
-void MCamera3D::ZoomIn(float dt)
-{
-	//int scrollWheel = App->input->GetMouseZ(); // -1 if moving towards me 1 if moving backwards
-	//float speed = cameraRotateSpeed * dt;
-
-	//if (scrollWheel > 0)
-	//{
-	//	mainCamera->Setposition(mainCamera->GetPos() - (Z * speed));
-	//}
-	//if (scrollWheel < 0)
-	//{
-	//	mainCamera->Setposition(mainCamera->GetPos() + (Z * speed));
-	//}
-}
-
-float4x4 rotate(float angle, const float3& u)
-{
-	float4x4 Rotate;
-
-	angle = angle / 180.0f * (float)M_PI;
-
-	float3 v = u.Normalized();
-
-	float c = 1.0f - cos(angle), s = sin(angle);
-
-	Rotate.At(0, 0) = 1.0f + c * (v.x * v.x - 1.0f);
-	Rotate.At(0, 1) = c * v.x * v.y + v.z * s;
-	Rotate.At(0, 2) = c * v.x * v.z - v.y * s;
-	Rotate.At(1, 0) = c * v.x * v.y - v.z * s;
-	Rotate.At(1, 1) = 1.0f + c * (v.y * v.y - 1.0f);
-	Rotate.At(1, 2) = c * v.y * v.z + v.x * s;
-	Rotate.At(2, 0) = c * v.x * v.z + v.y * s;
-	Rotate.At(2, 1) = c * v.y * v.z - v.x * s;
-	Rotate.At(2, 2) = 1.0f + c * (v.z * v.z - 1.0f);
-
-	return Rotate;
-}
-
-float3 rotate(const float3& u, float angle, const float3& v)
-{
-	return *(float3*)&(rotate(angle, v) * float4(u, 1.0f));
+	//selectRay->Intersects()
 }
 
 void MCamera3D::RotateCameraStatic()
@@ -169,38 +115,30 @@ void MCamera3D::RotateCameraStatic()
 	int dx = -App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
-	float Sensitivity = 0.15f;
+	float sensitivity = 0.003f;
+	//looking = false;
 
-	if (dx != 0)
+	// x motion make the camera rotate in Y absolute axis (0,1,0) (not local)
+	if (dx != 0.f)
 	{
-		/*float distance = reference.Distance(mainCamera->frustum.Pos());
-		float3 Y_add = mainCamera->frustum.Up() * dy * (distance / 1800);
-		float3 X_add = mainCamera->frustum.WorldRight() * -dx * (distance / 1800);
-
-		reference += X_add;
-		reference += Y_add;
-
-		mainCamera->frustum.look*/
-
-		/*X = rotate(X, DeltaX, float3(0.0f, 1.0f, 0.0f));
-		Y = rotate(Y, DeltaX, float3(0.0f, 1.0f, 0.0f));
-		Z = rotate(Z, DeltaX, float3(0.0f, 1.0f, 0.0f));*/
+		Quat q = Quat::RotateY(dx * sensitivity);
+		currentCamera->frustum.SetFront(q.Mul(currentCamera->frustum.Front()).Normalized());
+		currentCamera->frustum.SetUp(q.Mul(currentCamera->frustum.Up()).Normalized());
 	}
 
-	/*if (dy != 0)
+	// y motion makes the camera rotate in X local axis, with tops
+	if (dy != 0.f)
 	{
-		float DeltaY = (float)dy * Sensitivity;
+		Quat q = Quat::RotateAxisAngle(currentCamera->frustum.WorldRight(), dy * sensitivity);
 
-		Y = rotate(Y, DeltaY, X);
-		Z = rotate(Z, DeltaY, X);
+		vec newUp = q.Mul(currentCamera->frustum.Up()).Normalized();
 
-		if (Y.y < 0.0f)
+		if (newUp.y > 0.0f)
 		{
-			Z = float3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-			Y = Z.Cross(X);
+			currentCamera->frustum.SetUp(newUp);
+			currentCamera->frustum.SetFront(q.Mul(currentCamera->frustum.Front()).Normalized());
 		}
-	}*/
-
+	}
 }
 
 void MCamera3D::FocusOnObject()
@@ -266,11 +204,60 @@ void MCamera3D::OrbitObject()
 	//position = reference + Z * position.Length();
 }
 
+void MCamera3D::Look(const float3& Position, const float3& Reference, bool RotateAroundReference)
+{
+	/*this->position = Position;
+	this->reference = Reference;
+
+	Z = (Position - Reference).Normalized();
+	X = (float3(0.0f, 1.0f, 0.0f).Cross(Z)).Normalized();
+	Y = Z.Cross(X);
+
+	if(!RotateAroundReference)
+	{
+		this->reference = this->position;
+		this->position += Z * 0.05f;
+	}*/
+}
+
+// -----------------------------------------------------------------
+void MCamera3D::LookAt(const float3& Spot)
+{
+	/*reference = Spot;
+
+
+	Z = (position - reference).Normalized();
+	X = (float3(0.0f, 1.0f, 0.0f).Cross(Z)).Normalized();
+	Y = Z.Cross(X);*/
+}
+
+// -----------------------------------------------------------------
+void MCamera3D::Move(const float3& Movement)
+{
+	//position += Movement;
+	//reference += Movement;
+}
+
+void MCamera3D::ZoomIn(float dt)
+{
+	//int scrollWheel = App->input->GetMouseZ(); // -1 if moving towards me 1 if moving backwards
+	//float speed = cameraRotateSpeed * dt;
+
+	//if (scrollWheel > 0)
+	//{
+	//	mainCamera->Setposition(mainCamera->GetPos() - (Z * speed));
+	//}
+	//if (scrollWheel < 0)
+	//{
+	//	mainCamera->Setposition(mainCamera->GetPos() + (Z * speed));
+	//}
+}
+
 // -----------------------------------------------------------------
 float* MCamera3D::GetRawViewMatrix()
 {
 	CalculateViewMatrix();
-	float4x4 viewMatrix = mainCamera->frustum.ComputeViewMatrix();
+	float4x4 viewMatrix = currentCamera->frustum.ComputeViewMatrix();
 	return (float*)&viewMatrix;
 }
 
@@ -286,4 +273,11 @@ void MCamera3D::CalculateViewMatrix()
 	//viewMatrixInverse = viewMatrix.Inverted();
 
 
+}
+
+void MCamera3D::SetCurrentCamera(CCamera* newCamera)
+{
+	currentCamera->isCurrentCamera = false;
+	currentCamera = newCamera;
+	currentCamera->isCurrentCamera = true;
 }

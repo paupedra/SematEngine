@@ -5,6 +5,8 @@
 
 #include "CTransform.h"
 #include "CMesh.h"
+#include "CCamera.h"
+#include "CMaterial.h"
 
 #include "RMesh.h"
 
@@ -18,6 +20,9 @@ GameObject::GameObject(const char* name) : name(name)
 GameObject::GameObject(GameObject* parent = nullptr, const char* name = "Object") : parent(parent), name(name)
 {
 	AddComponent(new CTransform(this));
+	
+	if(parent != nullptr)
+		parent->AddChild(this);
 }
 
 GameObject::~GameObject()
@@ -52,6 +57,12 @@ void GameObject::CleanUp()
 	components.clear();
 
 	children.clear();
+}
+
+void  GameObject::AddChild(GameObject* gameObject)
+{
+	gameObject->SetParent(this);
+	children.push_back(gameObject);
 }
 
 void GameObject::EraseChild(GameObject* gameObject)
@@ -125,7 +136,27 @@ Component* GameObject::AddComponent(Component* component)
 			break;
 	}
 
+	component->owner = this;
+
 	return component;
+}
+
+Component* GameObject::AddComponent(ComponentType type)
+{
+	switch (type)
+	{
+		case ComponentType::MESH:
+			AddComponent(new CMesh(this));
+			break;
+		case ComponentType::MATERIAL:
+			AddComponent(new CMaterial(this));
+			break;
+		case ComponentType::CAMERA:
+			AddComponent(new CCamera(this));
+			break;
+	}
+
+	return nullptr;
 }
 
 void GameObject::OnDelete()
@@ -182,13 +213,58 @@ void GameObject::UpdateBoundingBoxes()
 {
 	if (HasComponentType(ComponentType::MESH))
 	{
-		OBB = GetComponent<CMesh>()->GetMesh()->aabb;
-		OBB.Transform(transform->GetGlobalTransform());
+		RMesh* mesh = GetComponent<CMesh>()->GetMesh();
+		if (mesh != nullptr)
+		{
+			OBB = mesh->aabb;
+			OBB.Transform(transform->GetGlobalTransform());
 
-		AABB.SetNegativeInfinity();
-		AABB.Enclose(OBB);
+			AABB.SetNegativeInfinity();
+			AABB.Enclose(OBB);
+		}
 	}
 }
+
+void GameObject::Reparent(GameObject* newParent)
+{
+	if (newParent == nullptr)
+	{
+		LOG("(ERROR) Reparent target is nullptr");
+		return;
+	}
+	//check if newParent is children
+	if (FindChild(newParent))
+	{
+		LOG("(ERROR) Reparent target is in object's children");
+		return;
+	}
+	
+	parent->EraseChild(this);	//current parent delete this child
+	SetParent(newParent);		//this parent = newParent
+	parent->AddChild(this);		//newParent child-> add this
+}
+
+void GameObject::SetParent(GameObject* newParent)
+{
+	parent = newParent;
+	transform->updateTransform = true;
+}
+
+bool GameObject::FindChild(GameObject* newParent)
+{
+	for (std::vector<GameObject*>::iterator child = children.begin(); child != children.end(); child++)
+	{
+		if ((*child) == newParent)
+		{
+			return true;
+		}
+		(*child)->FindChild(newParent);
+	}
+
+	return false;
+}
+
+
 
 void GameObject::Enable()
 {
@@ -223,6 +299,11 @@ std::vector<Component*> GameObject::GetComponents()const
 void GameObject::UpdatedTransform()
 {
 	transform->UpdatedTransform(parent->transform->GetGlobalTransform());
+
+	if ( GetComponent<CCamera>() != nullptr)
+	{
+		GetComponent<CCamera>()->OnUpdateTransform(transform->GetGlobalTransform());
+	}
 
 	//call children's on updateTransforms
 	std::vector<GameObject*>::iterator child = children.begin();

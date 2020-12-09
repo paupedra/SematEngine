@@ -22,7 +22,7 @@ public:
 	uint SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObjects);
 	void SaveSceneComponent(ConfigNode* node, Component* component);
 
-	GameObject* CreateGameObject(char* name,char* meshPath = "", char* texturePath = "", bool isRoot = false);
+	GameObject* CreateGameObject(char* name, GameObject* parent= nullptr, bool isRoot = false);
 	void SetSelectedObject(GameObject* gameObject);
 	std::vector<GameObject*>::iterator FindGameObject(GameObject* gameObject);
 
@@ -30,7 +30,9 @@ public:
 	void SetToDestroyGameObject(GameObject* gameObject);
 	void EraseGameObject(std::vector<GameObject*>::iterator gameObject);
 
-	
+	void AddGameObject(GameObject* gameObject);
+
+	uint GetNameRepeats(const char* name); //Return how many times this name is repeated on scene
 
 public:
 
