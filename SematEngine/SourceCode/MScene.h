@@ -3,7 +3,7 @@
 
 class Primitive;
 class GameObject;
-class ConfigNode;
+class JsonNode;
 class Component;
 
 class MScene : public Module
@@ -16,11 +16,11 @@ public:
 	update_status Update(float dt) override;
 	update_status PostUpdate(float dt) override;
 	bool CleanUp() override;
-	bool Save(ConfigNode* config) override;
+	bool Save(JsonNode* config) override;
 
 	void SaveScene();
-	uint SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObjects);
-	void SaveSceneComponent(ConfigNode* node, Component* component);
+	uint SaveSceneNode(JsonNode* config, std::vector<GameObject*> gameObjects);
+	void SaveSceneComponent(JsonNode* node, Component* component);
 
 	GameObject* CreateGameObject(char* name, GameObject* parent= nullptr, bool isRoot = false);
 	void SetSelectedObject(GameObject* gameObject);

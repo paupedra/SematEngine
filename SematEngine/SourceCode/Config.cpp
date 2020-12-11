@@ -4,27 +4,43 @@
 #include "MFileSystem.h"
 #include "Dependecies/mmgr/mmgr.h"
 
-ConfigNode::ConfigNode()
+JsonNode::JsonNode()
+{
+	rootNode = json_value_init_object(); //root
+	node = json_value_get_object(rootNode);
+}
+
+JsonNode::JsonNode(JSON_Object* node) : node(node)
 {
 
 }
 
-ConfigNode::ConfigNode(JSON_Object* node) : node(node)
+JsonNode::JsonNode(const char* buffer)
 {
-
+	rootNode = json_parse_string(buffer);
+	if (rootNode)
+	{
+		node = json_value_get_object(rootNode);
+	}
 }
 
-void ConfigNode::AddNumber(const char* name, double number)
+void JsonNode::AddNumber(const char* name, double number)
 {
 	json_object_set_number(node, name, number);
 }
 
-void ConfigNode::AddString(const char* name, const char* string)
+void JsonNode::AddString(const char* name, const char* string)
 {
 	json_object_set_string(node, name, string);
 }
 
-uint ConfigNode::Serialize(char** buffer)
+JsonNode JsonNode::AddNode(const char* name)
+{
+	json_object_set_value(node, name, json_value_init_object());
+	return JsonNode(json_object_get_object(node,name));
+}
+
+uint JsonNode::Serialize(char** buffer)
 {
 	uint size = json_serialization_size_pretty(rootNode);
 	*buffer = new char[size];
@@ -33,37 +49,44 @@ uint ConfigNode::Serialize(char** buffer)
 	return size;
 }
 
-ConfigArray ConfigNode::InitArray(const char* name) //Create a array storing into class -> addthings to array
+double JsonNode::GetNumber(const char* name)
+{
+	if (json_object_has_value_of_type(node, name, JSONNumber))
+		return json_object_get_number(node,name);
+	return 0;
+}
+
+JsonArray JsonNode::InitArray(const char* name) //Create a array storing into class -> addthings to array
 {
 	json_object_set_value(node, name, json_value_init_array());
-	return ConfigArray(json_object_get_array(node,name));
+	return JsonArray(json_object_get_array(node,name));
 }
 
 //ConfigArray ----------------------------------------------
-ConfigArray::ConfigArray(JSON_Array* array) : arr(array)
+JsonArray::JsonArray(JSON_Array* array) : arr(array)
 {
 	size = json_array_get_count(array);
 }
 
-ConfigArray::~ConfigArray()
+JsonArray::~JsonArray()
 {
 
 }
 
-void ConfigArray::AddNumber(double number)
+void JsonArray::AddNumber(double number)
 {
 	json_array_append_number(arr, number);
 	size++;
 }
 
-void ConfigArray::AddString(const char* string)
+void JsonArray::AddString(const char* string)
 {
 	json_array_append_string(arr, string);
 }
 
-ConfigNode ConfigArray::AddNode()
+JsonNode JsonArray::AddNode()
 {
 	json_array_append_value(arr, json_value_init_object());
 	size++;
-	return ConfigNode(json_array_get_object(arr, size - 1));
+	return JsonNode(json_array_get_object(arr, size - 1));
 }

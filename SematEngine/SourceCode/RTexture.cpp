@@ -4,6 +4,8 @@
 
 #include "Dependecies/mmgr/mmgr.h"
 
+#include <gl/GL.h>
+
 RTexture::RTexture()
 {
 
@@ -21,7 +23,7 @@ RTexture::~RTexture()
 
 void RTexture::CleanUp()
 {
-
+	glDeleteTextures(1, (GLuint*)&id);
 }
 
 void RTexture::SetId(uint id)

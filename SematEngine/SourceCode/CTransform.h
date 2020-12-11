@@ -5,7 +5,7 @@
 
 
 class Component;
-class ConfigNode;
+class JsonNode;
 
 class CTransform : public Component
 {
@@ -16,7 +16,7 @@ public:
 	void Update() override;
 	void CleanUp() override;
 	
-	void OnSave(ConfigNode* node);
+	void OnSave(JsonNode* node);
 
 	float4x4 GetTransform() const;
 	float3 GetPosition()const;

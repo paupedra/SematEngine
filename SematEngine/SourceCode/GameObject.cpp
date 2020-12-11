@@ -46,7 +46,6 @@ void GameObject::Update()
 
 void GameObject::CleanUp()
 {
-	
 	std::vector<Component*>::iterator item = components.begin();
 	for (; item != components.end(); ++item)
 	{

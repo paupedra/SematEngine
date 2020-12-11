@@ -12,7 +12,7 @@ class WInspector;
 class WAssets;
 class WPlay;
 struct HardwareInfo;
-class ConfigNode;
+class JsonNode;
 
 class MEditor : public Module
 {
@@ -23,7 +23,7 @@ public:
 	bool Start();
 	update_status PreUpdate(float dt) override;
 	bool CleanUp();
-	bool Save(ConfigNode* config) override;
+	bool Save(JsonNode* config) override;
 
 	void Draw();
 	void DrawMainMenuBar();

@@ -27,8 +27,6 @@ void RMaterial::CleanUp()
 	
 }
 
-
-
 Color RMaterial::GetColor()const
 {
 	return color;

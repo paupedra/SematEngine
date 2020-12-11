@@ -43,11 +43,14 @@ void CMaterial::Update()
 void CMaterial::CleanUp()
 {
 	material->CleanUp();
+	if(texture != nullptr)
+		texture->CleanUp();
 
 	delete material;
+	delete texture;
 }
 
-void CMaterial::OnSave(ConfigNode* node)
+void CMaterial::OnSave(JsonNode* node)
 {
 	//color
 

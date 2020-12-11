@@ -1,20 +1,25 @@
 #include "Globals.h"
 #include "Dependecies/parson/parson.h"
 
-class ConfigArray;
+class JsonArray;
 
-class ConfigNode
+class JsonNode
 {
 public:
-	ConfigNode();
-	ConfigNode(JSON_Object* node);
+	JsonNode();
+	JsonNode(JSON_Object* node);
+	JsonNode(const char* buffer);
 
 	uint Serialize(char** buffer);
 
 	void AddNumber(const char* name, double number);
 	void AddString(const char* name, const char* string);
+	JsonNode AddNode(const char* name);
 
-	ConfigArray InitArray(const char* name);
+	double GetNumber(const char* name);
+
+
+	JsonArray InitArray(const char* name);
 
 public:
 
@@ -22,16 +27,16 @@ public:
 	JSON_Value* rootNode; //root
 };
 
-class ConfigArray
+class JsonArray
 {
 public:
-	ConfigArray(JSON_Array* array);
-	~ConfigArray();
+	JsonArray(JSON_Array* array);
+	~JsonArray();
 
 	void AddNumber(double number);
 	void AddString(const char* string);
 
-	ConfigNode AddNode();
+	JsonNode AddNode();
 
 public:
 	JSON_Array* arr;

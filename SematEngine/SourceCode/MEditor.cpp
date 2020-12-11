@@ -108,7 +108,7 @@ bool MEditor::CleanUp()
 	return true;
 }
 
-bool MEditor::Save(ConfigNode* config)
+bool MEditor::Save(JsonNode* config)
 {
 	LOG("saved editor");
 

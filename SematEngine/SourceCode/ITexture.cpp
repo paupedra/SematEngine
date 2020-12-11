@@ -61,7 +61,7 @@ RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint 
 	{
 		//LOG("(ERROR) Error loading Image %s", path);
 	}
-	delete[] buffer;
+
 	return newTexture;
 }
 
@@ -127,7 +127,7 @@ uint Importer::TextureImp::CreateTexture(const void* data,uint width, uint heigh
 	return id;
 }
 
-uint64 Importer::TextureImp::Save(RTexture* material)
+uint64 Importer::TextureImp::Save(RTexture* material,const char* path)
 {
 	uint64 ret = 0;
 
@@ -135,6 +135,7 @@ uint64 Importer::TextureImp::Save(RTexture* material)
 	ILubyte* data;
 
 	char* fileBuffer;
+
 
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);// To pick a specific DXT compression use
 	size = ilSaveL(IL_DDS, nullptr, 0); // Get the size of the data buffer
@@ -144,15 +145,13 @@ uint64 Importer::TextureImp::Save(RTexture* material)
 		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
 		{
 			fileBuffer = (char*)data;
-			App->fileSystem->Save(material->path,fileBuffer,size);
+
+			App->fileSystem->Save(path,fileBuffer,size);
 		}
 	}
 
-	std::string filePath = "Library/Texture";
 
-	//std::string 
-
-	//App->fileSystem->Save();
+	delete[] fileBuffer;
 
 	return ret;
 }

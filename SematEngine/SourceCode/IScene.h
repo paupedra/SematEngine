@@ -5,7 +5,7 @@ struct aiScene;
 struct aiNode;
 struct Texture;
 class GameObject;
-class ConfigNode;
+class JsonNode;
 class Component;
 
 namespace Importer

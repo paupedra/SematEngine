@@ -67,7 +67,7 @@ void CMesh::DrawMesh()
 	//App->renderer3D->DrawBoundingBox(mesh,owner->transform->GetGlobalTransform());
 }
 
-void CMesh::OnSave(ConfigNode* node)
+void CMesh::OnSave(JsonNode* node)
 {
 	//save id
 }

@@ -3,7 +3,7 @@
 
 class Component;
 class RMesh;
-class ConfigNode;
+class JsonNode;
 
 class CMesh : public Component
 {
@@ -16,7 +16,7 @@ public:
 	void CleanUp() override;
 	void DrawMesh();
 
-	void OnSave(ConfigNode* node);
+	void OnSave(JsonNode* node);
 
 	static inline ComponentType GetType() { return ComponentType::MESH; };
 

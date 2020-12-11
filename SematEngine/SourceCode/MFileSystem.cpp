@@ -412,11 +412,11 @@ uint MFileSystem::Save(const char* file, const void* buffer, unsigned int size, 
 			}
 			else if (overwrite == true)
 			{
-				LOG("File [%s%s] overwritten with %u bytes", GetWriteDir(), file, size);
+				LOG("(FILESYSTEM) File [%s%s] overwritten with %u bytes", GetWriteDir(), file, size);
 			}
 			else
 			{
-				LOG("New file created [%s%s] of %u bytes", GetWriteDir(), file, size);
+				LOG("(FILESYSTEM) New file created [%s%s] of %u bytes", GetWriteDir(), file, size);
 			}
 
 			ret = written;

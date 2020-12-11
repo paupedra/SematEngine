@@ -46,9 +46,9 @@ void Importer::SceneImporter::Import(const char* file) //Load buffer with .fbx s
 		int i = 0;
 		for (; i < scene->mNumMeshes; i++)
 		{
-			LOG("Mesh has %d whatever", scene->mMeshes[i]->mNumVertices);
+			//LOG("Mesh has %d whatever", scene->mMeshes[i]->mNumVertices);
 		}
-		LOG("There are %d meshes in this .fbx file" , i);
+		//LOG("There are %d meshes in this .fbx file" , i);
 
 		LOG("Finished importing: %s", file);
 	}

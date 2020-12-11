@@ -1,6 +1,6 @@
 #pragma once
 
-class ConfigNode;
+class JsonNode;
 
 
 class Module
@@ -45,7 +45,7 @@ public:
 		return true; 
 	}
 
-	virtual bool Save(ConfigNode* config)
+	virtual bool Save(JsonNode* config)
 	{
 		return true;
 	}

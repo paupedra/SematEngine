@@ -47,6 +47,10 @@ void WConsole::Draw()
 			case LogType::INIT:
 				textColor = { 1.f,1.f,0.f,1.f };
 				break;
+
+			case LogType::FILESYSTEM:
+				textColor = { 0.f,0.f,1.f,1.f };
+				break;
 		}
 
 		ImGui::PushStyleColor(ImGuiCol_Text, textColor);
@@ -76,6 +80,10 @@ void WConsole::AddLog(char* text)
 	if (strstr(text, "(INIT)") != nullptr)
 	{
 		log.type = LogType::INIT;
+	}
+	if (strstr(text, "(FILESYSTEM)") != nullptr)
+	{
+		log.type = LogType::FILESYSTEM;
 	}
 
 	logs.push_back(log); //Why does this work?

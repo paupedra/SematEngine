@@ -3,7 +3,7 @@
 
 class Component;
 class RMaterial;
-class ConfigNode;
+class JsonNode;
 class RTexture;
 
 class CMaterial : public Component
@@ -16,7 +16,7 @@ public:
 	void Update() override;
 	void CleanUp() override;
 
-	void OnSave(ConfigNode* node);
+	void OnSave(JsonNode* node);
 
 	static inline ComponentType GetType() { return ComponentType::MATERIAL; };
 

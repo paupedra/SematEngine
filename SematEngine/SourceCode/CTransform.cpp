@@ -130,19 +130,19 @@ void CTransform::UpdatedTransform(float4x4 parentGlobalTransform)
 	updateTransform = false;
 }
 
-void CTransform::OnSave(ConfigNode* node)
+void CTransform::OnSave(JsonNode* node)
 {
-	ConfigArray _position = node->InitArray("Position");
+	JsonArray _position = node->InitArray("Position");
 	_position.AddNumber(position.x);
 	_position.AddNumber(position.y);
 	_position.AddNumber(position.z);
 
-	ConfigArray _scale = node->InitArray("Scale");
+	JsonArray _scale = node->InitArray("Scale");
 	_scale.AddNumber(scale.x);
 	_scale.AddNumber(scale.y);
 	_scale.AddNumber(scale.z);
 
-	ConfigArray _rotation = node->InitArray("Rotation");
+	JsonArray _rotation = node->InitArray("Rotation");
 	_rotation.AddNumber(rotation.x);
 	_rotation.AddNumber(rotation.y);
 	_rotation.AddNumber(rotation.z);

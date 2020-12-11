@@ -3,6 +3,10 @@
 
 #include "Dependecies/mmgr/mmgr.h"
 
+
+#include "Dependecies/Glew/include/glew.h"
+#include <gl/GL.h>
+
 RMesh::RMesh()
 {
 
@@ -20,6 +24,10 @@ RMesh::~RMesh()
 
 void RMesh::CleanUp()
 {
+	glDeleteBuffers(1, (GLuint*)&buffersId[RMesh::index]);
+	glDeleteBuffers(1, (GLuint*)&buffersId[RMesh::normal]);
+	glDeleteBuffers(1, (GLuint*)&buffersId[RMesh::texture]);
+	glDeleteBuffers(1, (GLuint*)&buffersId[RMesh::vertex]);
 	delete[] indices;
 	delete[] normals;
 	delete[] textureCoords;

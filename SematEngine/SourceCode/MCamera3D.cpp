@@ -98,7 +98,7 @@ void MCamera3D::RaycastSelect()
 	float2 mousePos = float2(App->input->GetMouseX(), App->input->GetMouseY());
 	mousePos.Normalize();
 	LineSegment selectRay = currentCamera->GetFrustum().UnProjectLineSegment(mousePos.x , mousePos.y);
-	LOG("Casted ray at: x %.2f y %.2f", selectRay.a, selectRay.b);
+	//LOG("Casted ray at: x %.2f y %.2f", selectRay.a, selectRay.b);
 
 	App->renderer3D->DrawLine(selectRay.a, selectRay.b);
 

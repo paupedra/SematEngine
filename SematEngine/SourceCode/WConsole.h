@@ -9,6 +9,7 @@ enum class LogType
 {
 	ERRORS,
 	INIT,
+	FILESYSTEM,
 	NONE
 };
 

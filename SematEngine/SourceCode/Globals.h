@@ -57,6 +57,15 @@ enum update_status
        }\
     }
 
+#define RELEASE_ARRAY( x )\
+	{\
+       if( x != nullptr )\
+       {\
+           delete[] x;\
+	       x = nullptr;\
+		 }\
+	 }
+
 class Application;
 
 extern Application* App;

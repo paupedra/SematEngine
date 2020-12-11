@@ -105,7 +105,7 @@ bool MScene::CleanUp()
 	return true;
 }
 
-bool MScene::Save(ConfigNode* config)
+bool MScene::Save(JsonNode* config)
 {
 	bool ret = true;
 	LOG("Saving scene");
@@ -116,7 +116,7 @@ bool MScene::Save(ConfigNode* config)
 void MScene::SaveScene()
 {
 	LOG("Started saving current scene");
-	ConfigNode sceneNode;
+	JsonNode sceneNode;
 
 	uint64 id = SaveSceneNode(&sceneNode, gameObjects);
 
@@ -131,28 +131,25 @@ void MScene::SaveScene()
 	delete[] buffer;
 }
 
-uint MScene::SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObjects)
+uint MScene::SaveSceneNode(JsonNode* config, std::vector<GameObject*> gameObjects)
 {
-	JSON_Value* currentNode;
-	config->rootNode = json_value_init_object(); //root
-	config->node = json_value_get_object(config->rootNode);
 
 	//gameObjects -----------------------
-	ConfigArray gameObjectsJson = config->InitArray("GameObjects");
+	JsonArray gameObjectsJson = config->InitArray("GameObjects");
 
 	std::vector<GameObject*>::iterator item = gameObjects.begin();
 	for (; item != gameObjects.end(); item++)
 	{
-		ConfigNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
+		JsonNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
 
 		newObject.AddString("Name", (*item)->GetName());
 
 		//Components -----------------------
-		ConfigArray components = newObject.InitArray("Components"); //Create array in GO node
+		JsonArray components = newObject.InitArray("Components"); //Create array in GO node
 		std::vector<Component*> comps = (*item)->GetComponents();
 		for (int i = 0; i < comps.size(); i++)
 		{
-			ConfigNode newComponent = components.AddNode(); //Add Component object
+			JsonNode newComponent = components.AddNode(); //Add Component object
 
 			newComponent.AddNumber("Type", (double)comps[i]->GetType());
 			SaveSceneComponent(&newComponent, comps[i]);
@@ -162,7 +159,7 @@ uint MScene::SaveSceneNode(ConfigNode* config, std::vector<GameObject*> gameObje
 	return 5467;
 }
 
-void MScene::SaveSceneComponent(ConfigNode* node, Component* component)
+void MScene::SaveSceneComponent(JsonNode* node, Component* component)
 {
 	CMesh* cMesh = nullptr;
 	CMaterial* cMaterial = nullptr;
