@@ -11,6 +11,7 @@ class WHierarchy;
 class WInspector;
 class WAssets;
 class WPlay;
+class WResources;
 struct HardwareInfo;
 class JsonNode;
 
@@ -51,4 +52,5 @@ public:
 	WInspector* inspector = nullptr;
 	WAssets* assets = nullptr;
 	WPlay* play = nullptr;
+	WResources* resources = nullptr;
 };

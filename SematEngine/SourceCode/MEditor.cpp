@@ -1,4 +1,3 @@
-
 #include <Windows.h>
 #include "Globals.h"
 #include "Application.h"
@@ -17,6 +16,7 @@
 #include "WInspector.h"
 #include "WAssets.h"
 #include "WPlay.h"
+#include "WResources.h"
 
 #include "IScene.h"
 
@@ -41,6 +41,7 @@ MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 	inspector = new WInspector(true);
 	assets = new WAssets(true);
 	play = new WPlay(true);
+	resources = new WResources(true);
 
 	AddWindow(configuration);
 	AddWindow(console);
@@ -49,6 +50,7 @@ MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 	AddWindow(inspector);
 	AddWindow(assets);
 	AddWindow(play);
+	AddWindow(resources);
 }
 
 MEditor::~MEditor()

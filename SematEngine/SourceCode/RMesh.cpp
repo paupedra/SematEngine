@@ -1,5 +1,11 @@
+#include "Application.h"
 #include "Resource.h"
 #include "RMesh.h"
+#include "Random.h"
+
+#include "MFileSystem.h"
+
+#include "IMesh.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -33,4 +39,14 @@ void RMesh::CleanUp()
 	delete[] textureCoords;
 	delete[] vertices;
 	//delete[] path;
+}
+
+UID RMesh::GenerateCustomFile()
+{
+	UID ret = Random::GenerateUID();
+	std::string fileName = MESHES_PATH;
+	fileName += std::to_string(ret);
+	fileName += ".mesh";
+	Importer::MeshImporter::Save(*this,fileName.c_str() );
+	return ret;
 }

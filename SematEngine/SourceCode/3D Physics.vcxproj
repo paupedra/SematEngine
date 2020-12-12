@@ -212,6 +212,7 @@
     <ClInclude Include="WHierarchy.h" />
     <ClInclude Include="WInspector.h" />
     <ClInclude Include="WPlay.h" />
+    <ClInclude Include="WResources.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -307,6 +308,7 @@
     <ClCompile Include="WHierarchy.cpp" />
     <ClCompile Include="WInspector.cpp" />
     <ClCompile Include="WPlay.cpp" />
+    <ClCompile Include="WResources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependecies\MathGeoLib\include\Geometry\KDTree.inl" />

@@ -23,9 +23,9 @@ namespace Importer
 		void ProcessMaterial(const aiScene* scene, const aiNode* node, GameObject* newGameObject, const char* file);
 
 		void ImportSceneResource(const char* buffer, RScene* resource,uint size); //Imports .fbx file and store it in RScene
-		void ProcessAiNodeModel(const aiScene* scene, const aiNode* node, RScene* _scene);
+		void ProcessAiNodeModel(const aiScene* scene, const aiNode* node, RScene* _scene, UID parentUID);
 		const aiNode* ProcessTransformModel(const aiNode* node, RModel* model);
-		void ProcessMeshesModel(const aiScene* scene, const aiNode* node, RModel* model);
+		void ProcessMeshesModel(const aiScene* scene, const aiNode* node, RModel* model, RScene* _scene);
 		void ProcessMaterialModel(const aiScene* scene, const aiNode* node, RModel* model);
 
 		//void Load(); //Load buffer from custom format file and store into mesh

@@ -52,7 +52,7 @@ bool MScene::Start()
 
 	//Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
 
-	App->resourceManager->ImportFile("Assets/Mesh/Street environment_V01.FBX", ResourceType::scene);
+	//App->resourceManager->ImportFile("Assets/Mesh/Street environment_V01.FBX", ResourceType::scene);
 	
 	return ret;
 }

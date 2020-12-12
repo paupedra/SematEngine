@@ -185,12 +185,12 @@ uint64 Importer::MeshImporter::Save(const RMesh mesh, const char* name)
     cursor += bytes;
 
 
-    std::string fileName = "Library/Meshes/";
-    fileName += name;
+    /*std::string fileName = "Library/Meshes/";
+    fileName += name;*/
 
-    LOG("Saved mesh in file: %s", fileName.c_str());
+    LOG("Saved mesh in file: %s", name);
 
-    App->fileSystem->Save(fileName.c_str(), fileBuffer, size);
+    App->fileSystem->Save(name, fileBuffer, size); //idk if I like this being done here...
 
     LOG("Time spent saving Mesh: %d ms", timeSaving->Read());
 
@@ -295,5 +295,57 @@ void Importer::MeshImporter::LoadNodeMeshModel(const aiScene* scene, const aiNod
 
         //App->renderer3D->GenerateBuffers(&newMesh); //Crashes
         meshes.push_back(newMesh);
+    }
+}
+
+void Importer::MeshImporter::LoadAllMeshesInScene(const aiScene* scene, std::vector<uint>& meshes)
+{
+    for (int i = 0; i < scene->mNumMeshes; i++)
+    {
+        RMesh newMesh;
+
+        newMesh.buffersSize[RMesh::vertex] = scene->mMeshes[i]->mNumVertices;
+        newMesh.vertices = new float[newMesh.buffersSize[RMesh::vertex] * 3];
+        memcpy(newMesh.vertices, scene->mMeshes[i]->mVertices, sizeof(float) * newMesh.buffersSize[RMesh::vertex] * 3);
+        //LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
+
+        if (scene->mMeshes[i]->HasFaces())
+        {
+            newMesh.buffersSize[RMesh::index] = scene->mMeshes[i]->mNumFaces * 3;
+            newMesh.indices = new uint[newMesh.buffersSize[RMesh::index]];
+
+            for (uint f = 0; f < scene->mMeshes[i]->mNumFaces; ++f)
+            {
+                if (scene->mMeshes[i]->mFaces[f].mNumIndices != 3)
+                {
+                    LOG("WARNING, geometery face with != 3 indices!"); //Problems with != 3 faces
+                }
+                else
+                {
+                    memcpy(&newMesh.indices[f * 3], scene->mMeshes[i]->mFaces[f].mIndices, 3 * sizeof(uint));
+                }
+            }
+        }
+
+        if (scene->mMeshes[i]->HasNormals())
+        {
+            newMesh.buffersSize[RMesh::normal] = scene->mMeshes[i]->mNumVertices;
+            newMesh.normals = new float[newMesh.buffersSize[RMesh::normal] * 3];
+            memcpy(newMesh.normals, scene->mMeshes[i]->mNormals, sizeof(float) * newMesh.buffersSize[RMesh::normal] * 3);
+        }
+
+        if (scene->mMeshes[i]->HasTextureCoords(0))
+        {
+            newMesh.buffersSize[RMesh::texture] = scene->mMeshes[i]->mNumVertices;
+            newMesh.textureCoords = new float[scene->mMeshes[i]->mNumVertices * 2];
+
+            for (int j = 0; j < newMesh.buffersSize[RMesh::texture]; j++)
+            {
+                newMesh.textureCoords[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
+                newMesh.textureCoords[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
+            }
+        }
+
+        meshes.push_back(newMesh.GenerateCustomFile()); //Generate cff file and add UID to meshes list
     }
 }

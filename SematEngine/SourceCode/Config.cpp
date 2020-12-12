@@ -56,6 +56,13 @@ double JsonNode::GetNumber(const char* name)
 	return 0;
 }
 
+const char* JsonNode::GetString(const char* name)
+{
+	if (json_object_has_value_of_type(node, name, JSONString))
+		return json_object_get_string(node, name);
+	return 0;
+}
+
 JsonArray JsonNode::InitArray(const char* name) //Create a array storing into class -> addthings to array
 {
 	json_object_set_value(node, name, json_value_init_array());

@@ -207,8 +207,15 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 		const aiScene* scene = aiImportFileFromMemory(buffer, size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 		const aiNode* rootNode = scene->mRootNode;
 
+		
+		//save all the meshes and add them to RScene->meshes (list containing the id of the meshes, models will use this to get their id)
+		Importer::MeshImporter::LoadAllMeshesInScene(scene,resource->meshes);
+
 		//add model
-		ProcessAiNodeModel(scene, rootNode, resource); //Process node tree
+		ProcessAiNodeModel(scene, rootNode, resource,0); //Process node tree
+
+		RScene* sceneResource = (RScene*)resource;
+		sceneResource->GenerateCustomFile(); //return serialized json size
 
 		LOG("Finished importing: %s");
 	}
@@ -218,22 +225,30 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 	}
 }
 
-void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiNode* node, RScene* _scene)
+void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiNode* node, RScene* _scene,UID parentUID)
 {
-	RModel model;
+	RModel model(Random::GenerateUID());
+	
+	model.parentUID = parentUID;
 
 	node = ProcessTransformModel(node, &model);
 
 	if (node->mNumMeshes > 0)
 	{
-		ProcessMeshesModel(scene, node, &model);
+		ProcessMeshesModel(scene, node, &model,_scene);
+	}
+	else
+	{
+
 	}
 
 	ProcessMaterialModel(scene, node, &model);
 
+	_scene->models.push_back(model);
+
 	for (int i = 0; i < node->mNumChildren; i++) //Process children
 	{
-		ProcessAiNodeModel(scene, node->mChildren[i], _scene);
+		ProcessAiNodeModel(scene, node->mChildren[i], _scene,model.uid);
 	}
 }
 
@@ -279,26 +294,20 @@ const aiNode* Importer::SceneImporter::ProcessTransformModel(const aiNode* node,
 	return node;
 }
 
-void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiNode* node, RModel* model)
+void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiNode* node, RModel* model,RScene* _scene)
 {
 	std::vector<uint> meshesUID;
 	std::vector<RMesh> meshes;
 
-	Importer::MeshImporter::LoadNodeMeshModel(scene, node, meshes);
+	model->name = node->mName.C_Str();
 
-	for (int i = 0; i < meshes.size(); i++)
-	{
-		//push uid to model meshesUID
-		uint uid = Random::GenerateUID();
+	//only do first mesh for safety
+	model->mesheUID = node->mMeshes[0];
 
-		meshesUID.push_back(uid);
-
-		std::string file = std::to_string(uid).c_str() ;
-		file += ".mesh";
-
-		//save mesh in custom file format with UID name
-		Importer::MeshImporter::Save(meshes[i],file.c_str());
-	}
+	//for (int i = 0; i < node->mNumMeshes; i++)
+	//{
+	//	meshesUID.push_back(_scene->meshes[node->mMeshes[i]]); //push the loaded uid of the mesh in RScene meshes previously saved and generated
+	//}
 }
 
 void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const aiNode* node,RModel* model)

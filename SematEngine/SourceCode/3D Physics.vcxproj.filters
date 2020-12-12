@@ -480,6 +480,9 @@
     <ClInclude Include="RModel.h">
       <Filter>Source Code\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="WResources.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -760,6 +763,9 @@
     </ClCompile>
     <ClCompile Include="RScene.cpp">
       <Filter>Source Code\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="WResources.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

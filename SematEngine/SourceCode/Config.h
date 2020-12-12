@@ -17,6 +17,7 @@ public:
 	JsonNode AddNode(const char* name);
 
 	double GetNumber(const char* name);
+	const char* GetString(const char* name);
 
 	JsonArray InitArray(const char* name);
 

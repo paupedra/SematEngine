@@ -16,7 +16,10 @@ public:
 
 	void CleanUp();
 
-private:
+	UID GenerateCustomFile();
+
+public:
 	std::vector<RModel> models;
+	std::vector<UID> meshes; //uids of the fbx meshes, RModels will reference this list
 };
 #endif //__RESOURCESCENE_H__

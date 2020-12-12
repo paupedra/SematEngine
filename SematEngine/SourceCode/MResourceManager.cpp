@@ -36,6 +36,7 @@ MResourceManager::~MResourceManager()
 
 bool MResourceManager::Init()
 {
+	ImportAllFoundAssets("Assets");
 	return true;
 }
 
@@ -69,8 +70,7 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 
 	if (FindMeta(newFileInAssets))
 	{
-		//load file in this meta and add it to resourcesInLibrary
-
+		AddResourceToLibraryFromMeta(newFileInAssets);		//load file in this meta and add it to resourcesInLibrary
 		return ret;
 	}
 
@@ -84,9 +84,10 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 		case ResourceType::scene: Importer::SceneImporter::ImportSceneResource(fileBuffer,(RScene*)resource,size); break;
 	}
 
-	SaveResource(resource);
+	SaveResource(resource); 
 	ret = resource->resourceData.UID;
 	RELEASE_ARRAY(fileBuffer);
+	RELEASE(resource);
 
 	return ret;
 }
@@ -142,6 +143,8 @@ const char* MResourceManager::GenerateMeatFile(Resource* resource)
 std::string MResourceManager::GenerateLibraryFile(Resource* resource)
 {
 	std::string path = "";
+	char* buffer = "";
+	uint size = 1;
 	switch (resource->GetType())
 	{
 		case ResourceType::texture: 
@@ -157,9 +160,15 @@ std::string MResourceManager::GenerateLibraryFile(Resource* resource)
 			break;
 	}
 
-	App->fileSystem->Save(path.c_str(), "", 1); //This is not even needed
-
 	return path;
+}
+
+uint MResourceManager::GenerateSceneFile(Resource* resource)
+{
+	//loop models and get their mesh/material uid and generate json
+
+
+	return 0;
 }
 
 bool MResourceManager::FindMeta(const char* fileInAssets)
@@ -172,9 +181,27 @@ bool MResourceManager::FindMeta(const char* fileInAssets)
 	return ret;
 }
 
-void MResourceManager::ImportScene(const char* path,Resource* resource)
+UID MResourceManager::LoadResource(UID uid)
 {
+	uint ret = 0;
+	ResourceData resource = RequestLibraryResource(uid);
+	
+	switch (resource.type)
+	{
+		case ResourceType::scene: 
+			LoadScene(resource);
+			break;
+		case ResourceType::none:
+			return ret;
+			break;
+	}
 
+
+}
+
+void MResourceManager::LoadScene(ResourceData resource)
+{
+	//Load .scene file and go through all the models and load and add to memory resources
 }
 
 void MResourceManager::SaveResource(Resource* resource)
@@ -188,9 +215,8 @@ Resource* MResourceManager::RequestResource(uint uid)
 	std::map<UID, Resource*>::iterator it = resources.find(uid);
 	if (it != resources.end())
 	{
-		LOG("Resource has %d references", it->second->resourceData.referenceCount);
 		it->second->resourceData.referenceCount++;
-		LOG("Resource referenced %d times", it->second->resourceData.referenceCount);
+		LOG("Resource %s has been referenced %d times", it->second->resourceData.assetsFile.c_str(), it->second->resourceData.referenceCount);
 		return it->second;
 	}
 	return nullptr;
@@ -201,11 +227,41 @@ void MResourceManager::ReleaseResource(uint uid)
 
 }
 
+ResourceData MResourceManager::RequestLibraryResource(uint uid)
+{
+	std::map<UID, ResourceData>::iterator it = resourcesInLibrary.find(uid);
+	if (it != resourcesInLibrary.end())
+	{
+		return it->second;
+	}
+	return ResourceData(); //Default has UID = 0
+}
+
 void MResourceManager::AddResourceToLibrary(Resource* resource)
 {
 	ResourceData res;
 	res = resource->resourceData;
 	resourcesInLibrary.emplace(res.UID, res);
+}
+
+void MResourceManager::AddResourceToLibraryFromMeta(const char* file)
+{
+	//std::string fullName = file;
+	//fullName += ".meta";
+
+	//Read meta and stor into new ResourceData and sore it
+	char* buffer;
+	if (App->fileSystem->Load(file, &buffer) == 0)
+		return;
+
+	JsonNode node(buffer);
+	ResourceData resource;
+	resource.UID = node.GetNumber("UID");
+	resource.type = (ResourceType)node.GetNumber("Type");
+	resource.assetsFile = node.GetString("Assets File");
+	resource.libraryFile = node.GetString("Library File");
+
+	resourcesInLibrary.emplace(resource.UID, resource);
 }
 
 void MResourceManager::ImportAllFoundAssets(const char* basePath)
@@ -216,12 +272,20 @@ void MResourceManager::ImportAllFoundAssets(const char* basePath)
 
 	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); i++)
 	{
-		ImportFile((*i).c_str(),ResourceType::none);
+		//ImportFile((*i).c_str(),ResourceType::none);
+		if (strstr((*i).c_str(), ".meta"))
+		{
+			std::string tmp1 = basePath;
+			tmp1 += "/" +(*i);
+			AddResourceToLibraryFromMeta(tmp1.c_str());
+		}
 	}
 
 	for (std::vector<std::string>::iterator item = dirs.begin(); item != dirs.end();item++)
 	{
-		ImportAllFoundAssets((*item).c_str());
+		std::string tmp = basePath;
+		tmp += "/" + (*item);
+		ImportAllFoundAssets(tmp.c_str());
 	}
 }
 

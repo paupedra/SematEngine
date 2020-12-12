@@ -14,6 +14,8 @@ public:
 
 	void CleanUp() override;
 
+	UID GenerateCustomFile();
+
 	enum Buffers
 	{
 		index,

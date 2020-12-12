@@ -18,8 +18,9 @@ struct RModel //This resource holds it's meshes/materials uids
 	std::string name;
 
 	UID uid = 0; //The resource UID
+	UID parentUID = 0;
 
-	std::vector<UID> meshesUID;
-	std::vector<UID> materialsUID;
+	uint mesheUID = 0; //Position in the vector of meshes uid of the RScene (much like assimp does)
+	UID materialUID = 0;
 };
 #endif //__RESOURCEMODEL_H__
