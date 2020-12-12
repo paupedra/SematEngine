@@ -3,6 +3,7 @@
 #include "Resource.h"
 
 #include "MFileSystem.h"
+#include "MResourceManager.h"
 
 #include "WAssets.h"
 

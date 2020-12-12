@@ -7,6 +7,8 @@ struct Texture;
 class GameObject;
 class JsonNode;
 class Component;
+class RScene;
+struct RModel;
 
 namespace Importer
 {
@@ -19,6 +21,12 @@ namespace Importer
 		const aiNode* ProcessTransform( const aiNode* node,GameObject* newGameObject);
 		void ProcessMeshes(const aiScene* scene, const aiNode* node, GameObject* newGameObject);
 		void ProcessMaterial(const aiScene* scene, const aiNode* node, GameObject* newGameObject, const char* file);
+
+		void ImportSceneResource(const char* buffer, RScene* resource,uint size); //Imports .fbx file and store it in RScene
+		void ProcessAiNodeModel(const aiScene* scene, const aiNode* node, RScene* _scene);
+		const aiNode* ProcessTransformModel(const aiNode* node, RModel* model);
+		void ProcessMeshesModel(const aiScene* scene, const aiNode* node, RModel* model);
+		void ProcessMaterialModel(const aiScene* scene, const aiNode* node, RModel* model);
 
 		//void Load(); //Load buffer from custom format file and store into mesh
 

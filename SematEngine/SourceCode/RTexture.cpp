@@ -8,12 +8,12 @@
 
 RTexture::RTexture()
 {
-
+	resourceData.type = ResourceType::texture;
 }
 
 RTexture::RTexture(uint UID) : Resource(UID)
 {
-
+	resourceData.type = ResourceType::texture;
 }
 
 RTexture::~RTexture()

@@ -20,6 +20,8 @@ namespace Importer
 
 		void Load(const char* fileBuffer, RMesh* mesh); //Load buffer from custom format file and store into mesh
 
+		void LoadNodeMeshModel(const aiScene* scene, const aiNode* node, std::vector<RMesh>& meshes);
+
 	}
 }
 

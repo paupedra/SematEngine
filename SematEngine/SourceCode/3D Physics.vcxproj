@@ -200,6 +200,8 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RMaterial.h" />
     <ClInclude Include="RMesh.h" />
+    <ClInclude Include="RModel.h" />
+    <ClInclude Include="RScene.h" />
     <ClInclude Include="RTexture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WAssets.h" />
@@ -294,6 +296,7 @@
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="RMaterial.cpp" />
     <ClCompile Include="RMesh.cpp" />
+    <ClCompile Include="RScene.cpp" />
     <ClCompile Include="RTexture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WAssets.cpp" />

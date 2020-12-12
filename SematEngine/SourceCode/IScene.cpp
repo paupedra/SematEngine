@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "Component.h"
 #include "Resource.h"
+#include "Random.h"
 
 #include "MFileSystem.h"
 #include "MScene.h"
@@ -19,6 +20,8 @@
 
 #include "RMesh.h"
 #include "RMaterial.h"
+#include "RScene.h"
+#include "RModel.h"
 
 #include "Dependecies/Assimp/include/mesh.h"
 #include "Dependecies/Assimp/include/cimport.h"
@@ -143,7 +146,7 @@ void Importer::SceneImporter::ProcessMeshes(const aiScene* scene, const aiNode* 
 	{
 		newGameObject->AddComponent(new CMesh(newGameObject,"",meshes[i]));
 
-		Importer::MeshImporter::Save(*meshes[i],node->mName.C_Str()); //Saving by name .mesh file
+		//Importer::MeshImporter::Save(*meshes[i],node->mName.C_Str()); //Saving by name .mesh file
 	}
 	
 }
@@ -193,5 +196,147 @@ void Importer::SceneImporter::ProcessMaterial(const aiScene* scene, const aiNode
 
 		newGameObject->AddComponent(new CMaterial(newGameObject, fileName.c_str(), material,texture));
 
+	}
+}
+
+void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* resource,uint size)
+{
+
+	if (size > 0)
+	{
+		const aiScene* scene = aiImportFileFromMemory(buffer, size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+		const aiNode* rootNode = scene->mRootNode;
+
+		//add model
+		ProcessAiNodeModel(scene, rootNode, resource); //Process node tree
+
+		LOG("Finished importing: %s");
+	}
+	else
+	{
+		LOG("(ERROR) Could not load .fbx file");
+	}
+}
+
+void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiNode* node, RScene* _scene)
+{
+	RModel model;
+
+	node = ProcessTransformModel(node, &model);
+
+	if (node->mNumMeshes > 0)
+	{
+		ProcessMeshesModel(scene, node, &model);
+	}
+
+	ProcessMaterialModel(scene, node, &model);
+
+	for (int i = 0; i < node->mNumChildren; i++) //Process children
+	{
+		ProcessAiNodeModel(scene, node->mChildren[i], _scene);
+	}
+}
+
+const aiNode* Importer::SceneImporter::ProcessTransformModel(const aiNode* node, RModel* model)
+{
+	aiVector3D position = { 0,0,0 };
+	aiVector3D scale = { 0,0,0 };
+	aiQuaternion rotation;
+
+	aiVector3D _position = { 0,0,0 };
+	aiVector3D _scale = { 0,0,0 };
+	aiQuaternion _rotation = { 0,0,0,0 };
+
+	while (strstr(node->mName.C_Str(), "_$AssimpFbx$_") != nullptr && node->mNumChildren == 1)
+	{
+		node->mTransformation.Decompose(_scale, _rotation, _position);
+
+		position += _position;
+
+		scale.x *= _scale.x;
+		scale.y *= _scale.y;
+		scale.z *= _scale.z;
+
+		rotation = rotation * _rotation;
+		node = node->mChildren[0];
+		model->name = node->mName.C_Str();
+	}
+
+	node->mTransformation.Decompose(_scale, _rotation, _position);
+
+	scale += _scale;
+	rotation = rotation * _rotation;
+	position += _position;
+
+	float3 p = { position.x, position.y, position.z };
+	float3 s = { scale.x, scale.y, scale.z };
+	Quat r = { rotation.x,rotation.y,rotation.z,rotation.w };
+
+	float4x4 mat = float4x4::FromTRS(p,r,s);
+
+	model->transform = mat;
+
+	return node;
+}
+
+void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiNode* node, RModel* model)
+{
+	std::vector<uint> meshesUID;
+	std::vector<RMesh> meshes;
+
+	Importer::MeshImporter::LoadNodeMeshModel(scene, node, meshes);
+
+	for (int i = 0; i < meshes.size(); i++)
+	{
+		//push uid to model meshesUID
+		uint uid = Random::GenerateUID();
+
+		meshesUID.push_back(uid);
+
+		std::string file = std::to_string(uid).c_str() ;
+		file += ".mesh";
+
+		//save mesh in custom file format with UID name
+		Importer::MeshImporter::Save(meshes[i],file.c_str());
+	}
+}
+
+void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const aiNode* node,RModel* model)
+{
+	for (int i = 0; i < node->mNumMeshes; i++)
+	{
+		RMaterial* material = new RMaterial();
+		uint index = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
+		aiString path;
+
+		std::string fileName, extension;
+
+		aiColor4D color;
+		if (scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
+		{
+			material->SetColor(color.r, color.g, color.b, color.a);
+		}
+
+		RTexture* texture = nullptr;
+
+
+		if (index >= 0)
+		{
+			if (scene->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+			{
+
+				App->fileSystem->SplitFilePath(path.C_Str(), nullptr, &fileName, &extension);
+
+				fileName += "." + extension;
+				fileName = "Assets/Textures/" + fileName;
+
+				
+
+			}
+			else
+			{
+				LOG("(ERROR) Failed loading node texture: %s in node %s", path.C_Str(), node->mName.C_Str());
+			}
+		}
 	}
 }

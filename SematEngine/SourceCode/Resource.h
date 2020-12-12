@@ -3,23 +3,35 @@
 
 #include "Globals.h"
 #include <string>
+class JsonNode;
 
 enum class ResourceType
 {
 	material,
 	texture,
 	mesh,
+	scene,
 	none
+};
+
+struct ResourceData
+{
+	UID UID = 0;
+	ResourceType type = ResourceType::none;
+	std::string assetsFile;	 //File loaded from
+	std::string libraryFile; //uint string
+	uint referenceCount = 0; //Amount of times this resource is referenced
+
+	void Serialize(JsonNode node);
+	
 };
 
 class Resource
 {
 public:
-
 	Resource();
 	Resource(uint UID);
 	~Resource();
-
 	virtual void CleanUp()=0;
 
 	void SetUID(uint UID);
@@ -28,14 +40,6 @@ public:
 	ResourceType GetType()const;
 
 public:
-
-	UID UID = 0;
-	ResourceType type = ResourceType::none;
-
-	std::string assetsFile;	 //File loaded from
-	std::string libraryFile; //uint string
-
-	uint referenceCount = 0; //Amount of times this resource is referenced
-
+	ResourceData resourceData;
 };
 #endif //__RESOURCE_H__

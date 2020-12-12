@@ -9,12 +9,12 @@
 
 RMesh::RMesh()
 {
-
+	resourceData.type = ResourceType::mesh;
 }
 
 RMesh::RMesh(uint UID) : Resource(UID)
 {
-
+	resourceData.type = ResourceType::mesh;
 }
 
 RMesh::~RMesh()

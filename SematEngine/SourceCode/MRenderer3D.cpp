@@ -548,6 +548,7 @@ bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 		// were all the points outside of plane p?
 		if(iInCount == 0)
 			return(false);
+
 	}
 
 	// we must be partly in then otherwise

@@ -9,6 +9,7 @@
 #include "MInput.h"
 #include "MRenderer3D.h"
 #include "MFileSystem.h"
+#include "MResourcemanager.h"
 
 #include "CMesh.h"
 #include "CMaterial.h"
@@ -49,7 +50,9 @@ bool MScene::Start()
 	//obj->AddComponent(new CCamera(obj));
 	//AddGameObject(obj);
 
-	Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
+	//Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
+
+	App->resourceManager->ImportFile("Assets/Mesh/Street environment_V01.FBX", ResourceType::scene);
 	
 	return ret;
 }

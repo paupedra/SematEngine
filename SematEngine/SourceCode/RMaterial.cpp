@@ -8,12 +8,14 @@
 
 RMaterial::RMaterial()
 {
+	resourceData.type = ResourceType::material;
 	color = Color(1,1,1,1);
 }
 
 
 RMaterial::RMaterial(uint UID) : Resource(UID)
 {
+	resourceData.type = ResourceType::material;
 	color = Color(1, 1, 1, 1);
 }
 

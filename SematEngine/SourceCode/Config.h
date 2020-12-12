@@ -18,7 +18,6 @@ public:
 
 	double GetNumber(const char* name);
 
-
 	JsonArray InitArray(const char* name);
 
 public:

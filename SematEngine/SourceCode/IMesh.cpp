@@ -243,3 +243,57 @@ void Importer::MeshImporter::Load(const char* fileBuffer, RMesh* mesh)
 
     RELEASE(timeLoading);
 }
+
+void Importer::MeshImporter::LoadNodeMeshModel(const aiScene* scene, const aiNode* node, std::vector<RMesh>& meshes)
+{
+    for (int i = 0; i < node->mNumMeshes; i++)
+    {
+        RMesh newMesh;
+
+        newMesh.buffersSize[RMesh::vertex] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
+        newMesh.vertices = new float[newMesh.buffersSize[RMesh::vertex] * 3];
+        memcpy(newMesh.vertices, scene->mMeshes[node->mMeshes[i]]->mVertices, sizeof(float) * newMesh.buffersSize[RMesh::vertex] * 3);
+        //LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
+
+        if (scene->mMeshes[node->mMeshes[i]]->HasFaces())
+        {
+            newMesh.buffersSize[RMesh::index] = scene->mMeshes[node->mMeshes[i]]->mNumFaces * 3;
+            newMesh.indices = new uint[newMesh.buffersSize[RMesh::index]];
+
+            for (uint f = 0; f < scene->mMeshes[node->mMeshes[i]]->mNumFaces; ++f)
+            {
+                if (scene->mMeshes[node->mMeshes[i]]->mFaces[f].mNumIndices != 3)
+                {
+                    LOG("WARNING, geometery face with != 3 indices!"); //Problems with != 3 faces
+                }
+                else
+                {
+                    memcpy(&newMesh.indices[f * 3], scene->mMeshes[node->mMeshes[i]]->mFaces[f].mIndices, 3 * sizeof(uint));
+                }
+            }
+        }
+
+        if (scene->mMeshes[node->mMeshes[i]]->HasNormals())
+        {
+            newMesh.buffersSize[RMesh::normal] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
+            newMesh.normals = new float[newMesh.buffersSize[RMesh::normal] * 3];
+            memcpy(newMesh.normals, scene->mMeshes[node->mMeshes[i]]->mNormals, sizeof(float) * newMesh.buffersSize[RMesh::normal] * 3);
+        }
+
+        if (scene->mMeshes[node->mMeshes[i]]->HasTextureCoords(0))
+        {
+            newMesh.buffersSize[RMesh::texture] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
+            newMesh.textureCoords = new float[scene->mMeshes[node->mMeshes[i]]->mNumVertices * 2];
+
+            for (int j = 0; j < newMesh.buffersSize[RMesh::texture]; j++)
+            {
+                newMesh.textureCoords[j * 2] = scene->mMeshes[node->mMeshes[i]]->mTextureCoords[0][j].x;
+                newMesh.textureCoords[j * 2 + 1] = scene->mMeshes[node->mMeshes[i]]->mTextureCoords[0][j].y;
+            }
+        }
+
+
+        //App->renderer3D->GenerateBuffers(&newMesh); //Crashes
+        meshes.push_back(newMesh);
+    }
+}

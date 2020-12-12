@@ -23,7 +23,7 @@ MCamera3D::MCamera3D(bool start_enabled) : Module(start_enabled)
 {
 	currentCamera = new CCamera(nullptr);
 	currentCamera->frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	currentCamera->frustum.SetPos(float3(0, 0, 0));
+	currentCamera->frustum.SetPos(float3(0, 1, 0));
 	currentCamera->frustum.SetFront(float3::unitZ);
 	currentCamera->frustum.SetUp(float3::unitY);
 
