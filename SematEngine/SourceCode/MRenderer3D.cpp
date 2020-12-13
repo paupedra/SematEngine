@@ -495,7 +495,7 @@ bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 
 		for (int i = 0; i < 8; ++i) {
 			// test this point against the planes
-			if (App->camera->currentCamera->planes[plane].IsOnPositiveSide(corners[i])) { //<-- “IsOnPositiveSide” from MathGeoLib
+			if (App->camera->cullingCamera->planes[plane].IsOnPositiveSide(corners[i])) { //<-- “IsOnPositiveSide” from MathGeoLib
 				iPtIn = 0;
 				--iInCount;
 			}
@@ -503,9 +503,7 @@ bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 		// were all the points outside of plane p?
 		if(iInCount == 0)
 			return(false);
-
 	}
-
 	// we must be partly in then otherwise
 	return(true);
 }

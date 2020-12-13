@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "Window.h"
 
+#include "MEditor.h"
+
 #include "WPlay.h"
 
 #include "Dependecies/imgui/imgui.h"
@@ -38,7 +40,8 @@ void WPlay::Draw()
 
 	}
 	
-
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 	ImGui::End();
 }
 

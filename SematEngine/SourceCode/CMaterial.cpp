@@ -20,14 +20,15 @@
 CMaterial::CMaterial(GameObject* owner) : Component(ComponentType::MATERIAL, owner)
 {
 	material = new RMaterial();
-	texture = new RTexture();
-	texture->usesTexture = false;
+	//material->GetTexture()->usesTexture = false;
 }
 
-CMaterial::CMaterial(GameObject* owner, const char* path, RMaterial* material,RTexture* texture) : Component(ComponentType::MATERIAL, owner), material(material), path(path) , texture(texture)
+CMaterial::CMaterial(GameObject* owner, const char* path, RMaterial* material,RTexture* texture) : Component(ComponentType::MATERIAL, owner), material(material), path(path) 
 {
 	if(material == nullptr)
 		this->material = new RMaterial();
+	else
+		material->SetTexture(texture);
 }
 
 CMaterial::~CMaterial()
@@ -43,11 +44,9 @@ void CMaterial::Update()
 void CMaterial::CleanUp()
 {
 	material->CleanUp();
-	if(texture != nullptr)
-		texture->CleanUp();
 
 	delete material;
-	delete texture;
+	//delete texture;
 }
 
 void CMaterial::OnSave(JsonNode* node)
@@ -59,8 +58,14 @@ void CMaterial::OnSave(JsonNode* node)
 
 void CMaterial::SetTexture(RTexture* texture)
 {
-	this->texture = texture;
-	this->texture->usesTexture = true;
+	material->SetTexture(texture);
+	if(texture != nullptr)
+		material->GetTexture()->usesTexture = true;
+}
+
+void CMaterial::SetMaterial(RMaterial* material)
+{
+	this->material = material;
 }
 
 const char* CMaterial::GetPath()const
@@ -75,7 +80,7 @@ RMaterial* CMaterial::GetMaterial() const
 
 RTexture* CMaterial::GetTexture()const
 {
-	return texture;
+	return material->GetTexture();
 }
 
 bool CMaterial::IsEnabled() const

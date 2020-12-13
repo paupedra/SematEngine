@@ -4,7 +4,7 @@
 
 #include "MFileSystem.h"
 #include "MResourceManager.h"
-
+#include "MEditor.h"
 #include "WAssets.h"
 
 #include "ITexture.h"
@@ -29,7 +29,7 @@ WAssets::~WAssets()
 
 void WAssets::Init()
 {
-	folder = Importer::TextureImp::Import("Assets/Icons/folder.png");
+	//folder = Importer::TextureImp::Import("Assets/Icons/folder.png");
 }
 
 void WAssets::Draw()
@@ -47,6 +47,8 @@ void WAssets::Draw()
 	{
 		DrawFolders("Assets");
 	}
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 
 	ImGui::EndChild();
 
@@ -56,8 +58,13 @@ void WAssets::Draw()
 	{
 		DrawFilesInFolder(selectedFolder.c_str());
 	}
-
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
+	
 	ImGui::EndChild();
+
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 
 	ImGui::End();
 
@@ -113,12 +120,13 @@ void WAssets::DrawFilesInFolder(const char* path)
 	std::vector<std::string>::iterator it = dirs.begin();
 	for (; it != dirs.end(); it++)
 	{
-		ImGui::SameLine();
-		if (ImGui::ImageButton((ImTextureID*)folder->GetId(), ImVec2(100, 100)))
+		//ImGui::SameLine();
+		if (ImGui::Button((*it).c_str()))
 		{
 			selectedFolder = path;
 			selectedFolder += "/";
-			selectedFolder += +(*it).c_str();
+			selectedFolder += (*it);
+
 		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -128,11 +136,19 @@ void WAssets::DrawFilesInFolder(const char* path)
 	for (; it != files.end(); it++)
 	{
 		//ImGui::SameLine();
-		/*if(ImGui::ImageButton( (ImTextureID*)folder->GetId(), ImVec2(100, 100) ) )
+		if(ImGui::Button((*it).c_str() ) )
 		{
+			if (strstr((*it).c_str(), ".meta") != nullptr) //only fo this with files that are not metas
+			{
+				std::string metaName = path;
+				metaName += "/";
+				metaName += (*it);
+				LOG("Load resource from meta %s", metaName.c_str());
+				App->resourceManager->LoadResourceFromMeta(metaName);
+			}
+		}
 
-		}*/
-		ImGui::Text((*it).c_str());
+		//ImGui::Text((*it).c_str());
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "MInput.h"
 #include "MRenderer3D.h"
 #include "MWindow.h"
+#include "MEditor.h"
 
 #include "WConfiguration.h"
 
@@ -48,6 +49,9 @@ void WConfiguration::Draw()
 	DrawRender();
 	DrawInput();
 	DrawHardware();
+
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 	
 	ImGui::End();
 }

@@ -38,7 +38,7 @@ enum update_status
 #define WIN_MAXIMIZE true
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC false
-#define TITLE "3D Physics Playground"
+#define TITLE "Semat Engine"
 
 // File System -----------
 #define LIBRARY_PATH "Library/"

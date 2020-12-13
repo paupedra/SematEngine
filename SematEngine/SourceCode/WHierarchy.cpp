@@ -3,6 +3,7 @@
 #include "Window.h"
 
 #include "MScene.h"
+#include "MEditor.h"
 
 #include "WHierarchy.h"
 
@@ -76,6 +77,16 @@ void WHierarchy::Draw()
 
 		ImGui::EndPopup();
 	}
+
+	ImGui::Separator();
+
+	if (ImGui::Button("Deselect Object"))
+	{
+		App->scene->SetSelectedObject(nullptr);
+	}
+
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 		
 	ImGui::End();
 }

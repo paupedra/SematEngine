@@ -23,6 +23,8 @@ public:
 		maxBuffers
 	};
 
+	UID GenerateCustomFile();
+
 	void SetId(uint id); //OpenGl id
 	void SetHeight(uint height);
 	void SetWidth(uint width);

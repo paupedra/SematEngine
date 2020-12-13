@@ -33,13 +33,14 @@ public:
 	float4x4 GetViewMatrix();
 
 	void SetCurrentCamera(CCamera* newCamera);
+	void SetCullingCamera(CCamera* newCamera);
 
 private:
 	void CalculateViewMatrix();
 
 public:
 	GameObject* mainCameraObject = nullptr;		//Object holding mainCamera
-	CCamera* mainCamera = nullptr;				//Camera to be used outside Play Mode
+	CCamera* cullingCamera = nullptr;				//Camera to be used outside Play Mode
 	CCamera* currentCamera = nullptr;			//Camera currently being used, modify this camera to move
 
 	float cameraMoveSpeed = 1;

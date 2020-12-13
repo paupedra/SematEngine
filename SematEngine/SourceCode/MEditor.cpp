@@ -80,12 +80,18 @@ bool MEditor::Start()
 
 update_status MEditor::PreUpdate(float dt)
 {
-	mouseHovered = false;
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
 	SetUpDocking();
+
+	return UPDATE_CONTINUE;
+}
+
+update_status MEditor::PostUpdate(float dt)
+{
+	mouseHovered = false;
 
 	return UPDATE_CONTINUE;
 }
@@ -161,12 +167,6 @@ void MEditor::DrawMainMenuBar()
 		}
 		if (ImGui::BeginMenu("Primitives"))
 		{
-			if (ImGui::MenuItem("Cube", " ", console->active)) { Importer::SceneImporter::Import( "Assets/Mesh/Primitives/Cube.FBX"); }
-			if (ImGui::MenuItem("Cylinder", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Cylinder.FBX"); }
-			if (ImGui::MenuItem("Sphere", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Sphere.FBX"); }
-			if (ImGui::MenuItem("Plane", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Plane.FBX"); }
-			if (ImGui::MenuItem("Pyramid", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Pyramid.FBX"); }
-			if (ImGui::MenuItem("Teapot", " ", console->active)) { Importer::SceneImporter::Import("Assets/Mesh/Primitives/Teapot.FBX"); }
 
 			ImGui::EndMenu();
 		}
@@ -242,9 +242,5 @@ void MEditor::SetHardwareInfo(HardwareInfo* hardware)
 
 bool MEditor::IsMouseHovering()
 {
-	//if (ImGui::IsAnyItemHovered())
-	//{
-		//return true;
-	//}
-	return false;
+	return mouseHovered;
 }

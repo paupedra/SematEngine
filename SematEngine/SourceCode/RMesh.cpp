@@ -9,7 +9,6 @@
 
 #include "Dependecies/mmgr/mmgr.h"
 
-
 #include "Dependecies/Glew/include/glew.h"
 #include <gl/GL.h>
 
@@ -34,10 +33,10 @@ void RMesh::CleanUp()
 	glDeleteBuffers(1, (GLuint*)&buffersId[RMesh::normal]);
 	glDeleteBuffers(1, (GLuint*)&buffersId[RMesh::texture]);
 	glDeleteBuffers(1, (GLuint*)&buffersId[RMesh::vertex]);
-	delete[] indices;
-	delete[] normals;
-	delete[] textureCoords;
-	delete[] vertices;
+	RELEASE_ARRAY(indices);
+	RELEASE_ARRAY(normals);
+	RELEASE_ARRAY(textureCoords);
+	RELEASE_ARRAY(vertices);
 	//delete[] path;
 }
 

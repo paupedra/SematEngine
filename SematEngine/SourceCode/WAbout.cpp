@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "Window.h"
 
+#include "MEditor.h"
+
 #include "WAbout.h"
 
 #include "Dependecies/imgui/imgui.h"
@@ -50,6 +52,9 @@ void WAbout::Draw()
 		
 		ImGui::TextWrapped(licenseString.c_str());
 	}
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
+
 
 	ImGui::End();
 	

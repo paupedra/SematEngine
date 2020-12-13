@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "Window.h"
 
+#include "MEditor.h"
+
 #include "WConsole.h"
 
 #include "Dependecies/imgui/imgui.h"
@@ -63,6 +65,8 @@ void WConsole::Draw()
 		ImGui::SetScrollHere(1.0f);
 		scrollToBottom = false;
 	}
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 
 	ImGui::End();
 }

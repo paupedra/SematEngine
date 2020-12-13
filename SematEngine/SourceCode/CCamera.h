@@ -48,6 +48,7 @@ public:
 	
 	Frustum frustum;
 	bool isCurrentCamera = false;
+	bool isCullingCamera = false;
 	bool cull = true;
 	Plane planes[6];
 	vec* corners;

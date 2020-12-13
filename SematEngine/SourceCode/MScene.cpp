@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "GameObject.h"
 #include "Config.h"
+#include "Random.h"
 
 #include "MScene.h"
 #include "MCamera3D.h"
@@ -124,7 +125,8 @@ void MScene::SaveScene()
 	uint64 id = SaveSceneNode(&sceneNode, gameObjects);
 
 	std::string path = "Library/Scenes/";
-	std::string idString = std::to_string(id);
+	std::string idString ;
+	idString += "SerializedCurrentScene";
 	path += idString + ".scene";
 
 	//Create and save scene meta file
@@ -159,7 +161,7 @@ uint MScene::SaveSceneNode(JsonNode* config, std::vector<GameObject*> gameObject
 		}
 	}
 
-	return 5467;
+	return Random::GenerateUID();
 }
 
 void MScene::SaveSceneComponent(JsonNode* node, Component* component)

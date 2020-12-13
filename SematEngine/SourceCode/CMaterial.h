@@ -21,6 +21,7 @@ public:
 	static inline ComponentType GetType() { return ComponentType::MATERIAL; };
 
 	void SetTexture(RTexture* texture);
+	void SetMaterial(RMaterial* material);
 
 	const char* GetPath()const;
 	RMaterial* GetMaterial() const;
@@ -32,7 +33,6 @@ public:
 private:
 
 	RMaterial* material = nullptr;
-	RTexture* texture = nullptr;
 	const char* path = "";
 public:
 	bool drawTexture = true;

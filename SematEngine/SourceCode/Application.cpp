@@ -33,10 +33,10 @@ Application::Application() : debug(false), dt(0.16f)
 	AddModule(input);
 	AddModule(editor);
 	AddModule(fileSystem);
-	AddModule(resourceManager);
 	
 	// Scenes
 	AddModule(scene);
+	AddModule(resourceManager);//Resources must be kept to be dereferenced and released
 
 	// Renderer last!
 	AddModule(renderer3D);

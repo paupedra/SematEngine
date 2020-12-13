@@ -1,6 +1,9 @@
 #include "Resource.h"
+#include "Random.h"
 
 #include "RTexture.h"
+
+#include "ITexture.h"
 
 #include "Dependecies/mmgr/mmgr.h"
 
@@ -24,6 +27,16 @@ RTexture::~RTexture()
 void RTexture::CleanUp()
 {
 	glDeleteTextures(1, (GLuint*)&id);
+}
+
+UID RTexture::GenerateCustomFile()
+{
+	UID ret = Random::GenerateUID();
+	std::string fileName = TEXTURES_PATH;
+	fileName += std::to_string(ret);
+	fileName += ".texture";
+	Importer::TextureImp::Save(this, fileName.c_str());
+	return ret;
 }
 
 void RTexture::SetId(uint id)

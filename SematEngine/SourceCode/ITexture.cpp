@@ -28,8 +28,9 @@ void Importer::TextureImp::InitDevil()
 	ilutRenderer(ILUT_OPENGL);
 }
 
-RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint size)
+RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint size,bool save)
 {
+
 	uint i;
 
 	ilGenImages(1, &i);
@@ -45,7 +46,9 @@ RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint 
 
 		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
 		{
-			newTexture->SetId(Importer::TextureImp::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
+			if(save)
+				newTexture->SetId(Importer::TextureImp::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
+
 			newTexture->SetHeight(ilGetInteger(IL_IMAGE_HEIGHT));
 			newTexture->SetWidth(ilGetInteger(IL_IMAGE_WIDTH));
 			//newTexture->SetPath(path);
@@ -61,6 +64,10 @@ RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint 
 	{
 		//LOG("(ERROR) Error loading Image %s", path);
 	}
+
+	//save cff in library path
+	//if(save)
+		//newTexture->GenerateCustomFile();
 
 	return newTexture;
 }
@@ -102,7 +109,10 @@ RTexture* Importer::TextureImp::Import(const char* path)
 	{
 		LOG("(ERROR) Error loading Image %s", path);
 	}
-	delete[] buffer;
+
+	newTexture->GenerateCustomFile();
+	RELEASE_ARRAY(buffer);
+
 	return newTexture;
 }
 
@@ -135,7 +145,6 @@ uint64 Importer::TextureImp::Save(RTexture* material,const char* path)
 	ILubyte* data;
 
 	char* fileBuffer;
-
 
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);// To pick a specific DXT compression use
 	size = ilSaveL(IL_DDS, nullptr, 0); // Get the size of the data buffer

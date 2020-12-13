@@ -3,6 +3,7 @@
 #include "Resource.h"
 
 #include "WResources.h"
+#include "MEditor.h"
 
 #include "MResourceManager.h"
 
@@ -46,6 +47,15 @@ void WResources::Draw()
 			LOG("Load resource %s", (*resourceLib).second.assetsFile.c_str());
 			App->resourceManager->LoadResource((*resourceLib).second.UID);
 		}
+		ImGui::SameLine();
+
+		switch ((*resourceLib).second.type)
+		{
+			case ResourceType::texture: ImGui::Text("Texture"); break;
+			case ResourceType::material: ImGui::Text("Material"); break;
+			case ResourceType::scene: ImGui::Text("Scene"); break;
+			case ResourceType::none: ImGui::Text("none"); break;
+		}
 	}
 
 	ImGui::Separator();
@@ -59,6 +69,9 @@ void WResources::Draw()
 		ImGui::Text("UID: %d", (*resource).second->resourceData.UID);
 		ImGui::Text("Reference Count: %d", (*resource).second->resourceData.referenceCount);
 	}
+
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 
 	ImGui::End();
 }

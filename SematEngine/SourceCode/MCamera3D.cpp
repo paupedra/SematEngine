@@ -38,6 +38,7 @@ bool MCamera3D::Start()
 	cameraRotateSpeed = 60.f;
 
 	SetCurrentCamera(currentCamera);
+	SetCullingCamera(currentCamera);
 
 	LOG("Setting up the camera");
 	bool ret = true;
@@ -107,7 +108,7 @@ void MCamera3D::RaycastSelect()
 
 	App->renderer3D->DrawLine(selectRay.a, selectRay.b);
 
-	LOG("Ray goes from: %d to %d", selectRay.a, selectRay.b);
+	//LOG("Ray goes from: %d to %d", selectRay.a, selectRay.b);
 
 	CheckIntersetions(&selectRay);
 }
@@ -121,7 +122,7 @@ void MCamera3D::CheckIntersetions(LineSegment* selectRay)
 	{
 		if (selectRay->Intersects( (*object)->AABB ) ) 
 		{
-			LOG("Got a hit with: %s", (*object)->GetName());
+			//LOG("Got a hit with: %s", (*object)->GetName());
 
 			float nearInter, farInter;
 			if (selectRay->Intersects((*object)->OBB, nearInter, farInter)) //It should intersect 2 times?
@@ -308,4 +309,13 @@ void MCamera3D::SetCurrentCamera(CCamera* newCamera)
 	currentCamera->isCurrentCamera = false;
 	currentCamera = newCamera;
 	currentCamera->isCurrentCamera = true;
+}
+
+void MCamera3D::SetCullingCamera(CCamera* newCamera)
+{
+	if(cullingCamera)
+		cullingCamera->isCullingCamera = false;
+
+	cullingCamera = newCamera;
+	cullingCamera->isCullingCamera = true;
 }

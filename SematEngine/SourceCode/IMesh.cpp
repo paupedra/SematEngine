@@ -154,8 +154,10 @@ uint64 Importer::MeshImporter::Save(const RMesh mesh, const char* name)
 
     uint sizes[4] = { mesh.buffersSize[RMesh::index] ,mesh.buffersSize[RMesh::vertex], mesh.buffersSize[RMesh::normal], mesh.buffersSize[RMesh::texture] };
 
-    uint size = sizeof(sizes) + sizeof(uint) * mesh.buffersSize[RMesh::index] + sizeof(float) * mesh.buffersSize[RMesh::vertex] * 3
-        + sizeof(float) * mesh.buffersSize[RMesh::normal] * 3 + sizeof(float) * mesh.buffersSize[RMesh::texture] * 2;
+    uint size = sizeof(sizes) + sizeof(uint) * mesh.buffersSize[RMesh::index] 
+        + sizeof(float) * mesh.buffersSize[RMesh::vertex] * 3
+        + sizeof(float) * mesh.buffersSize[RMesh::normal] * 3 
+        + sizeof(float) * mesh.buffersSize[RMesh::texture] * 2;
 
     char* fileBuffer = new char[size];
     char* cursor = fileBuffer;
@@ -163,7 +165,6 @@ uint64 Importer::MeshImporter::Save(const RMesh mesh, const char* name)
     uint bytes = sizeof(sizes);
     memcpy(cursor, sizes, bytes);
     cursor += bytes;
-
 
     //Indices
     bytes = sizeof(uint) * mesh.buffersSize[RMesh::index];

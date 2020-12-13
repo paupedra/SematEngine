@@ -7,6 +7,7 @@
 
 #include "MScene.h"
 #include "MCamera3D.h"
+#include "MEditor.h"
 
 #include "CTransform.h"
 #include "CMesh.h"
@@ -83,6 +84,8 @@ void WInspector::Draw()
 			ImGui::EndPopup();
 		}
 	}
+	if (ImGui::IsWindowHovered())
+		App->editor->mouseHovered = true;
 	ImGui::End();
 }
 
@@ -92,12 +95,10 @@ void WInspector::DrawComponent(Component* component)
 	{
 		case ComponentType::TRANSFORM:
 			DrawTransform((CTransform*)component);
-
 			break;
 
 		case ComponentType::MESH:
 			DrawMesh((CMesh*)component);
-
 			break;
 
 		case ComponentType::MATERIAL:
@@ -203,16 +204,15 @@ void WInspector::DrawCamera(CCamera* component)
 			component->SetVerticalFov(verticalFov);
 		}
 
-		//float horizontalFov = component->GetHorizontalFov();
-		//if (ImGui::DragFloat("Horizontal Fov", &horizontalFov, 0.1f, 0.1f))
-		//{
-		//	//component->SetHorizontalFov(horizontalFov);
-		//}
-
 		ImGui::Checkbox("Culling", &component->cull);
 		if(ImGui::Button("Set As Current Camera"))
 		{
 			App->camera->SetCurrentCamera(component);
+		}
+
+		if (ImGui::Button("Set As Culling Camera"))
+		{
+			App->camera->SetCullingCamera(component);
 		}
 	}
 }

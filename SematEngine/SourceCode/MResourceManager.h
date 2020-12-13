@@ -9,7 +9,9 @@ class Resource;
 struct ResourceData;
 enum class ResourceType;
 class RMesh;
+class RMaterial;
 class JsonNode;
+struct Color;
 
 class MResourceManager : public Module
 {
@@ -27,6 +29,8 @@ public:
 	void Import(const char* path);
 	uint ImportFile(const char* newFileInAssets, ResourceType type);
 
+	uint ImportMaterial(const char* file,uint textureUID,Color color); //Creates RMaterial and saves .material (cff)
+
 	const char* GenerateMeatFile(Resource* resource); //Generate meta file that holds UID and other information
 	std::string GenerateLibraryFile(Resource* resource); //Generates and saves the resource's custom file format
 
@@ -36,11 +40,13 @@ public:
 
 	void LoadScene(ResourceData resource); //Load scene from library file
 	void LoadMesh(UID uid);
+	RMaterial* LoadMaterial(UID uid);
+	void LoadTexture(ResourceData resource);
 
-	void SaveResource(Resource* resource); //Generates meta file and saves into library with custom file format
+	void SaveResource(Resource* resource,bool meta= true); //Generates meta file and saves into library with custom file format
 
 	void AddResourceToLibrary(Resource* resource);
-	void AddResourceToLibraryFromMeta(const char* file); //Adds resource from meta to resourcesInLibrary map
+	int AddResourceToLibraryFromMeta(const char* file); //Adds resource from meta to resourcesInLibrary map
 
 	Resource* RequestResource(uint uid);
 	void ReleaseResource(uint uid);
