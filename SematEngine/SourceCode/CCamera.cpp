@@ -18,8 +18,11 @@ CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 	frustum.SetFront(float3::unitZ);
 	frustum.SetUp(float3::unitY);
 
-	frustum.SetViewPlaneDistances(0.1f, 10.0f);
+	frustum.SetViewPlaneDistances(0.1f, 1000.0f);
 	frustum.SetPerspective(1.0f, 1.0f);
+
+	SetAspectRatio((float)App->window->GetWidth() / (float)App->window->GetHeight());
+	SetVerticalFov(50.0f);
 
 	UpdatePlanes();
 
@@ -46,7 +49,7 @@ float* CCamera::GetViewMatrix()
 {
 	static float4x4 m;
 
-	m = frustum.ComputeViewMatrix();
+	m = frustum.ViewMatrix();
 
 	m.Transpose();
 
@@ -91,12 +94,17 @@ void CCamera::SetFarPlane(float distance)
 
 void CCamera::SetVerticalFov(float verticalFov) //fov
 {
-	frustum.SetVerticalFovAndAspectRatio(verticalFov, (App->window->GetWidth() / App->window->GetHeight())); //win width / win height
+	frustum.SetVerticalFovAndAspectRatio(verticalFov * DEGTORAD, ((float)App->window->GetWidth() / (float)App->window->GetHeight())); //win width / win height
 }
 
 void CCamera::SetHorizontalFov(float horizontalFov)
 {
-	frustum.SetHorizontalFovAndAspectRatio(horizontalFov,frustum.AspectRatio());
+	frustum.SetHorizontalFovAndAspectRatio(horizontalFov, ((float)App->window->GetWidth() / (float)App->window->GetHeight()));
+}
+
+void CCamera::SetAspectRatio(float ratio)
+{
+	frustum.SetHorizontalFovAndAspectRatio(frustum.HorizontalFov(), ratio);
 }
 
 float CCamera::ComputeAspectRatio(float verticalFov,float horizontalFov)
@@ -126,7 +134,7 @@ float CCamera::GetFarPlaneDistance()const
 
 float CCamera::GetVerticalFov()const
 {
-	return frustum.VerticalFov();
+	return frustum.VerticalFov() * RADTODEG;
 }
 
 float CCamera::GetHorizontalFov()const

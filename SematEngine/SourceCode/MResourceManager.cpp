@@ -309,9 +309,15 @@ Resource* MResourceManager::RequestResource(uint uid)
 	return nullptr;
 }
 
-void MResourceManager::ReleaseResource(uint uid)
+void MResourceManager::ReleaseResource(uint uid) //releases a resource from memory
 {
+	Resource* res = (*resources.find(uid)).second;
+	res->CleanUp();
 
+	resources.erase(uid);
+
+	RELEASE(res);
+	
 }
 
 ResourceData MResourceManager::RequestLibraryResource(uint uid)
@@ -322,6 +328,20 @@ ResourceData MResourceManager::RequestLibraryResource(uint uid)
 		return it->second;
 	}
 	return ResourceData(); //Default has UID = 0
+}
+
+void MResourceManager::DereferenceResource(uint uid)
+{
+	std::map<UID, Resource*>::iterator it = resources.find(uid);
+	if (it != resources.end())
+	{
+		it->second->resourceData.referenceCount--;
+		if (it->second->resourceData.referenceCount <= 0)
+		{
+			//release resource
+			ReleaseResource(uid);
+		}
+	}
 }
 
 void MResourceManager::AddResourceToLibrary(Resource* resource)

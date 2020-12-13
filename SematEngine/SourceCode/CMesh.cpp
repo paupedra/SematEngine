@@ -5,6 +5,7 @@
 #include "Config.h"
 
 #include "MRenderer3D.h"
+#include "MResourceManager.h"
 
 #include "CMesh.h"
 #include "CTransform.h"
@@ -40,10 +41,8 @@ void CMesh::Update()
 
 void CMesh::CleanUp()
 {
-	//if(mesh != nullptr)
-		//mesh->CleanUp(); //TODO crash
-
-	//RELEASE(mesh);
+	//dereference RMesh
+	App->resourceManager->DereferenceResource(mesh->resourceData.UID);
 }
 
 void CMesh::DrawMesh()

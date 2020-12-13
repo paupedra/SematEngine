@@ -39,6 +39,8 @@ public:
 	void SetUpDocking();
 	void SetHardwareInfo(HardwareInfo* hardware);
 
+	bool IsMouseHovering();
+
 private:
 
 	std::vector<Window*> windows;
@@ -53,4 +55,5 @@ public:
 	WAssets* assets = nullptr;
 	WPlay* play = nullptr;
 	WResources* resources = nullptr;
+	bool mouseHovered = false;
 };

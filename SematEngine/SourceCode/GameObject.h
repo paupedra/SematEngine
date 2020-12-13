@@ -20,6 +20,7 @@ public:
 	GameObject(GameObject* parent, const char* name);
 	~GameObject();
 
+	void Start();
 	void Update();
 	void CleanUp();
 

@@ -46,6 +46,8 @@ public:
 	void ReleaseResource(uint uid);
 	ResourceData RequestLibraryResource(uint uid); //Request ResourceData from resourcesInLibrary
 
+	void DereferenceResource(uint uid);
+
 private:
 
 	Resource* CreateNewResource(const char* assetsFile, ResourceType type); //Create and store info in new resource (UID, path ,libraryFile)

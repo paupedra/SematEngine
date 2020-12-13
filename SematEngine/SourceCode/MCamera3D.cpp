@@ -9,6 +9,7 @@
 #include "MScene.h"
 #include "MRenderer3D.h"
 #include "MWindow.h"
+#include "MEditor.h"
 
 #include "CTransform.h"
 #include "CCamera.h"
@@ -22,19 +23,7 @@
 
 MCamera3D::MCamera3D(bool start_enabled) : Module(start_enabled)
 {
-	currentCamera = new CCamera(nullptr);
-	currentCamera->frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	currentCamera->frustum.SetPos(float3(0, 1, 0));
-	currentCamera->frustum.SetFront(float3::unitZ);
-	currentCamera->frustum.SetUp(float3::unitY);
-
-	currentCamera->frustum.SetViewPlaneDistances(0.1f, 1000.0f);
-	currentCamera->frustum.SetPerspective(1.0f, 1.0f);
-
-	cameraMoveSpeed = 7.5f;
-	cameraRotateSpeed = 60.f;
-
-	SetCurrentCamera(currentCamera);
+	
 }
 
 MCamera3D::~MCamera3D()
@@ -43,6 +32,13 @@ MCamera3D::~MCamera3D()
 // -----------------------------------------------------------------
 bool MCamera3D::Start()
 {
+	currentCamera = new CCamera(nullptr);
+
+	cameraMoveSpeed = 7.5f;
+	cameraRotateSpeed = 60.f;
+
+	SetCurrentCamera(currentCamera);
+
 	LOG("Setting up the camera");
 	bool ret = true;
 
@@ -79,8 +75,11 @@ update_status MCamera3D::Update(float dt)
 
 	ZoomIn(dt);
 
-	if(App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-		RaycastSelect();
+	if (!App->editor->IsMouseHovering())
+	{
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+			RaycastSelect();
+	}
 
 	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)
 		RotateCameraStatic();
@@ -96,15 +95,15 @@ update_status MCamera3D::Update(float dt)
 
 void MCamera3D::RaycastSelect()
 {
-	float2 mousePos = float2(App->input->GetMouseX(), App->input->GetMouseY());
+	float2 mousePos = float2(App->input->GetMouseX(), App->window->GetHeight() - App->input->GetMouseY());
 
-	float mouseNormX = mousePos.x / App->window->GetWidth();
-	float mouseNormY = mousePos.y / App->window->GetWidth();
+	float mouseNormalX = mousePos.x / App->window->GetWidth();
+	float mouseNormalY = mousePos.y / App->window->GetHeight();
 
-	mouseNormX = (mouseNormX - 0.5) / 0.5;
-	mouseNormY = (mouseNormY - 0.5) / 0.5;
+	mouseNormalX = (mouseNormalX - 0.5) / 0.5;
+	mouseNormalY = (mouseNormalY - 0.5) / 0.5;
 
-	LineSegment selectRay = currentCamera->frustum.UnProjectLineSegment(mouseNormX, mouseNormY);
+	LineSegment selectRay = currentCamera->frustum.UnProjectLineSegment(mouseNormalX, mouseNormalY);
 
 	App->renderer3D->DrawLine(selectRay.a, selectRay.b);
 
@@ -115,6 +114,7 @@ void MCamera3D::RaycastSelect()
 
 void MCamera3D::CheckIntersetions(LineSegment* selectRay)
 {
+	bool objectFound = false;
 	std::map<float, GameObject*> hits;
 
 	for (std::vector<GameObject*>::iterator object = App->scene->gameObjects.begin(); object != App->scene->gameObjects.end(); object++)
@@ -124,12 +124,18 @@ void MCamera3D::CheckIntersetions(LineSegment* selectRay)
 			LOG("Got a hit with: %s", (*object)->GetName());
 
 			float nearInter, farInter;
-			if (selectRay->Intersects((*object)->OBB, nearInter, farInter))
+			if (selectRay->Intersects((*object)->OBB, nearInter, farInter)) //It should intersect 2 times?
 			{
-
+				hits.emplace(nearInter, (*object));
+				objectFound = true;
 			}
 		}
 	}
+
+	if (objectFound)
+		App->scene->SetSelectedObject((*hits.begin()).second);
+	//else
+		//App->scene->SetSelectedObject(nullptr);
 
 }
 
@@ -279,8 +285,7 @@ void MCamera3D::ZoomIn(float dt)
 // -----------------------------------------------------------------
 float* MCamera3D::GetRawViewMatrix()
 {
-	CalculateViewMatrix();
-	float4x4 viewMatrix = currentCamera->frustum.ComputeViewMatrix();
+	float4x4 viewMatrix = currentCamera->frustum.ViewMatrix();
 	return (float*)&viewMatrix;
 }
 

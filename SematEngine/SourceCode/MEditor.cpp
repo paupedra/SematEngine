@@ -80,6 +80,7 @@ bool MEditor::Start()
 
 update_status MEditor::PreUpdate(float dt)
 {
+	mouseHovered = false;
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
@@ -119,7 +120,7 @@ bool MEditor::Save(JsonNode* config)
 
 void MEditor::Draw()
 {
-	//ImGui::CaptureKeyboardFromApp(true);
+	ImGui::CaptureKeyboardFromApp(true);
 
 	ImGuiIO io = ImGui::GetIO();
 
@@ -237,4 +238,13 @@ void MEditor::SetHardwareInfo(HardwareInfo* hardware)
 	hardware->cpuVendor = (const char*)glGetString(GL_VENDOR);
 	hardware->renderer = (const char*)glGetString(GL_RENDERER);
 	LOG("OpenGL version supported %s", glGetString(GL_VERSION));
+}
+
+bool MEditor::IsMouseHovering()
+{
+	//if (ImGui::IsAnyItemHovered())
+	//{
+		//return true;
+	//}
+	return false;
 }

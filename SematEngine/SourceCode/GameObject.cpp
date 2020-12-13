@@ -30,6 +30,7 @@ GameObject::~GameObject()
 
 }
 
+
 void GameObject::Update()
 {
 	UpdateBoundingBoxes();

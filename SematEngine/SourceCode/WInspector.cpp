@@ -198,16 +198,16 @@ void WInspector::DrawCamera(CCamera* component)
 		}
 
 		float verticalFov = component->GetVerticalFov();
-		if (ImGui::DragFloat("Vertical Fov", &verticalFov, 0.1f, 0.1f))
+		if (ImGui::DragFloat("Vertical Fov", &verticalFov,0.1f, 30.f, 120.f))
 		{
 			component->SetVerticalFov(verticalFov);
 		}
 
-		float horizontalFov = component->GetHorizontalFov();
-		if (ImGui::DragFloat("Horizontal Fov", &horizontalFov, 0.1f, 0.1f))
-		{
-			component->SetHorizontalFov(horizontalFov);
-		}
+		//float horizontalFov = component->GetHorizontalFov();
+		//if (ImGui::DragFloat("Horizontal Fov", &horizontalFov, 0.1f, 0.1f))
+		//{
+		//	//component->SetHorizontalFov(horizontalFov);
+		//}
 
 		ImGui::Checkbox("Culling", &component->cull);
 		if(ImGui::Button("Set As Current Camera"))

@@ -25,6 +25,7 @@ public:
 
 	void SetVerticalFov(float verticalFov);
 	void SetHorizontalFov(float horizontalFov);
+	void SetAspectRatio(float ratio);
 
 	float ComputeAspectRatio(float verticalFov, float horizontalFov);
 

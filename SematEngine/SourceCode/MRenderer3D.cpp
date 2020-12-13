@@ -197,6 +197,14 @@ update_status MRenderer3D::PostUpdate(float dt)
 {
 	//ImGui::ShowDemoWindow();
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glLoadMatrixf((GLfloat*)&App->camera->currentCamera->frustum.ProjectionMatrix().Transposed());
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+
 	glStencilMask(0xFF);
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 	
@@ -222,13 +230,9 @@ void MRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	projectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
-	glLoadMatrixf(&projectionMatrix);
+	if(App->camera->currentCamera != nullptr)
+		App->camera->currentCamera->SetAspectRatio(((float)width / (float)height));
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 }
 
 void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, CMaterial* material,bool drawVertexNormals, bool drawBoundingBox,GameObject* gameObject)
@@ -312,11 +316,13 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, CMaterial* material,
 		if (gameObject->HasComponentType(ComponentType::MESH))
 		{
 			vec* corners = new vec[8];
+			glColor4f(0.5, 0, 0.5, 1);
 			gameObject->OBB.GetCornerPoints(corners);
 			DrawBox(corners);
+			glColor4f(0, 0.5, 0, 1);
 			gameObject->AABB.GetCornerPoints(corners);
 			DrawBox(corners);
-
+			RELEASE_ARRAY(corners);
 		}
 	}
 
@@ -326,60 +332,6 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, CMaterial* material,
 	}
 
 	glColor4f(1, 1, 1, 1);
-}
-
-void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, CMaterial* material, bool drawVertexNormals, bool drawBoundingBox, GameObject* gameObject)
-{
-	glColor4f(0.5, 0.5, 1, 1);
-
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilMask(0x00);
-	//glDisable(GL_DEPTH_TEST);
-	float scaleFactor = 1.03f;
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	//------------------------------------------ Draw object bigger
-	glPushMatrix();
-	float3 position, scale;
-	Quat rotation;
-	float4x4 scaledTransform = transform;
-
-	scaledTransform.Decompose(position,rotation,scale);
-	scale *= scaleFactor;
-	scaledTransform = float4x4::FromTRS(position, rotation, scale);
-
-	glMultMatrixf((float*)&scaledTransform.Transposed());
-
-	glLineWidth(2);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::texture]);
-	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::normal]);
-	glNormalPointer(GL_FLOAT, 0, nullptr);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::vertex]);
-	glVertexPointer(3, GL_FLOAT, 0, nullptr);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[RMesh::index]);
-	glDrawElements(GL_TRIANGLES, mesh->buffersSize[RMesh::index], GL_UNSIGNED_INT, nullptr);
-
-	glPopMatrix();
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	//------------------------------------------
-
-	glEnable(GL_DEPTH_TEST);
 }
 
 void MRenderer3D::DrawVertexNormals(RMesh* mesh,float4x4 transform)
@@ -455,7 +407,8 @@ void MRenderer3D::CreateChekerTexture()
 
 void MRenderer3D::DrawBox(float3* corners)
 {
-	glColor4f(255, 255, 0, 255);
+	glDisable(GL_LIGHTING);
+	//glColor4f(255, 255, 0, 255);
 	//mesh->aabb.GetCornerPoints(corners);
 
 	glBegin(GL_LINES);
@@ -498,6 +451,8 @@ void MRenderer3D::DrawBox(float3* corners)
 
 	glEnd();
 	glColor4f(1, 1, 1, 1);
+
+	SwitchLighting();
 }
 
 void MRenderer3D::DrawLine(float3 a, float3 b)
@@ -553,6 +508,60 @@ bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 
 	// we must be partly in then otherwise
 	return(true);
+}
+
+void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, CMaterial* material, bool drawVertexNormals, bool drawBoundingBox, GameObject* gameObject)
+{
+	glColor4f(0.5, 0.5, 1, 1);
+
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	//glDisable(GL_DEPTH_TEST);
+	float scaleFactor = 1.03f;
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//------------------------------------------ Draw object bigger
+	glPushMatrix();
+	float3 position, scale;
+	Quat rotation;
+	float4x4 scaledTransform = transform;
+
+	scaledTransform.Decompose(position, rotation, scale);
+	scale *= scaleFactor;
+	scaledTransform = float4x4::FromTRS(position, rotation, scale);
+
+	glMultMatrixf((float*)&scaledTransform.Transposed());
+
+	glLineWidth(2);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::texture]);
+	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::normal]);
+	glNormalPointer(GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::vertex]);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffersId[RMesh::index]);
+	glDrawElements(GL_TRIANGLES, mesh->buffersSize[RMesh::index], GL_UNSIGNED_INT, nullptr);
+
+	glPopMatrix();
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//------------------------------------------
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 void MRenderer3D::SwitchCullFace()
