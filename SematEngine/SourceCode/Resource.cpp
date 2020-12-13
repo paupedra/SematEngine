@@ -4,12 +4,11 @@
 
 void ResourceData::Serialize(JsonNode node)
 {
-	
 	node.AddNumber("UID", UID);
 	node.AddNumber("Type", (double)type);
 	node.AddString("Assets File", assetsFile.c_str());
 	node.AddString("Library File", libraryFile.c_str());
-	
+	node.AddString("Name", name.c_str());
 }
 
 Resource::Resource()

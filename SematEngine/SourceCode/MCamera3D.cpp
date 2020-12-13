@@ -1,13 +1,14 @@
-
 #include "Globals.h"
 #include "Application.h"
 #include "GameObject.h"
 #include "Component.h"
+#include <map>
 
 #include "MCamera3D.h"
 #include "MInput.h"
 #include "MScene.h"
 #include "MRenderer3D.h"
+#include "MWindow.h"
 
 #include "CTransform.h"
 #include "CCamera.h"
@@ -96,18 +97,40 @@ update_status MCamera3D::Update(float dt)
 void MCamera3D::RaycastSelect()
 {
 	float2 mousePos = float2(App->input->GetMouseX(), App->input->GetMouseY());
-	mousePos.Normalize();
-	LineSegment selectRay = currentCamera->GetFrustum().UnProjectLineSegment(mousePos.x , mousePos.y);
-	//LOG("Casted ray at: x %.2f y %.2f", selectRay.a, selectRay.b);
+
+	float mouseNormX = mousePos.x / App->window->GetWidth();
+	float mouseNormY = mousePos.y / App->window->GetWidth();
+
+	mouseNormX = (mouseNormX - 0.5) / 0.5;
+	mouseNormY = (mouseNormY - 0.5) / 0.5;
+
+	LineSegment selectRay = currentCamera->frustum.UnProjectLineSegment(mouseNormX, mouseNormY);
 
 	App->renderer3D->DrawLine(selectRay.a, selectRay.b);
+
+	LOG("Ray goes from: %d to %d", selectRay.a, selectRay.b);
 
 	CheckIntersetions(&selectRay);
 }
 
 void MCamera3D::CheckIntersetions(LineSegment* selectRay)
 {
-	//selectRay->Intersects()
+	std::map<float, GameObject*> hits;
+
+	for (std::vector<GameObject*>::iterator object = App->scene->gameObjects.begin(); object != App->scene->gameObjects.end(); object++)
+	{
+		if (selectRay->Intersects( (*object)->AABB ) ) 
+		{
+			LOG("Got a hit with: %s", (*object)->GetName());
+
+			float nearInter, farInter;
+			if (selectRay->Intersects((*object)->OBB, nearInter, farInter))
+			{
+
+			}
+		}
+	}
+
 }
 
 void MCamera3D::RotateCameraStatic()

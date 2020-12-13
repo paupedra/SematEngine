@@ -41,6 +41,12 @@ bool MResourceManager::Init()
 	return true;
 }
 
+bool MResourceManager::Start()
+{
+	LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
+	return true;
+}
+
 bool MResourceManager::CleanUp()
 {
 	App->fileSystem->Remove("Library/");
@@ -201,6 +207,18 @@ UID MResourceManager::LoadResource(UID uid)
 	}
 
 	return ret;
+}
+
+void MResourceManager::LoadResourceFromMeta(std::string meta)
+{
+	std::map<UID, ResourceData>::iterator item = resourcesInLibrary.begin();
+	for (; item != resourcesInLibrary.end(); item++)
+	{
+		if ( strstr(meta.c_str(),(*item).second.assetsFile.c_str()) != nullptr)
+		{
+			LoadResource((*item).first);
+		}
+	}
 }
 
 UID MResourceManager::LoadModelResource(UID uid,ResourceType type)

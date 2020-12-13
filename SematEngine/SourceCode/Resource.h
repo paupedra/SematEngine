@@ -21,7 +21,7 @@ struct ResourceData
 	std::string assetsFile;	 //File loaded from
 	std::string libraryFile; //uint string
 	uint referenceCount = 0; //Amount of times this resource is referenced
-
+	std::string name;
 	void Serialize(JsonNode node);
 };
 

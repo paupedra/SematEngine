@@ -236,10 +236,9 @@ void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiN
 	if (node->mNumMeshes > 0)
 	{
 		ProcessMeshesModel(scene, node, &model,_scene);
+
+		ProcessMaterialModel(scene, node, &model);
 	}
-
-	ProcessMaterialModel(scene, node, &model);
-
 	_scene->models.push_back(model);
 
 	for (int i = 0; i < node->mNumChildren; i++) //Process children
@@ -307,42 +306,40 @@ void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiN
 
 void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const aiNode* node,RModel* model)
 {
-	for (int i = 0; i < node->mNumMeshes; i++)
+	UID UID = 0;
+
+	RMaterial* material = new RMaterial();
+	uint index = scene->mMeshes[node->mMeshes[0]]->mMaterialIndex;
+	aiString path;
+
+	std::string fileName, extension;
+
+	aiColor4D color;
+	if (scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
 	{
-		RMaterial* material = new RMaterial();
-		uint index = scene->mMeshes[node->mMeshes[i]]->mMaterialIndex;
-		aiString path;
+		material->SetColor(color.r, color.g, color.b, color.a);
+	}
 
-		std::string fileName, extension;
+	RTexture* texture = nullptr;
 
-		aiColor4D color;
-		if (scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
+	if (index >= 0)
+	{
+		if (scene->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 		{
-			material->SetColor(color.r, color.g, color.b, color.a);
+			App->fileSystem->SplitFilePath(path.C_Str(), nullptr, &fileName, &extension);
+
+			fileName += "." + extension;
+			fileName = "Assets/Textures/" + fileName;
+
+			
+
 		}
-
-		RTexture* texture = nullptr;
-
-
-		if (index >= 0)
+		else
 		{
-			if (scene->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-			{
-
-				App->fileSystem->SplitFilePath(path.C_Str(), nullptr, &fileName, &extension);
-
-				fileName += "." + extension;
-				fileName = "Assets/Textures/" + fileName;
-
-				
-
-			}
-			else
-			{
-				LOG("(ERROR) Failed loading node texture: %s in node %s", path.C_Str(), node->mName.C_Str());
-			}
+			LOG("(ERROR) Failed loading node texture: %s in node %s", path.C_Str(), node->mName.C_Str());
 		}
 	}
+	
 }
 
 GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
@@ -371,14 +368,14 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 			App->resourceManager->LoadModelResource(node.model.mesheUID, ResourceType::mesh);
 			RMesh* loadedMesh = (RMesh*)App->resourceManager->RequestResource(node.model.mesheUID);
 
-			cMesh->SetMesh(loadedMesh);
-
 			newGameObject->AddComponent(cMesh);
+
+			cMesh->SetMesh(loadedMesh);
 		}
+		//texture
+		//if()
+
 	}
-
-	//texture
-
 
 	App->scene->AddGameObject(newGameObject);
 	LOG("Adding game Object: %s", newGameObject->GetName());

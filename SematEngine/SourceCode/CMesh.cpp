@@ -40,10 +40,10 @@ void CMesh::Update()
 
 void CMesh::CleanUp()
 {
-	if(mesh != nullptr)
+	//if(mesh != nullptr)
 		//mesh->CleanUp(); //TODO crash
 
-	delete mesh;
+	//RELEASE(mesh);
 }
 
 void CMesh::DrawMesh()

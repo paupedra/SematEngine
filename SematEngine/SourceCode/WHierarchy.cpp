@@ -87,6 +87,10 @@ void WHierarchy::DrawTree(GameObject* object)
 	if (object->children.empty())
 		baseFlags |= ImGuiTreeNodeFlags_Leaf;
 
+	if(App->scene->selectedObject != nullptr)
+		if (object == App->scene->selectedObject)
+			baseFlags |= ImGuiTreeNodeFlags_Selected;
+
 	if(ImGui::TreeNodeEx(object->GetName(), baseFlags))
 	{ 
         if (ImGui::IsItemClicked())

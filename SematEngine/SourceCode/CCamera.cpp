@@ -4,6 +4,7 @@
 
 #include "MRenderer3D.h"
 #include "MCamera3D.h"
+#include "MWindow.h"
 
 #include "CCamera.h"
 #include "CTransform.h"
@@ -88,9 +89,9 @@ void CCamera::SetFarPlane(float distance)
 	UpdatePlanes();
 }
 
-void CCamera::SetVerticalFov(float verticalFov)
+void CCamera::SetVerticalFov(float verticalFov) //fov
 {
-	frustum.SetVerticalFovAndAspectRatio(verticalFov, frustum.AspectRatio());
+	frustum.SetVerticalFovAndAspectRatio(verticalFov, (App->window->GetWidth() / App->window->GetHeight())); //win width / win height
 }
 
 void CCamera::SetHorizontalFov(float horizontalFov)

@@ -34,7 +34,7 @@ public:
 	float* normals = nullptr;
 	float* textureCoords = nullptr;
 
-	const char* path;
+	char name[30] = "Default";
 
 	AABB aabb;
 }; 

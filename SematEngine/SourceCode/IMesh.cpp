@@ -164,6 +164,7 @@ uint64 Importer::MeshImporter::Save(const RMesh mesh, const char* name)
     memcpy(cursor, sizes, bytes);
     cursor += bytes;
 
+
     //Indices
     bytes = sizeof(uint) * mesh.buffersSize[RMesh::index];
     memcpy(cursor, mesh.indices, bytes);
@@ -241,6 +242,7 @@ void Importer::MeshImporter::Load(const char* fileBuffer, RMesh* mesh)
 
     App->renderer3D->GenerateBuffers(mesh);
     //set up aabb
+    mesh->aabb.SetNegativeInfinity();
     mesh->aabb.Enclose((float3*)mesh->vertices,mesh->buffersSize[RMesh::vertex]);
 
     LOG("Time spent loading Mesh: %d ms", timeLoading->Read());

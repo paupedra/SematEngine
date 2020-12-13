@@ -56,7 +56,7 @@ void WResources::Draw()
 	for (; resource != App->resourceManager->resources.end(); resource++)
 	{
 		ImGui::Separator();
-		ImGui::Text("Name: %s", (*resource).second->resourceData.libraryFile.c_str());
+		ImGui::Text("UID: %d", (*resource).second->resourceData.UID);
 		ImGui::Text("Reference Count: %d", (*resource).second->resourceData.referenceCount);
 	}
 

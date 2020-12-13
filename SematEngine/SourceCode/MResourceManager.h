@@ -20,6 +20,7 @@ public:
 	virtual ~MResourceManager();
 
 	bool Init();
+	bool Start();
 	bool CleanUp();
 
 	bool FindMeta(const char* fileInAssets); //Look if we have a meta file for this assets files
@@ -30,6 +31,7 @@ public:
 	std::string GenerateLibraryFile(Resource* resource); //Generates and saves the resource's custom file format
 
 	UID LoadResource(UID uid);	//Load resource from meta file into memory. uid of the ResourceData
+	void LoadResourceFromMeta(std::string meta);
 	UID LoadModelResource(UID uid, ResourceType type); //this includes meshes
 
 	void LoadScene(ResourceData resource); //Load scene from library file
