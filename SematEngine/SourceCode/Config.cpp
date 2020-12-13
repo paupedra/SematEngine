@@ -63,6 +63,13 @@ const char* JsonNode::GetString(const char* name)
 	return 0;
 }
 
+JsonArray JsonNode::GetArray(const char* name)
+{
+	if (json_object_has_value_of_type(node, name, JSONArray))
+		return JsonArray(json_object_get_array(node, name));
+	return NULL; //fix this
+}
+
 JsonArray JsonNode::InitArray(const char* name) //Create a array storing into class -> addthings to array
 {
 	json_object_set_value(node, name, json_value_init_array());
@@ -96,4 +103,16 @@ JsonNode JsonArray::AddNode()
 	json_array_append_value(arr, json_value_init_object());
 	size++;
 	return JsonNode(json_array_get_object(arr, size - 1));
+}
+
+JsonNode JsonArray::GetNode(uint index)
+{
+	return JsonNode(json_array_get_object(arr, index));
+}
+
+double JsonArray::GetNumber(uint index, double number)
+{
+	if (index < size)
+		return json_array_get_number(arr, index);
+	return number;
 }

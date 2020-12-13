@@ -237,10 +237,6 @@ void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiN
 	{
 		ProcessMeshesModel(scene, node, &model,_scene);
 	}
-	else
-	{
-
-	}
 
 	ProcessMaterialModel(scene, node, &model);
 
@@ -256,7 +252,7 @@ const aiNode* Importer::SceneImporter::ProcessTransformModel(const aiNode* node,
 {
 	aiVector3D position = { 0,0,0 };
 	aiVector3D scale = { 0,0,0 };
-	aiQuaternion rotation;
+	aiQuaternion rotation = { 0,0,0 };
 
 	aiVector3D _position = { 0,0,0 };
 	aiVector3D _scale = { 0,0,0 };
@@ -287,9 +283,7 @@ const aiNode* Importer::SceneImporter::ProcessTransformModel(const aiNode* node,
 	float3 s = { scale.x, scale.y, scale.z };
 	Quat r = { rotation.x,rotation.y,rotation.z,rotation.w };
 
-	float4x4 mat = float4x4::FromTRS(p,r,s);
-
-	model->transform = mat;
+	model->transform = float4x4::FromTRS(p, r, s);
 
 	return node;
 }
@@ -302,7 +296,8 @@ void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiN
 	model->name = node->mName.C_Str();
 
 	//only do first mesh for safety
-	model->mesheUID = node->mMeshes[0];
+	if(node->mNumMeshes > 0)
+		model->mesheUID = node->mMeshes[0];
 
 	//for (int i = 0; i < node->mNumMeshes; i++)
 	//{
@@ -348,4 +343,52 @@ void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const a
 			}
 		}
 	}
+}
+
+GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
+{
+	//Start creating game objects and requesting meshes through UID (loading it into memory in resources map), if the UID is already loaded it will return it
+	GameObject* newGameObject;
+	if (node.parent == nullptr)
+	{
+		newGameObject = new GameObject(App->scene->rootObject,node.model.name.c_str());
+	}
+	else
+	{
+		newGameObject = new GameObject( node.model.name.c_str()); //We'll set parent later
+	}
+
+	//transform
+	newGameObject->transform->SetLocalTransform(node.model.transform);
+
+	//mesh
+	if (node.model.mesheUID != 0) //if there is a mesh
+	{
+		CMesh* cMesh = new CMesh(newGameObject);
+
+		if (node.model.mesheUID != 0)
+		{
+			App->resourceManager->LoadModelResource(node.model.mesheUID, ResourceType::mesh);
+			RMesh* loadedMesh = (RMesh*)App->resourceManager->RequestResource(node.model.mesheUID);
+
+			cMesh->SetMesh(loadedMesh);
+
+			newGameObject->AddComponent(cMesh);
+		}
+	}
+
+	//texture
+
+
+	App->scene->AddGameObject(newGameObject);
+	LOG("Adding game Object: %s", newGameObject->GetName());
+
+	for (std::vector<ModelNode*>::iterator child = node.children.begin(); child != node.children.end(); child++)
+	{
+		GameObject* object = LoadSceneResource(*(*child));
+		newGameObject->AddChild(object);
+	}
+
+	
+	return newGameObject;
 }

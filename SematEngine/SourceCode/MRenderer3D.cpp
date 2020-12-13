@@ -48,7 +48,7 @@ MRenderer3D::MRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
 	glCullFace = true;
 	glColorMaterial = true;
-	glLighting = false;
+	glLighting = true;
 	glDepthTest = true;
 	glTexture2d = true;
 	wireframeMode = false;
@@ -144,7 +144,7 @@ bool MRenderer3D::Init()
 		glEnable(GL_DEPTH_TEST);
 	
 		glEnable(GL_CULL_FACE);
-		//glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 		lights[0].Active(true);
@@ -184,7 +184,7 @@ update_status MRenderer3D::PreUpdate(float dt)
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		
 	// light 0 on cam pos
-	//lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
+	lights[0].SetPos(App->camera->currentCamera->GetPos().x, App->camera->currentCamera->GetPos().y, App->camera->currentCamera->GetPos().z);
 
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();

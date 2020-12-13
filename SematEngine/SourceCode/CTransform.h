@@ -31,6 +31,7 @@ public:
 	void SetScale(float3 scale);
 	void SetTransform(float3 position,float3 scale ,Quat rotation); 
 	void SetLocalTransform(float3 position, float3 scale, Quat rotation);
+	void SetLocalTransform(float4x4 matrix);
 
 	void UpdateLocalTransform();
 	void SetEulerRotation(float3 eulerAngles);

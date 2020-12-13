@@ -104,6 +104,13 @@ void CTransform::SetLocalTransform(float3 position, float3 scale, Quat rotation)
 	UpdateLocalTransform();
 }
 
+void CTransform::SetLocalTransform(float4x4 matrix)
+{
+	matrix.Decompose(position,rotation,scale);
+
+	UpdateLocalTransform();
+}
+
 void CTransform::SetTransform(float3 position, float3 scale, Quat rotation)
 {
 

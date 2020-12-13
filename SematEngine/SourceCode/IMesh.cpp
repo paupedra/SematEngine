@@ -239,6 +239,10 @@ void Importer::MeshImporter::Load(const char* fileBuffer, RMesh* mesh)
     memcpy(mesh->textureCoords, cursor, bytes);
     cursor += bytes;
 
+    App->renderer3D->GenerateBuffers(mesh);
+    //set up aabb
+    mesh->aabb.Enclose((float3*)mesh->vertices,mesh->buffersSize[RMesh::vertex]);
+
     LOG("Time spent loading Mesh: %d ms", timeLoading->Read());
 
     RELEASE(timeLoading);

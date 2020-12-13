@@ -40,8 +40,8 @@ void CMesh::Update()
 
 void CMesh::CleanUp()
 {
-	if(mesh!= nullptr)
-		mesh->CleanUp();
+	if(mesh != nullptr)
+		//mesh->CleanUp(); //TODO crash
 
 	delete mesh;
 }
@@ -70,6 +70,12 @@ void CMesh::DrawMesh()
 void CMesh::OnSave(JsonNode* node)
 {
 	//save id
+}
+
+void CMesh::SetMesh(RMesh* _mesh)
+{
+	mesh = _mesh;
+	owner->UpdateBoundingBoxes();
 }
 
 char* CMesh::GetPath()const

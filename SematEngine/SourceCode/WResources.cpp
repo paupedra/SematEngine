@@ -43,13 +43,22 @@ void WResources::Draw()
 	{
 		if (ImGui::Button((*resourceLib).second.assetsFile.c_str()))
 		{
-			LOG("Load resource %s", (*resourceLib).second.assetsFile.c_str())
+			LOG("Load resource %s", (*resourceLib).second.assetsFile.c_str());
+			App->resourceManager->LoadResource((*resourceLib).second.UID);
 		}
 	}
 
 	ImGui::Separator();
 
+	ImGui::Text("Resources in Memory:");
 
+	std::map<UID, Resource*>::iterator resource = App->resourceManager->resources.begin();
+	for (; resource != App->resourceManager->resources.end(); resource++)
+	{
+		ImGui::Separator();
+		ImGui::Text("Name: %s", (*resource).second->resourceData.libraryFile.c_str());
+		ImGui::Text("Reference Count: %d", (*resource).second->resourceData.referenceCount);
+	}
 
 	ImGui::End();
 }

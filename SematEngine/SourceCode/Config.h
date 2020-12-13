@@ -19,6 +19,8 @@ public:
 	double GetNumber(const char* name);
 	const char* GetString(const char* name);
 
+	JsonArray GetArray(const char* name);
+
 	JsonArray InitArray(const char* name);
 
 public:
@@ -37,6 +39,11 @@ public:
 	void AddString(const char* string);
 
 	JsonNode AddNode();
+
+	double GetNumber(uint index, double number = 0);
+	const char* GetString(uint index, const char* string = "");
+
+	JsonNode GetNode(uint index);
 
 public:
 	JSON_Array* arr;

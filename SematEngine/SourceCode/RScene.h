@@ -3,7 +3,8 @@
 
 #include "Globals.h"
 #include <vector>
-#include "RModel.h"
+
+struct RModel;
 class Resource;
 
 class RScene : public Resource

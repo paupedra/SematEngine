@@ -3,7 +3,7 @@
 #include "Config.h"
 
 #include "MFileSystem.h"
-
+#include "RModel.h"
 #include "RScene.h"
 
 RScene::RScene()
@@ -42,15 +42,16 @@ UID RScene::GenerateCustomFile()
 		//transform
 
 		JsonArray transformArray = modelNode.InitArray("Transform");
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i< 16;i++)
 		{
-			for (int y = 0; y < 4; y++)
-			{
-				transformArray.AddNumber((*model).transform[i][y]);
-			}
+			transformArray.AddNumber((*model).transform.ptr()[i]);
 		}
 
-		modelNode.AddNumber("Mesh ID", meshes[(*model).mesheUID]); //Loop to support various meshes
+		if((*model).mesheUID != -1)
+			modelNode.AddNumber("Mesh ID", meshes[(*model).mesheUID]); //Loop to support various meshes
+		else
+			modelNode.AddNumber("Mesh ID", 0);
+
 		modelNode.AddNumber("Material ID", (*model).materialUID);
 	}
 

@@ -14,6 +14,7 @@
 #include "RMesh.h"
 #include "RTexture.h"
 #include "RScene.h"
+#include "RModel.h"
 
 #include "IScene.h"
 #include "ITexture.h"
@@ -68,9 +69,16 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 {
 	UID ret = 0;
 
+	if (type == ResourceType::none)
+	{
+		return ret;
+	}
+
 	if (FindMeta(newFileInAssets))
 	{
-		AddResourceToLibraryFromMeta(newFileInAssets);		//load file in this meta and add it to resourcesInLibrary
+		std::string str = newFileInAssets;
+		str += ".meta";
+		AddResourceToLibraryFromMeta(str.c_str());		//load file in this meta and add it to resourcesInLibrary
 		return ret;
 	}
 
@@ -82,6 +90,9 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 	{
 		case ResourceType::texture: Importer::TextureImp::Import(fileBuffer, (RTexture*)resource, size); break;
 		case ResourceType::scene: Importer::SceneImporter::ImportSceneResource(fileBuffer,(RScene*)resource,size); break;
+		case ResourceType::none:
+				return ret; 
+				break;
 	}
 
 	SaveResource(resource); 
@@ -159,16 +170,7 @@ std::string MResourceManager::GenerateLibraryFile(Resource* resource)
 			path += ".scene";
 			break;
 	}
-
 	return path;
-}
-
-uint MResourceManager::GenerateSceneFile(Resource* resource)
-{
-	//loop models and get their mesh/material uid and generate json
-
-
-	return 0;
 }
 
 bool MResourceManager::FindMeta(const char* fileInAssets)
@@ -177,7 +179,6 @@ bool MResourceManager::FindMeta(const char* fileInAssets)
 	std::string file = fileInAssets;
 	file += ".meta";
 	ret = App->fileSystem->Exists(file.c_str());
-
 	return ret;
 }
 
@@ -191,17 +192,85 @@ UID MResourceManager::LoadResource(UID uid)
 		case ResourceType::scene: 
 			LoadScene(resource);
 			break;
+		case ResourceType::mesh:
+			LoadMesh(uid);
+			break;
 		case ResourceType::none:
 			return ret;
 			break;
 	}
 
+	return ret;
+}
 
+UID MResourceManager::LoadModelResource(UID uid,ResourceType type)
+{
+	UID ret = 0;
+
+	switch (type)
+	{
+		case ResourceType::mesh:
+			LoadMesh(uid);
+			break;
+	}
+	return ret;
 }
 
 void MResourceManager::LoadScene(ResourceData resource)
 {
 	//Load .scene file and go through all the models and load and add to memory resources
+	char* buffer;
+	App->fileSystem->Load(resource.libraryFile.c_str(), &buffer);
+
+	JsonNode node(buffer);
+	JsonArray modelsJson = node.GetArray("Models");
+
+	std::map<UID, ModelNode> models;
+
+	for (int i = 0; i < modelsJson.size ; i++) //Add All models into a map
+	{
+		JsonNode newModelJson = modelsJson.GetNode(i);
+		ModelNode newNode(0);
+		newNode.model.ReadJsonNode(newModelJson);
+		models.emplace(newNode.model.uid, newNode);
+	}
+
+	ModelNode* root;
+	//tree structure the map
+	for (std::map<UID, ModelNode>::iterator item = models.begin(); item != models.end(); item++)
+	{
+		//Add parent to item's parent, Add item to parent's chidlren
+		if ((*item).second.model.parentUID != 0)
+		{
+			ModelNode* parent = &(*models.find((*item).second.model.parentUID)).second;
+			(*item).second.parent = parent; //Add the parent to it's ID
+			parent->children.push_back(&(*item).second);
+		}
+		else
+		{ 
+			std::string rootName;
+			App->fileSystem->SplitFilePath(resource.assetsFile.c_str(), nullptr, &rootName);
+			(*item).second.model.name = rootName.c_str();
+			root = &(*item).second;
+		}
+	}
+	Importer::SceneImporter::LoadSceneResource(*root); //Create the game objects using the tree structure, passing the root
+}
+
+void MResourceManager::LoadMesh(UID uid)
+{
+	std::string path = MESHES_PATH;
+	path += std::to_string(uid) + ".mesh";
+
+	char* buffer;
+	App->fileSystem->Load(path.c_str(),&buffer);
+
+	RMesh* mesh = new RMesh(uid);
+	Importer::MeshImporter::Load(buffer,mesh);
+
+	resources.emplace(uid, mesh);
+
+	LOG("Mesh added into memory");
 }
 
 void MResourceManager::SaveResource(Resource* resource)
@@ -257,6 +326,13 @@ void MResourceManager::AddResourceToLibraryFromMeta(const char* file)
 	JsonNode node(buffer);
 	ResourceData resource;
 	resource.UID = node.GetNumber("UID");
+
+	if (resourcesInLibrary.find(resource.UID) != resourcesInLibrary.end() )
+	{
+		LOG("Tries to import file already in library: %s",file);
+		return;
+	}
+
 	resource.type = (ResourceType)node.GetNumber("Type");
 	resource.assetsFile = node.GetString("Assets File");
 	resource.libraryFile = node.GetString("Library File");
@@ -272,13 +348,9 @@ void MResourceManager::ImportAllFoundAssets(const char* basePath)
 
 	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); i++)
 	{
-		//ImportFile((*i).c_str(),ResourceType::none);
-		if (strstr((*i).c_str(), ".meta"))
-		{
-			std::string tmp1 = basePath;
-			tmp1 += "/" +(*i);
-			AddResourceToLibraryFromMeta(tmp1.c_str());
-		}
+		std::string tmp1 = basePath;
+		tmp1 += "/" + (*i);
+		ImportFile( tmp1.c_str() , (ResourceType)GetResourceTypeFromPath(tmp1.c_str()) );
 	}
 
 	for (std::vector<std::string>::iterator item = dirs.begin(); item != dirs.end();item++)
@@ -289,7 +361,18 @@ void MResourceManager::ImportAllFoundAssets(const char* basePath)
 	}
 }
 
-uint MResourceManager::GetResourceTypeFromPath()
+uint MResourceManager::GetResourceTypeFromPath(const char* path)
 {
-	return 0;
+	ResourceType ret = ResourceType::none;
+
+	std::string extension;
+
+	App->fileSystem->SplitFilePath(path, nullptr, nullptr, &extension);
+
+	if (strstr(extension.c_str(), "fbx") != nullptr || strstr(extension.c_str(), "FBX") != nullptr) //Only importing .fbx files for now
+	{
+		ret = ResourceType::scene;
+	}
+
+	return (uint)ret;
 }

@@ -60,7 +60,7 @@ bool MScene::Start()
 // Update
 update_status MScene::Update(float dt)
 {
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	App->renderer3D->DrawScenePlane(200);
 

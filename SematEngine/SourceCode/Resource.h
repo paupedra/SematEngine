@@ -23,7 +23,6 @@ struct ResourceData
 	uint referenceCount = 0; //Amount of times this resource is referenced
 
 	void Serialize(JsonNode node);
-	
 };
 
 class Resource

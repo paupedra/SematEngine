@@ -18,6 +18,8 @@ public:
 
 	void OnSave(JsonNode* node);
 
+	void SetMesh(RMesh* _mesh);
+
 	static inline ComponentType GetType() { return ComponentType::MESH; };
 
 	char* GetPath()const;

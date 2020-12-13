@@ -29,10 +29,11 @@ public:
 	const char* GenerateMeatFile(Resource* resource); //Generate meta file that holds UID and other information
 	std::string GenerateLibraryFile(Resource* resource); //Generates and saves the resource's custom file format
 
-	uint GenerateSceneFile(Resource* resource); //Generate .scene json file. Returns json serialized size
+	UID LoadResource(UID uid);	//Load resource from meta file into memory. uid of the ResourceData
+	UID LoadModelResource(UID uid, ResourceType type); //this includes meshes
 
-	UID LoadResource(UID uid); //Load resource from meta file into memory. uid of the ResourceData
 	void LoadScene(ResourceData resource); //Load scene from library file
+	void LoadMesh(UID uid);
 
 	void SaveResource(Resource* resource); //Generates meta file and saves into library with custom file format
 
@@ -49,7 +50,7 @@ private:
 
 	void ImportAllFoundAssets(const char* basePath);
 
-	uint GetResourceTypeFromPath();
+	uint GetResourceTypeFromPath(const char* path);
 
 public:
 	std::map<UID, Resource*> resources; //Resource in memory
