@@ -38,17 +38,13 @@ MResourceManager::~MResourceManager()
 
 bool MResourceManager::Init()
 {
-	LOG("Start loading All assets");
 	ImportAllFoundAssets("Assets");
-	LOG("End loading All assets");
 	return true;
 }
 
 bool MResourceManager::Start()
 {
-	LOG("started loading StreetView");
 	LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
-	LOG("Finished loading StreetView");
 	return true;
 }
 
@@ -89,12 +85,11 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 		return ret;
 	}
 
-	if (FindMeta(newFileInAssets))
+	if (FindMeta(newFileInAssets)) //When requesting to import a file we first check if it already has .meta therefore is already imported
 	{
 		std::string str = newFileInAssets;
 		str += ".meta";
 		ret = AddResourceToLibraryFromMeta(str.c_str());		//load file in this meta and add it to resourcesInLibrary
-		LOG("Out of AddResourceToLIbrary.. ret is %d",ret);
 		return ret;
 	}
 
@@ -104,13 +99,9 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 
 	switch (type)
 	{
-		case ResourceType::texture: Importer::TextureImp::Import(fileBuffer, (RTexture*)resource, size,false); break; //fills out RTexture
-		case ResourceType::scene:
-			Importer::SceneImporter::ImportSceneResource(fileBuffer,(RScene*)resource,size); 
-			break;
-		case ResourceType::none:
-				return ret; 
-				break;
+		case ResourceType::texture: Importer::TextureImp::Import(fileBuffer, (RTexture*)resource, size,false); break; //fills out RTexture and save
+		case ResourceType::scene: Importer::SceneImporter::ImportSceneResource(fileBuffer,(RScene*)resource,size); break; //Request all necessary files in scene
+		case ResourceType::none: return ret; break;
 	}
 	LOG("Finished importing %s first", newFileInAssets);
 	SaveResource(resource); 
@@ -121,6 +112,11 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 	LOG("Finished importing %s", newFileInAssets);
 
 	return ret;
+}
+
+uint MResourceManager::ImportModelResource(const char* newFileInAssets, ResourceType type)
+{
+
 }
 
 Resource* MResourceManager::CreateNewResource(const char* assetsFile, ResourceType type)
@@ -161,7 +157,7 @@ uint MResourceManager::ImportMaterial(const char* file,uint textureUID, Color co
 	return uid;
 }
 
-const char* MResourceManager::GenerateMeatFile(Resource* resource)
+const char* MResourceManager::GenerateMetaFile(Resource* resource)
 {
 	std::string ret = "default";
 	JsonNode node;
@@ -400,7 +396,7 @@ void MResourceManager::SaveResource(Resource* resource, bool meta)
 {
 	LOG("Saving resource: %s", resource->resourceData.assetsFile.c_str());
 	if(meta)
-		GenerateMeatFile(resource); //idk where to do this
+		GenerateMetaFile(resource); //idk where to do this
 
 	AddResourceToLibrary(resource);
 	LOG("Finished Saving resource: %s", resource->resourceData.assetsFile.c_str());

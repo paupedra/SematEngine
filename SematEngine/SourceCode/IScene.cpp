@@ -33,7 +33,6 @@
 
 void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* resource,uint size)
 {
-
 	if (size > 0)
 	{
 		const aiScene* scene = aiImportFileFromMemory(buffer, size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
@@ -49,7 +48,7 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 		RScene* sceneResource = (RScene*)resource;
 		sceneResource->GenerateCustomFile(); //return serialized json size
 
-		LOG("Finished importing: %s");
+		LOG("Finished importing: %s",resource->resourceData.assetsFile.c_str());
 	}
 	else
 	{
@@ -225,9 +224,6 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 
 			}
 		}
-
-		
-
 	}
 
 	App->scene->AddGameObject(newGameObject);
@@ -238,7 +234,6 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 		GameObject* object = LoadSceneResource(*(*child));
 		newGameObject->AddChild(object);
 	}
-
 	
 	return newGameObject;
 }

@@ -29,9 +29,10 @@ public:
 	void Import(const char* path);
 	uint ImportFile(const char* newFileInAssets, ResourceType type);
 
+	uint ImportModelResource(const char* newFileInAssets, ResourceType type); //Import resources from scene/model (mesh,material)
 	uint ImportMaterial(const char* file,uint textureUID,Color color); //Creates RMaterial and saves .material (cff)
 
-	const char* GenerateMeatFile(Resource* resource); //Generate meta file that holds UID and other information
+	const char* GenerateMetaFile(Resource* resource); //Generate meta file that holds UID and other information
 	std::string GenerateLibraryFile(Resource* resource); //Generates and saves the resource's custom file format
 
 	UID LoadResource(UID uid);	//Load resource from meta file into memory. uid of the ResourceData
