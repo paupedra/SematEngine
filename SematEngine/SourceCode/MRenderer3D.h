@@ -26,8 +26,8 @@ public:
 	~MRenderer3D();
 
 	bool Init();
-	update_status PreUpdate(float dt) override;
-	update_status PostUpdate(float dt) override;
+	updateStatus PreUpdate(float dt) override;
+	updateStatus PostUpdate(float dt) override;
 	bool CleanUp();
 
 	void OnResize(int width, int height);

@@ -78,7 +78,7 @@ bool MEditor::Start()
 	return true;
 }
 
-update_status MEditor::PreUpdate(float dt)
+updateStatus MEditor::PreUpdate(float dt)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
@@ -89,7 +89,7 @@ update_status MEditor::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-update_status MEditor::PostUpdate(float dt)
+updateStatus MEditor::PostUpdate(float dt)
 {
 	mouseHovered = false;
 

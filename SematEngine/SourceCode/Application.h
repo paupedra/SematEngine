@@ -52,7 +52,7 @@ public:
 	~Application();
 
 	bool Init();
-	update_status Update();
+	updateStatus Update();
 	bool CleanUp();
 
 	void SetTitle(const char* title);

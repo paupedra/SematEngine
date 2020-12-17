@@ -171,7 +171,7 @@ bool MRenderer3D::Init()
 }
 
 // PreUpdate: clear buffer
-update_status MRenderer3D::PreUpdate(float dt)
+updateStatus MRenderer3D::PreUpdate(float dt)
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -193,7 +193,7 @@ update_status MRenderer3D::PreUpdate(float dt)
 }
 
 // PostUpdate present buffer to screen
-update_status MRenderer3D::PostUpdate(float dt)
+updateStatus MRenderer3D::PostUpdate(float dt)
 {
 	//ImGui::ShowDemoWindow();
 

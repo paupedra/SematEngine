@@ -384,3 +384,6 @@ SematEngine/Engine/Library/Meshes/834224226
 SematEngine/Engine/Library/Meshes/879287023
 SematEngine/Engine/Library/Meshes/898335407
 *.scene
+*.material
+*.model
+*.texture

@@ -53,7 +53,7 @@ void WResources::Draw()
 		{
 			case ResourceType::texture: ImGui::Text("Texture"); break;
 			case ResourceType::material: ImGui::Text("Material"); break;
-			case ResourceType::scene: ImGui::Text("Scene"); break;
+			case ResourceType::model: ImGui::Text("Model"); break;
 			case ResourceType::none: ImGui::Text("none"); break;
 		}
 	}

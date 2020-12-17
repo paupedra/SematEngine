@@ -100,12 +100,13 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 	switch (type)
 	{
 		case ResourceType::texture: Importer::TextureImp::Import(fileBuffer, (RTexture*)resource, size,false); break; //fills out RTexture and save
-		case ResourceType::scene: Importer::SceneImporter::ImportSceneResource(fileBuffer,(RScene*)resource,size); break; //Request all necessary files in scene
+		case ResourceType::model: Importer::SceneImporter::ImportSceneResource(fileBuffer,(RScene*)resource,size); break; //Request all necessary files in scene
 		case ResourceType::none: return ret; break;
 	}
 	LOG("Finished importing %s first", newFileInAssets);
 	SaveResource(resource); 
 	ret = resource->resourceData.UID;
+
 	RELEASE_ARRAY(fileBuffer);
 	RELEASE(resource);
 
@@ -116,7 +117,7 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 
 uint MResourceManager::ImportModelResource(const char* newFileInAssets, ResourceType type)
 {
-
+	return 0;
 }
 
 Resource* MResourceManager::CreateNewResource(const char* assetsFile, ResourceType type)
@@ -126,10 +127,10 @@ Resource* MResourceManager::CreateNewResource(const char* assetsFile, ResourceTy
 
 	switch (type) 
 	{
-		case ResourceType::texture: ret = (Resource*) new RTexture(uid); break;
-		case ResourceType::mesh: ret = (Resource*) new RMesh(uid); break;
+		case ResourceType::texture:  ret = (Resource*) new RTexture(uid); break;
+		case ResourceType::mesh:	 ret = (Resource*) new RMesh(uid); break;
 		case ResourceType::material: ret = (Resource*) new RMaterial(uid); break;
-		case ResourceType::scene: ret = (Resource*) new RScene(uid); break;
+		case ResourceType::model:	 ret = (Resource*) new RScene(uid); break;
 	}
 	if (ret != nullptr)
 	{
@@ -176,7 +177,7 @@ const char* MResourceManager::GenerateMetaFile(Resource* resource)
 			LOG("Generationg Texture meta file: %s", path.c_str());
 			Importer::TextureImp::Save((RTexture*)resource, resource->resourceData.libraryFile.c_str());
 			break;
-		case ResourceType::scene:
+		case ResourceType::model:
 			LOG("Generationg Scene meta file: %s", path.c_str());
 			break;
 		case ResourceType::material:
@@ -197,19 +198,18 @@ std::string MResourceManager::GenerateLibraryFile(Resource* resource)
 		case ResourceType::texture: 
 			path = TEXTURES_PATH;
 			path += std::to_string(resource->GetUID());
-			path += ".tex";
-			
+			path += TEXTURE_EXTENTION;
 			break;
 
-		case ResourceType::scene:
-			path = SCENES_PATH;
+		case ResourceType::model:
+			path = MODELS_PATH;
 			path += std::to_string(resource->GetUID());
-			path += ".scene";
+			path += MODEL_EXTENTION;
 			break;
 		case ResourceType::material:
 			path = MATERIALS_PATH;
 			path += std::to_string(resource->GetUID());
-			path += ".material";
+			path += MATERIAL_EXTENTION;
 			break;
 	}
 	return path;
@@ -231,7 +231,7 @@ UID MResourceManager::LoadResource(UID uid)
 	
 	switch (resource.type)
 	{
-		case ResourceType::scene: 
+		case ResourceType::model: 
 			LoadScene(resource);
 			break;
 		case ResourceType::mesh:
@@ -315,6 +315,7 @@ void MResourceManager::LoadScene(ResourceData resource)
 			root = &(*item).second;
 		}
 	}
+
 	Importer::SceneImporter::LoadSceneResource(*root); //Create the game objects using the tree structure, passing the root
 
 	RELEASE_ARRAY(buffer);
@@ -323,7 +324,7 @@ void MResourceManager::LoadScene(ResourceData resource)
 void MResourceManager::LoadMesh(UID uid)
 {
 	std::string path = MESHES_PATH;
-	path += std::to_string(uid) + ".mesh";
+	path += std::to_string(uid) + MESH_EXTENTION;
 
 	char* buffer;
 	App->fileSystem->Load(path.c_str(),&buffer);
@@ -341,7 +342,7 @@ void MResourceManager::LoadMesh(UID uid)
 RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when loading scene (resourceData.materialUID)
 {
 	std::string path = MATERIALS_PATH;
-	path += std::to_string(uid) + ".material";
+	path += std::to_string(uid) + MATERIAL_EXTENTION;
 
 	char* buffer;
 	App->fileSystem->Load(path.c_str(), &buffer);
@@ -362,11 +363,10 @@ RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when lo
 	
 	RTexture* texture = new RTexture(textureData.UID);
 
-	Importer::TextureImp::Import(buffer2, texture, size,false);
+	Importer::TextureImp::Import(buffer2, texture, size,true);
 
 	resources.emplace(textureData.UID, texture);
 	//------------------------------------------------
-
 
 	material->SetTexture((RTexture*)RequestResource(textureData.UID));
 	
@@ -379,7 +379,7 @@ RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when lo
 void MResourceManager::LoadTexture(ResourceData resource)
 {
 	std::string path = TEXTURES_PATH;
-	path += std::to_string(resource.UID) + ".tex";
+	path += std::to_string(resource.UID) + TEXTURE_EXTENTION;
 
 	char* buffer;
 	uint size = App->fileSystem->Load(path.c_str(), &buffer);
@@ -422,7 +422,15 @@ void MResourceManager::ReleaseResource(uint uid) //releases a resource from memo
 	resources.erase(uid);
 
 	RELEASE(res);
-	
+}
+
+uint MResourceManager::GetResourceUID(const char* metaFile)
+{
+	for (std::map<UID, ResourceData>::iterator it = resourcesInLibrary.begin(); it != resourcesInLibrary.end(); it++)
+		if( strcmp((*it).second.assetsFile.c_str(),metaFile ) == 0)
+			return (*it).second.UID;
+
+	return 0;
 }
 
 ResourceData MResourceManager::RequestLibraryResource(uint uid)
@@ -521,7 +529,7 @@ uint MResourceManager::GetResourceTypeFromPath(const char* path)
 
 	if (strstr(extension.c_str(), "fbx") != nullptr || strstr(extension.c_str(), "FBX") != nullptr) //Only importing .fbx files for now
 	{
-		ret = ResourceType::scene;
+		ret = ResourceType::model;
 	}
 
 	if (strstr(extension.c_str(), "png") != nullptr || strstr(extension.c_str(), "PNG") != nullptr || strstr(extension.c_str(), "tga") != nullptr || strstr(extension.c_str(), "TGA") != nullptr)

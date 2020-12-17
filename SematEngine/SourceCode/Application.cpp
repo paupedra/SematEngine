@@ -144,9 +144,9 @@ void Application::Save()
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
-update_status Application::Update()
+updateStatus Application::Update()
 {
-	update_status ret = UPDATE_CONTINUE;
+	updateStatus ret = UPDATE_CONTINUE;
 	PrepareUpdate();
 	
 	std::vector<Module*>::iterator item = modules.begin();
@@ -177,7 +177,7 @@ update_status Application::Update()
 	FinishUpdate();
 
 	if (wantToExit)
-		ret = update_status::UPDATE_STOP;
+		ret = updateStatus::UPDATE_STOP;
 
 	return ret;
 }

@@ -59,7 +59,7 @@ bool MScene::Start()
 }
 
 // Update
-update_status MScene::Update(float dt)
+updateStatus MScene::Update(float dt)
 {
 	//ImGui::ShowDemoWindow();
 
@@ -87,7 +87,7 @@ update_status MScene::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-update_status MScene::PostUpdate(float dt)
+updateStatus MScene::PostUpdate(float dt)
 {
 	return UPDATE_CONTINUE;
 }

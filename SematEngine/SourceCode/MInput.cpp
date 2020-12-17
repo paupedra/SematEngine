@@ -56,7 +56,7 @@ bool MInput::Init()
 }
 
 // Called every draw update
-update_status MInput::PreUpdate(float dt)
+updateStatus MInput::PreUpdate(float dt)
 {
 	SDL_PumpEvents();
 
@@ -160,7 +160,7 @@ update_status MInput::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-update_status MInput::Update(float dt)
+updateStatus MInput::Update(float dt)
 {
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		App->debug = !App->debug;

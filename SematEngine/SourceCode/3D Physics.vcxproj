@@ -180,6 +180,7 @@
     <ClInclude Include="Dependecies\mmgr\nommgr.h" />
     <ClInclude Include="Dependecies\parson\parson.h" />
     <ClInclude Include="glmath.h" />
+    <ClInclude Include="IMaterial.h" />
     <ClInclude Include="MCamera3D.h" />
     <ClInclude Include="MEditor.h" />
     <ClInclude Include="GameObject.h" />
@@ -278,6 +279,7 @@
     <ClCompile Include="Dependecies\mmgr\mmgr.cpp" />
     <ClCompile Include="Dependecies\parson\parson.c" />
     <ClCompile Include="glmath.cpp" />
+    <ClCompile Include="IMaterial.cpp" />
     <ClCompile Include="MCamera3D.cpp" />
     <ClCompile Include="MEditor.cpp" />
     <ClCompile Include="GameObject.cpp" />

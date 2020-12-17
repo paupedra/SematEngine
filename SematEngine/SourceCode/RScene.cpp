@@ -8,12 +8,12 @@
 
 RScene::RScene()
 {
-	resourceData.type = ResourceType::scene;
+	resourceData.type = ResourceType::model;
 }
 
 RScene::RScene(uint UID) : Resource(UID)
 {
-	resourceData.type = ResourceType::scene;
+	resourceData.type = ResourceType::model;
 }
 
 RScene::~RScene()
@@ -58,9 +58,9 @@ UID RScene::GenerateCustomFile()
 	char* buffer;
 	uint size = node.Serialize(&buffer);
 
-	std::string fileName = SCENES_PATH;
+	std::string fileName = MODELS_PATH;
 	fileName += std::to_string(resourceData.UID);
-	fileName += ".scene";
+	fileName += MODEL_EXTENTION;
 
 	App->fileSystem->Save(fileName.c_str(),buffer,size);
 	

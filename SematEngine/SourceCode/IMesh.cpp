@@ -22,14 +22,12 @@ std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
 {
     Timer* timeImporting = new Timer();
 
-    //aiImportFileFromMemory
-	const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality);
+	const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality); //aiImportFileFromMemory
     std::vector<RMesh*> ret;
 
     if (scene != nullptr && scene->HasMeshes())
     {
-        // Use scene->mNumMeshes to iterate on scene->mMeshes array
-        for (int i = 0; i < scene->mNumMeshes; i++)
+        for (int i = 0; i < scene->mNumMeshes; i++)// Use scene->mNumMeshes to iterate on scene->mMeshes array
         {
             RMesh* newMesh = new RMesh();
             
@@ -305,7 +303,7 @@ void Importer::MeshImporter::LoadNodeMeshModel(const aiScene* scene, const aiNod
     }
 }
 
-void Importer::MeshImporter::LoadAllMeshesInScene(const aiScene* scene, std::vector<uint>& meshes)
+void Importer::MeshImporter::ImportAllMeshesInScene(const aiScene* scene, std::vector<uint>& meshes)
 {
     for (int i = 0; i < scene->mNumMeshes; i++)
     {
@@ -354,5 +352,10 @@ void Importer::MeshImporter::LoadAllMeshesInScene(const aiScene* scene, std::vec
         }
 
         meshes.push_back(newMesh.GenerateCustomFile()); //Generate cff file and add UID to meshes list
+
+        RELEASE_ARRAY(newMesh.indices);
+        RELEASE_ARRAY(newMesh.normals);
+        RELEASE_ARRAY(newMesh.vertices);
+        RELEASE_ARRAY(newMesh.textureCoords);
     }
 }

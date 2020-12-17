@@ -10,6 +10,7 @@ enum class ResourceType
 	material,
 	texture,
 	mesh,
+	model,
 	scene,
 	none
 };

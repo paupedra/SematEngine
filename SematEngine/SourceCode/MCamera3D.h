@@ -15,7 +15,7 @@ public:
 	~MCamera3D();
 
 	bool Start();
-	update_status Update(float dt) override;
+	updateStatus Update(float dt) override;
 	bool CleanUp();
 
 	void Look(const float3&Position, const float3&Reference, bool RotateAroundReference = false);

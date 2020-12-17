@@ -58,7 +58,7 @@ bool MCamera3D::CleanUp()
 }
 
 // -----------------------------------------------------------------
-update_status MCamera3D::Update(float dt)
+updateStatus MCamera3D::Update(float dt)
 {
 	float3 newPos(0,0,0);
 	float speed = cameraMoveSpeed * dt;

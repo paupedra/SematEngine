@@ -21,7 +21,7 @@ typedef unsigned int uint;
 typedef unsigned __int64 uint64;
 typedef unsigned __int32 UID;
 
-enum update_status
+enum updateStatus
 {
 	UPDATE_CONTINUE = 1,
 	UPDATE_STOP,
@@ -37,7 +37,7 @@ enum update_status
 #define WIN_BORDERLESS false
 #define WIN_MAXIMIZE true
 #define WIN_FULLSCREEN_DESKTOP false
-#define VSYNC false
+#define VSYNC true
 #define TITLE "Semat Engine"
 
 // File System -----------
@@ -47,6 +47,14 @@ enum update_status
 #define MATERIALS_PATH "Library/Materials/"
 #define TEXTURES_PATH "Library/Textures/"
 #define SCENES_PATH "Library/Scenes/"
+#define MODELS_PATH "Library/Models/"
+
+// Custom file format file extensions
+#define TEXTURE_EXTENTION ".texture"
+#define MESH_EXTENTION ".mesh"
+#define SCENE_EXTENTION ".scene"
+#define MODEL_EXTENTION ".model"
+#define MATERIAL_EXTENTION ".material"
 
 // Deletes a buffer -----------
 #define RELEASE( x )\

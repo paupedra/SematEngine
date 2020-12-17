@@ -13,8 +13,8 @@ public:
 	~MScene();
 
 	bool Start();
-	update_status Update(float dt) override;
-	update_status PostUpdate(float dt) override;
+	updateStatus Update(float dt) override;
+	updateStatus PostUpdate(float dt) override;
 	bool CleanUp() override;
 	bool Save(JsonNode* config) override;
 

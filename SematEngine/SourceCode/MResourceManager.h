@@ -29,6 +29,8 @@ public:
 	void Import(const char* path);
 	uint ImportFile(const char* newFileInAssets, ResourceType type);
 
+	uint GetResourceUID(const char* metaFile); //Get the metaFile's uid
+
 	uint ImportModelResource(const char* newFileInAssets, ResourceType type); //Import resources from scene/model (mesh,material)
 	uint ImportMaterial(const char* file,uint textureUID,Color color); //Creates RMaterial and saves .material (cff)
 

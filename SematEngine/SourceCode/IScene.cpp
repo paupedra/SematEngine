@@ -17,6 +17,7 @@
 #include "IScene.h"
 #include "IMesh.h"
 #include "ITexture.h"
+#include "IMaterial.h"
 
 #include "RMesh.h"
 #include "RMaterial.h"
@@ -40,7 +41,8 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 
 		
 		//save all the meshes and add them to RScene->meshes (list containing the id of the meshes, models will use this to get their id)
-		Importer::MeshImporter::LoadAllMeshesInScene(scene,resource->meshes);
+		Importer::MeshImporter::ImportAllMeshesInScene(scene,resource->meshes);
+		Importer::MaterialImporter::ImportAllMaterialsInScene(scene, resource->materials);
 
 		//add model
 		ProcessAiNodeModel(scene, rootNode, resource,0); //Process node tree
@@ -137,49 +139,7 @@ void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiN
 
 void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const aiNode* node,RModel* model)
 {
-	UID UID = 0;
-
-	RMaterial* material = new RMaterial();
-	uint index = scene->mMeshes[node->mMeshes[0]]->mMaterialIndex;
-	aiString path;
-
-	std::string fileName, extension;
-
-	aiColor4D color;
-	if (scene->mMaterials[index]->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
-	{
-		material->SetColor(color.r, color.g, color.b, color.a);
-	}
-
-	RTexture* texture = nullptr;
-
-	if (index >= 0)
-	{
-		if (scene->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-		{
-			App->fileSystem->SplitFilePath(path.C_Str(), nullptr, &fileName, &extension);
-
-			std::string assetsFile = "Assets/Textures/";
-			assetsFile += fileName;
-			assetsFile += "." + extension;
-
-			//import resource from model (material)
-			//model->materialUID = App->resourceManager->ImportResourceFromModel(,*scene->mMaterials[index],"name",ResourceType::material);
-
-			//generate texture resource, and get it's id (saving the .texture file an adding it to library if not already there)
-
-			model->materialUID = App->resourceManager->ImportFile(assetsFile.c_str(), ResourceType::texture);
-
-			//generate .material file
-			// = App->resourceManager->ImportMaterial(fileName.c_str(),textureId,material->GetColor());
-
-		}
-		else
-		{
-			LOG("(ERROR) Failed loading node texture: %s in node %s", path.C_Str(), node->mName.C_Str());
-		}
-	}
-	
+	model->materialUID = scene->mMeshes[node->mMeshes[0]]->mMaterialIndex; // must be adapted for various meshes
 }
 
 GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
@@ -209,7 +169,6 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 			RMesh* loadedMesh = (RMesh*)App->resourceManager->RequestResource(node.model.mesheUID);
 
 			newGameObject->AddComponent(cMesh);
-
 			cMesh->SetMesh(loadedMesh);
 		
 		//texture
@@ -217,9 +176,12 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 			{
 				CMaterial* cmaterial = new CMaterial(newGameObject);
 				newGameObject->AddComponent(cmaterial);
-				uint textureUID = App->resourceManager->LoadResource(node.model.materialUID);
-				RTexture* texture = (RTexture*)App->resourceManager->RequestResource(textureUID);
-				cmaterial->SetTexture(texture);
+				//uint textureUID = App->resourceManager->LoadResource(node.model.materialUID); //got the material, now we need to extract the color and the texture uid
+
+				cmaterial->SetMaterial(App->resourceManager->LoadMaterial(node.model.materialUID));
+
+				//RTexture* texture = (RTexture*)App->resourceManager->RequestResource(textureUID);
+				//cmaterial->SetTexture(texture);
 				//cmaterial->SetMaterial(App->resourceManager->LoadMaterial(node.model.materialUID));
 
 			}

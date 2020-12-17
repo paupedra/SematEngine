@@ -20,8 +20,8 @@ public:
 	~MInput();
 
 	bool Init();
-	update_status PreUpdate(float dt) override;
-	update_status Update(float dt) override;
+	updateStatus PreUpdate(float dt) override;
+	updateStatus Update(float dt) override;
 	bool CleanUp();
 
 	KEY_STATE GetKey(int id) const

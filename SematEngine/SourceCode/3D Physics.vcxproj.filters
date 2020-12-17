@@ -483,6 +483,9 @@
     <ClInclude Include="WResources.h">
       <Filter>Source Code\Editor\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="IMaterial.h">
+      <Filter>Source Code\Importer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -766,6 +769,9 @@
     </ClCompile>
     <ClCompile Include="WResources.cpp">
       <Filter>Source Code\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="IMaterial.cpp">
+      <Filter>Source Code\Importer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

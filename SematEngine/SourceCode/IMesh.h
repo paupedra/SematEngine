@@ -22,7 +22,7 @@ namespace Importer
 
 		void LoadNodeMeshModel(const aiScene* scene, const aiNode* node, std::vector<RMesh>& meshes);
 
-		void LoadAllMeshesInScene(const aiScene* scene, std::vector<uint>& meshes); //Save all the meshes in a scene into custom file format and store uid
+		void ImportAllMeshesInScene(const aiScene* scene, std::vector<uint>& meshes); //Save all the meshes in a scene into custom file format and store uid
 	}
 }
 

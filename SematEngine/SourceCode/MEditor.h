@@ -22,8 +22,8 @@ public:
 	~MEditor();
 
 	bool Start();
-	update_status PreUpdate(float dt) override;
-	update_status PostUpdate(float dt) override;
+	updateStatus PreUpdate(float dt) override;
+	updateStatus PostUpdate(float dt) override;
 	bool CleanUp();
 	bool Save(JsonNode* config) override;
 

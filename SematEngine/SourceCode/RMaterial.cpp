@@ -38,13 +38,10 @@ UID RMaterial::GenerateCustomFile(UID textureUID)
 {
 	//save mesh UID and color in Json
 	UID ret = Random::GenerateUID();
-
 	JsonNode root;
-
 	root.AddNumber("Texture UID", textureUID);
 	
 	JsonArray colorJson = root.InitArray("Color");
-
 	colorJson.AddNumber(color.r);
 	colorJson.AddNumber(color.g);
 	colorJson.AddNumber(color.b);
@@ -52,16 +49,14 @@ UID RMaterial::GenerateCustomFile(UID textureUID)
 
 	std::string fileName = MATERIALS_PATH;
 	fileName += std::to_string(ret);
-	fileName += ".material";
+	fileName += MATERIAL_EXTENTION;
 
 	char* buffer;
 	uint size = root.Serialize(&buffer);
 
-
 	App->fileSystem->Save(fileName.c_str(),buffer,size);
 
 	return ret;
-
 }
 
 Color RMaterial::GetColor()const

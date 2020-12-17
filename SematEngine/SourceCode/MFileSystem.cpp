@@ -339,7 +339,7 @@ uint MFileSystem::Load(const char* file, char** buffer) const
 		LOG("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
 
 
-	//LOG("Successfully loaded File: %s",file);
+	LOG("Successfully loaded File: %s",file);
 
 	return ret;
 }
