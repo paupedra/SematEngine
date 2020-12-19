@@ -31,12 +31,11 @@ void RTexture::CleanUp()
 
 UID RTexture::GenerateCustomFile()
 {
-	UID ret = Random::GenerateUID();
 	std::string fileName = TEXTURES_PATH;
-	fileName += std::to_string(ret);
+	fileName += std::to_string(resourceData.UID);
 	fileName += ".texture";
 	Importer::TextureImp::Save(this, fileName.c_str());
-	return ret;
+	return resourceData.UID;
 }
 
 void RTexture::SetId(uint id)

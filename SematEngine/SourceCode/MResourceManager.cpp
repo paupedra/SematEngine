@@ -44,7 +44,7 @@ bool MResourceManager::Init()
 
 bool MResourceManager::Start()
 {
-	LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
+	//LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
 	return true;
 }
 
@@ -99,7 +99,7 @@ uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type
 
 	switch (type)
 	{
-		case ResourceType::texture: Importer::TextureImp::Import(fileBuffer, (RTexture*)resource, size,false); break; //fills out RTexture and save
+		case ResourceType::texture: Importer::TextureImp::Import(fileBuffer, (RTexture*)resource, size); break; //fills out RTexture and save
 		case ResourceType::model: Importer::SceneImporter::ImportSceneResource(fileBuffer,(RScene*)resource,size); break; //Request all necessary files in scene
 		case ResourceType::none: return ret; break;
 	}
@@ -344,7 +344,7 @@ RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when lo
 	std::string path = MATERIALS_PATH;
 	path += std::to_string(uid) + MATERIAL_EXTENTION;
 
-	char* buffer;
+	char* buffer = nullptr;
 	App->fileSystem->Load(path.c_str(), &buffer);
 
 	//we have .material into buffer, now load texture and color into resource and add it to memory
@@ -352,18 +352,29 @@ RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when lo
 
 	//read json
 	JsonNode node(buffer);
-	uint textureUID = node.GetNumber("Texture UID");
 
-	ResourceData textureData = RequestLibraryResource(uid); //texture resource data
+	Color color;	//Color
+	JsonArray colorArray = node.GetArray("Color");
+
+	color.r = colorArray.GetNumber(0, 1);
+	color.g = colorArray.GetNumber(1, 1);
+	color.b = colorArray.GetNumber(2, 1);
+	color.a = colorArray.GetNumber(3, 1);
+
+	material->SetColor(color);
+
+	uint textureUID = node.GetNumber("Texture UID");	//Texture
+
+	ResourceData textureData = RequestLibraryResource(textureUID); //texture resource data
 
 	//load the texture in memory --------------------
-	char* buffer2;
+	char* buffer2 = nullptr;
 
 	uint size = App->fileSystem->Load(textureData.libraryFile.c_str(), &buffer2); //.texture file in buffer
 	
 	RTexture* texture = new RTexture(textureData.UID);
 
-	Importer::TextureImp::Import(buffer2, texture, size,true);
+	Importer::TextureImp::Load(textureData.libraryFile.c_str(),texture);
 
 	resources.emplace(textureData.UID, texture);
 	//------------------------------------------------

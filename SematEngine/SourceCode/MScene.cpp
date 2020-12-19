@@ -45,15 +45,6 @@ bool MScene::Start()
 
 	App->camera->Move(float3(1.0f, 1.0f, 0.0f));
 	//App->camera->LookAt(float3(0, 0, 0));
-
-	//GameObject* obj = new GameObject(rootObject,"camera bro");
-	//rootObject->children.push_back(obj);
-	//obj->AddComponent(new CCamera(obj));
-	//AddGameObject(obj);
-
-	//Importer::SceneImporter::Import("Assets/Mesh/Street environment_V01.FBX");
-
-	//App->resourceManager->ImportFile("Assets/Mesh/Street environment_V01.FBX", ResourceType::scene);
 	
 	return ret;
 }
@@ -101,7 +92,6 @@ bool MScene::CleanUp()
 	{
 		(*item)->CleanUp();
 		RELEASE(*item);
-		
 	}
 
 	gameObjects.clear();
@@ -138,7 +128,6 @@ void MScene::SaveScene()
 
 uint MScene::SaveSceneNode(JsonNode* config, std::vector<GameObject*> gameObjects)
 {
-
 	//gameObjects -----------------------
 	JsonArray gameObjectsJson = config->InitArray("GameObjects");
 

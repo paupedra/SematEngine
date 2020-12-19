@@ -38,6 +38,7 @@ UID RMaterial::GenerateCustomFile(UID textureUID)
 {
 	//save mesh UID and color in Json
 	UID ret = Random::GenerateUID();
+	resourceData.UID = ret;
 	JsonNode root;
 	root.AddNumber("Texture UID", textureUID);
 	

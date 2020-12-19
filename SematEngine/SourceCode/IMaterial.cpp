@@ -42,7 +42,7 @@ uint Importer::MaterialImporter::Import(aiMaterial material)
 
 		if (textureUid == 0)
 		{
-			App->resourceManager->ImportFile(finalPath.c_str(), ResourceType::texture); //Import texture
+			textureUid = App->resourceManager->ImportFile(finalPath.c_str(), ResourceType::texture); //Import texture
 		}
 	}
 

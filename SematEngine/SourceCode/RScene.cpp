@@ -52,7 +52,7 @@ UID RScene::GenerateCustomFile()
 		else
 			modelNode.AddNumber("Mesh ID", 0);
 
-		modelNode.AddNumber("Material ID", (*model).materialUID);
+		modelNode.AddNumber("Material ID", materials[(*model).materialUID]);
 	}
 
 	char* buffer;

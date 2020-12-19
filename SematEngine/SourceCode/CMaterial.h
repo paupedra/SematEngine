@@ -36,6 +36,5 @@ private:
 	const char* path = "";
 public:
 	bool drawTexture = true;
-
 };
 #endif //__COMPONENTTEXTURE__

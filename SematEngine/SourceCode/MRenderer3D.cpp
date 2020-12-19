@@ -268,10 +268,14 @@ void MRenderer3D::DrawMesh(RMesh* mesh, float4x4 transform, CMaterial* material,
 		{
 			if (material->GetTexture() != nullptr)
 			{
-				if (material->GetTexture()->GetId() == 0)
-					glBindTexture(GL_TEXTURE_2D, checkersId);
-				else
+				if (material->GetTexture()->GetId() != 0)
 					glBindTexture(GL_TEXTURE_2D, material->GetTexture()->GetId());
+					//glBindTexture(GL_TEXTURE_2D, checkersId);
+				else
+				{
+					Color color = material->GetMaterial()->GetColor();
+					glColor4f(color.r, color.g, color.b, color.a);
+				}
 			}
 			else
 			{
@@ -510,6 +514,7 @@ bool MRenderer3D::IsObjectInScreen(GameObject* gameObject)
 
 void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, CMaterial* material, bool drawVertexNormals, bool drawBoundingBox, GameObject* gameObject)
 {
+	glDisable(GL_LIGHTING);
 	glColor4f(0.5, 0.5, 1, 1);
 
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -537,11 +542,11 @@ void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, CMaterial* 
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::texture]);
-	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+	//glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::texture]);
+	//glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::normal]);
-	glNormalPointer(GL_FLOAT, 0, nullptr);
+	//glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::normal]);
+	//glNormalPointer(GL_FLOAT, 0, nullptr);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->buffersId[RMesh::vertex]);
 	glVertexPointer(3, GL_FLOAT, 0, nullptr);
@@ -560,6 +565,7 @@ void MRenderer3D::DrawStencilScaled(RMesh* mesh, float4x4 transform, CMaterial* 
 	//------------------------------------------
 
 	glEnable(GL_DEPTH_TEST);
+	SwitchLighting();
 }
 
 void MRenderer3D::SwitchCullFace()

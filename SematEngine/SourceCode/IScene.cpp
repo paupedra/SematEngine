@@ -48,7 +48,7 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 		ProcessAiNodeModel(scene, rootNode, resource,0); //Process node tree
 
 		RScene* sceneResource = (RScene*)resource;
-		sceneResource->GenerateCustomFile(); //return serialized json size
+		sceneResource->GenerateCustomFile();
 
 		LOG("Finished importing: %s",resource->resourceData.assetsFile.c_str());
 	}
@@ -171,20 +171,15 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 			newGameObject->AddComponent(cMesh);
 			cMesh->SetMesh(loadedMesh);
 		
-		//texture
+		
+			CMaterial* cmaterial = new CMaterial(newGameObject);
+			newGameObject->AddComponent(cmaterial);
+
 			if (node.model.materialUID != 0)
 			{
-				CMaterial* cmaterial = new CMaterial(newGameObject);
-				newGameObject->AddComponent(cmaterial);
-				//uint textureUID = App->resourceManager->LoadResource(node.model.materialUID); //got the material, now we need to extract the color and the texture uid
-
 				cmaterial->SetMaterial(App->resourceManager->LoadMaterial(node.model.materialUID));
-
-				//RTexture* texture = (RTexture*)App->resourceManager->RequestResource(textureUID);
-				//cmaterial->SetTexture(texture);
-				//cmaterial->SetMaterial(App->resourceManager->LoadMaterial(node.model.materialUID));
-
 			}
+			
 		}
 	}
 

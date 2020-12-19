@@ -43,7 +43,7 @@ public:
 
 	uint id = 0; //Open gl texture ID
 
-	bool usesTexture = false;
+	bool usesTexture = true;
 
 	const char* path = "";
 };

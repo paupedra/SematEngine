@@ -28,7 +28,7 @@ void Importer::TextureImp::InitDevil()
 	ilutRenderer(ILUT_OPENGL);
 }
 
-RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint size,bool genBuffers)
+RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint size)
 {
 	uint i;
 
@@ -39,72 +39,14 @@ RTexture* Importer::TextureImp::Import(char* buffer, RTexture* newTexture, uint 
 	{
 		ILinfo ImgInfo;
 		iluGetImageInfo(&ImgInfo);
-
-		if (ImgInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-			iluFlipImage();
-
-		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
-		{
-			if(genBuffers)
-				newTexture->SetId(Importer::TextureImp::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
-
-			newTexture->SetHeight(ilGetInteger(IL_IMAGE_HEIGHT));
-			newTexture->SetWidth(ilGetInteger(IL_IMAGE_WIDTH));
-			//newTexture->SetPath(path);
-
-			//LOG("Successfully loaded Texture from: %s", path);
-		}
-		else
-		{
-			//LOG("(ERROR)Could not convert image %s", path);
-		}
 	}
 	else
 	{
 		//LOG("(ERROR) Error loading Image %s", path);
 	}
 
-	return newTexture;
-}
-
-RTexture Importer::TextureImp::Import(const char* path)
-{
-	char* buffer;
-	uint size = App->fileSystem->Load(path, &buffer);
-	
-	RTexture newTexture;
-	uint i;
-	
-	ilGenImages(1,&i);
-	ilBindImage(i);
-
-	if (ilLoadL(IL_TYPE_UNKNOWN,buffer,size))
-	{
-		ILinfo ImgInfo;
-		iluGetImageInfo(&ImgInfo);
-
-		if (ImgInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-			iluFlipImage();
-
-		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
-		{
-			//newTexture->SetId(Importer::TextureImp::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
-			newTexture.SetHeight(ilGetInteger(IL_IMAGE_HEIGHT));
-			newTexture.SetWidth(ilGetInteger(IL_IMAGE_WIDTH));
-			newTexture.SetPath(path);
-
-			LOG("Successfully loaded Texture from: %s", path);
-		}
-		else
-		{
-			LOG("(ERROR)Could not convert image %s", path);
-		}
-	}
-	else
-	{
-		LOG("(ERROR) Error loading Image %s", path);
-	}
-	RELEASE_ARRAY(buffer);
+	//save it in cff with the uid name
+	newTexture->GenerateCustomFile();
 
 	return newTexture;
 }
@@ -137,23 +79,63 @@ uint64 Importer::TextureImp::Save(RTexture* material,const char* path)
 	ILuint size;
 	ILubyte* data;
 
-	char* fileBuffer;
+	char* fileBuffer = nullptr;
 
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);// To pick a specific DXT compression use
 	size = ilSaveL(IL_DDS, nullptr, 0); // Get the size of the data buffer
 
-	if (size > 0) {
+	if (size > 0) 
+	{
 		data = new ILubyte[size]; // allocate data buffer
 		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
 		{
 			fileBuffer = (char*)data;
-
 			App->fileSystem->Save(path,fileBuffer,size);
 		}
 	}
 
-
-	delete[] fileBuffer;
+	RELEASE_ARRAY(fileBuffer);
 
 	return ret;
+}
+
+void Importer::TextureImp::Load(const char* path, RTexture* newTexture, bool genBuffers)
+{
+	char* buffer = nullptr;
+	uint size = App->fileSystem->Load(path, &buffer);
+	uint i;
+
+	ilGenImages(1, &i);
+	ilBindImage(i);
+
+	if (ilLoadL(IL_TYPE_UNKNOWN, buffer, size))
+	{
+		ILinfo ImgInfo;
+		iluGetImageInfo(&ImgInfo);
+
+		if (ImgInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+		{
+			iluFlipImage();
+		}
+
+		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
+		{
+			newTexture->SetId(Importer::TextureImp::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT)));
+			newTexture->SetHeight(ilGetInteger(IL_IMAGE_HEIGHT));
+			newTexture->SetWidth(ilGetInteger(IL_IMAGE_WIDTH));
+			newTexture->SetPath(path);
+
+			LOG("Successfully loaded Texture from: %s", path);
+		}
+		else
+		{
+			LOG("(ERROR)Could not convert image %s", path);
+		}
+	}
+	else
+	{
+		LOG("(ERROR) Error loading Image %s", path);
+	}
+
+	RELEASE_ARRAY(buffer);
 }
