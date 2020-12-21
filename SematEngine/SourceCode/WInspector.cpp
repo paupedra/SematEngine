@@ -23,7 +23,7 @@
 
 #include "Dependecies/imgui/imgui.h"
 #include "Dependecies/MathGeoLib/include/MathGeoLib.h"
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 WInspector::WInspector(bool _active) : Window(_active)
 {

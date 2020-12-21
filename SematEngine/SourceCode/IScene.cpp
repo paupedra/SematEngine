@@ -18,19 +18,19 @@
 #include "IMesh.h"
 #include "ITexture.h"
 #include "IMaterial.h"
+#include "IAnimation.h"
 
 #include "RMesh.h"
 #include "RMaterial.h"
 #include "RScene.h"
 #include "RModel.h"
 
-#include "Dependecies/Assimp/include/mesh.h"
 #include "Dependecies/Assimp/include/cimport.h"
 #include "Dependecies/Assimp/include/scene.h"
 #include "Dependecies/Assimp/include/postprocess.h"
 
 #include "Dependecies/MathGeoLib/include/MathGeoLib.h"
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* resource,uint size)
 {
@@ -43,6 +43,7 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 		//save all the meshes and add them to RScene->meshes (list containing the id of the meshes, models will use this to get their id)
 		Importer::MeshImporter::ImportAllMeshesInScene(scene,resource->meshes);
 		Importer::MaterialImporter::ImportAllMaterialsInScene(scene, resource->materials);
+		Importer::AnimationImporter::ImportAllAnimationsInScene(scene, resource->animations);
 
 		//add model
 		ProcessAiNodeModel(scene, rootNode, resource,0); //Process node tree
@@ -72,6 +73,9 @@ void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiN
 
 		ProcessMaterialModel(scene, node, &model);
 	}
+
+	ProcessAnimationModel(scene, node, &model);
+
 	_scene->models.push_back(model);
 
 	for (int i = 0; i < node->mNumChildren; i++) //Process children
@@ -129,7 +133,7 @@ void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiN
 
 	//only do first mesh for safety
 	if(node->mNumMeshes > 0)
-		model->mesheUID = node->mMeshes[0];
+		model->meshUID = node->mMeshes[0];
 
 	//for (int i = 0; i < node->mNumMeshes; i++)
 	//{
@@ -140,6 +144,11 @@ void Importer::SceneImporter::ProcessMeshesModel(const aiScene* scene, const aiN
 void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const aiNode* node,RModel* model)
 {
 	model->materialUID = scene->mMeshes[node->mMeshes[0]]->mMaterialIndex; // must be adapted for various meshes
+}
+
+void Importer::SceneImporter::ProcessAnimationModel(const aiScene* scene, const aiNode* node, RModel* model)
+{
+
 }
 
 GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
@@ -159,18 +168,18 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 	newGameObject->transform->SetLocalTransform(node.model.transform);
 
 	//mesh
-	if (node.model.mesheUID != 0) //if there is a mesh
+	if (node.model.meshUID != 0) //if there is a mesh
 	{
 		CMesh* cMesh = new CMesh(newGameObject);
 
-		if (node.model.mesheUID != 0)
+		if (node.model.meshUID != 0)
 		{
-			App->resourceManager->LoadModelResource(node.model.mesheUID, ResourceType::mesh);
-			RMesh* loadedMesh = (RMesh*)App->resourceManager->RequestResource(node.model.mesheUID);
+			App->resourceManager->LoadModelResource(node.model.meshUID, ResourceType::mesh);
+			RMesh* loadedMesh = (RMesh*)App->resourceManager->RequestResource(node.model.meshUID);
+			loadedMesh->resourceData.name = node.model.name;
 
 			newGameObject->AddComponent(cMesh);
 			cMesh->SetMesh(loadedMesh);
-		
 		
 			CMaterial* cmaterial = new CMaterial(newGameObject);
 			newGameObject->AddComponent(cmaterial);

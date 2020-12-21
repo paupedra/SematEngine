@@ -15,7 +15,7 @@
 #include "CCamera.h"
 
 #include "Dependecies/SDL/include/SDL.h"
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 #define _USE_MATH_DEFINES
 

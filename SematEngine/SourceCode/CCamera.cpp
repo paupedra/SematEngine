@@ -9,7 +9,7 @@
 #include "CCamera.h"
 #include "CTransform.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 {

@@ -23,5 +23,6 @@ public:
 	std::vector<RModel> models;
 	std::vector<UID> meshes; //uids of the fbx meshes, RModels will reference this list
 	std::vector<UID> materials;
+	std::vector<UID> animations;
 };
 #endif //__RESOURCESCENE_H__

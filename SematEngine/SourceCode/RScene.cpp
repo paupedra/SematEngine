@@ -47,8 +47,8 @@ UID RScene::GenerateCustomFile()
 			transformArray.AddNumber((*model).transform.ptr()[i]);
 		}
 
-		if((*model).mesheUID != -1)
-			modelNode.AddNumber("Mesh ID", meshes[(*model).mesheUID]); //Loop to support various meshes
+		if((*model).meshUID != -1)
+			modelNode.AddNumber("Mesh ID", meshes[(*model).meshUID]); //Loop to support various meshes
 		else
 			modelNode.AddNumber("Mesh ID", 0);
 

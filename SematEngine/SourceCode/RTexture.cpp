@@ -5,7 +5,7 @@
 
 #include "ITexture.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 #include <gl/GL.h>
 

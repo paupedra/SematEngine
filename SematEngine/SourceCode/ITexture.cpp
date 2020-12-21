@@ -17,7 +17,7 @@
 #pragma comment (lib, "Dependecies/Devil/libx86/ILU.lib")
 #pragma comment (lib, "Dependecies/Devil/libx86/ILUT.lib")
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 void Importer::TextureImp::InitDevil()
 {

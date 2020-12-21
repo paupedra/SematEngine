@@ -10,7 +10,7 @@
 
 #include "RMesh.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 GameObject::GameObject(const char* name) : name(name)
 {

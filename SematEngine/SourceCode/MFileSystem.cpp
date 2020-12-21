@@ -14,7 +14,7 @@
 
 #pragma comment( lib, "Dependecies/PhysFS/libx86/physfs.lib" )
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 MFileSystem::MFileSystem(bool start_enabled) //: Module("FileSystem", true)
 {
@@ -80,6 +80,7 @@ void MFileSystem::CreateLibraryDirectories()
 	CreateDir(MATERIALS_PATH);
 	CreateDir(SCENES_PATH);
 	CreateDir(MODELS_PATH);
+	CreateDir(ANIMATIONS_PATH);
 }
 
 // Add a new zip file or folder

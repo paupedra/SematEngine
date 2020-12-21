@@ -48,6 +48,7 @@ enum updateStatus
 #define TEXTURES_PATH "Library/Textures/"
 #define SCENES_PATH "Library/Scenes/"
 #define MODELS_PATH "Library/Models/"
+#define ANIMATIONS_PATH "Library/Animations/"
 
 // Custom file format file extensions
 #define TEXTURE_EXTENTION ".texture"
@@ -73,7 +74,7 @@ enum updateStatus
            delete[] x;\
 	       x = nullptr;\
 		 }\
-	 }
+	}
 
 class Application;
 

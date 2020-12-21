@@ -9,7 +9,7 @@
 
 #include "Dependecies/imgui/imgui.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 WResources::WResources(bool _active) : Window(_active)
 {
@@ -67,6 +67,7 @@ void WResources::Draw()
 	{
 		ImGui::Separator();
 		ImGui::Text("UID: %d", (*resource).second->resourceData.UID);
+		ImGui::Text("Name: %s", (*resource).second->resourceData.name.c_str());
 		ImGui::Text("Reference Count: %d", (*resource).second->resourceData.referenceCount);
 	}
 

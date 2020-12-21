@@ -16,6 +16,7 @@
 #include "RTexture.h"
 #include "RScene.h"
 #include "RModel.h"
+#include "RAnimation.h"
 
 #include "IScene.h"
 #include "ITexture.h"
@@ -23,7 +24,7 @@
 
 #include "MResourceManager.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 MResourceManager::MResourceManager(bool start_enabled) : Module(start_enabled)
 {
@@ -45,6 +46,7 @@ bool MResourceManager::Init()
 bool MResourceManager::Start()
 {
 	//LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
+	//LoadResourceFromMeta("Assets/Mesh/aniTest.fbx.meta");
 	return true;
 }
 

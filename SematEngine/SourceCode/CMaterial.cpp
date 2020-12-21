@@ -15,7 +15,7 @@
 #include "RTexture.h"
 
 #include "Dependecies/imgui/imgui.h"
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 CMaterial::CMaterial(GameObject* owner) : Component(ComponentType::MATERIAL, owner)
 {

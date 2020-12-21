@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "Application.h"
 #include "Globals.h"
-#include "Dependecies/mmgr/mmgr.h"
+
 
 #include "Dependecies/SDL/include/SDL.h"
 #pragma comment( lib, "Dependecies/SDL/libx86/SDL2.lib" )
@@ -9,6 +9,8 @@
 
 #include "Dependecies/Brofiler/Brofiler.h"
 #pragma comment (lib, "Dependecies/Brofiler/ProfilerCore32.lib")
+
+//#include "Dependecies/mmgr/mmgr.h"
 
 enum main_states
 {

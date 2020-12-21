@@ -16,7 +16,7 @@
 
 #pragma comment (lib, "Dependecies/Assimp/libx86/assimp.lib")
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
 {
@@ -89,6 +89,14 @@ std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
     return ret;
 }
 
+RMesh Importer::MeshImporter::ProcessMesh(const aiScene* scene, const aiNode* node)
+{
+    RMesh newMesh;
+
+
+    return newMesh;
+}
+
 void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* node, std::vector<RMesh*> &meshes)
 {
     for (int i = 0; i < node->mNumMeshes; i++)
@@ -141,8 +149,8 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
         newMesh->aabb.SetNegativeInfinity();
         newMesh->aabb.Enclose((float3*)newMesh->vertices, newMesh->buffersSize[RMesh::vertex]);
 
-         App->renderer3D->GenerateBuffers(newMesh); //Crashes
-         meshes.push_back(newMesh);
+        App->renderer3D->GenerateBuffers(newMesh); //Crashes
+        meshes.push_back(newMesh);
     }
 }
 

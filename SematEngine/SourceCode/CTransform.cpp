@@ -7,7 +7,7 @@
 
 #include "Dependecies/imgui/imgui.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 CTransform::CTransform(GameObject* owner) : Component(ComponentType::TRANSFORM,owner)
 {

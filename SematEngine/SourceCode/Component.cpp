@@ -1,7 +1,7 @@
 #include "Component.h"
 #include "GameObject.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 Component::Component(ComponentType type) : type(type)
 {

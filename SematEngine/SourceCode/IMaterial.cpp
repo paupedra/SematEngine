@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Resource.h"
+#include "Random.h"
 
 #include "MResourceManager.h"
 #include "MFileSystem.h"
@@ -19,7 +20,7 @@
 uint Importer::MaterialImporter::Import(aiMaterial material)
 {
 	uint textureUid = 0;
-	RMaterial newMaterial;
+	RMaterial newMaterial(Random::GenerateUID());
 
 	aiColor4D color;
 	if (material.Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)

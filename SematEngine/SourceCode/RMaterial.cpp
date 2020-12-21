@@ -8,7 +8,7 @@
 #include "RMaterial.h"
 #include "RTexture.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 RMaterial::RMaterial()
 {
@@ -37,8 +37,7 @@ void RMaterial::CleanUp()
 UID RMaterial::GenerateCustomFile(UID textureUID)
 {
 	//save mesh UID and color in Json
-	UID ret = Random::GenerateUID();
-	resourceData.UID = ret;
+	UID ret = resourceData.UID;
 	JsonNode root;
 	root.AddNumber("Texture UID", textureUID);
 	

@@ -176,10 +176,9 @@
     <ClInclude Include="Dependecies\MathGeoLib\include\Math\TransformOps.h" />
     <ClInclude Include="Dependecies\MathGeoLib\include\Math\vec2d.h" />
     <ClInclude Include="Dependecies\MathGeoLib\include\Time\Clock.h" />
-    <ClInclude Include="Dependecies\mmgr\mmgr.h" />
-    <ClInclude Include="Dependecies\mmgr\nommgr.h" />
     <ClInclude Include="Dependecies\parson\parson.h" />
     <ClInclude Include="glmath.h" />
+    <ClInclude Include="IAnimation.h" />
     <ClInclude Include="IMaterial.h" />
     <ClInclude Include="MCamera3D.h" />
     <ClInclude Include="MEditor.h" />
@@ -198,6 +197,7 @@
     <ClInclude Include="MResourceManager.h" />
     <ClInclude Include="PathNode.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="RAnimation.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RMaterial.h" />
     <ClInclude Include="RMesh.h" />
@@ -276,9 +276,9 @@
     <ClCompile Include="Dependecies\MathGeoLib\include\Math\SSEMath.cpp" />
     <ClCompile Include="Dependecies\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Dependecies\MathGeoLib\include\Time\Clock.cpp" />
-    <ClCompile Include="Dependecies\mmgr\mmgr.cpp" />
     <ClCompile Include="Dependecies\parson\parson.c" />
     <ClCompile Include="glmath.cpp" />
+    <ClCompile Include="IAnimation.cpp" />
     <ClCompile Include="IMaterial.cpp" />
     <ClCompile Include="MCamera3D.cpp" />
     <ClCompile Include="MEditor.cpp" />
@@ -296,6 +296,7 @@
     <ClCompile Include="MWindow.cpp" />
     <ClCompile Include="MResourceManager.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="RAnimation.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="RMaterial.cpp" />
     <ClCompile Include="RMesh.cpp" />

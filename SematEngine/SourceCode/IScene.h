@@ -22,7 +22,7 @@ namespace Importer
 		const aiNode* ProcessTransformModel(const aiNode* node, RModel* model);
 		void ProcessMeshesModel(const aiScene* scene, const aiNode* node, RModel* model, RScene* _scene);
 		void ProcessMaterialModel(const aiScene* scene, const aiNode* node, RModel* model);
-
+		void ProcessAnimationModel(const aiScene* scene, const aiNode* node, RModel* model);
 		GameObject* LoadSceneResource(ModelNode node); //Loads scene into memory and hierarchy
 
 		//void Load(); //Load buffer from custom format file and store into mesh

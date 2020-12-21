@@ -21,7 +21,7 @@ struct RModel //This resource holds it's meshes/materials uids
 		name = node.GetString("Name");
 		uid = node.GetNumber("UID");
 		parentUID = node.GetNumber("Parent UID");
-		mesheUID = node.GetNumber("Mesh ID");
+		meshUID = node.GetNumber("Mesh ID");
 		materialUID = node.GetNumber("Material ID");
 
 		//transform
@@ -38,8 +38,9 @@ struct RModel //This resource holds it's meshes/materials uids
 	UID uid = 0; //The resource UID
 	UID parentUID = 0;
 
-	uint mesheUID = -1; //Position in the vector of meshes uid of the RScene (much like assimp does) -1 if no mesh
+	UID meshUID = -1; //Position in the vector of meshes uid of the RScene (much like assimp does) -1 if no mesh
 	UID materialUID = 0;
+	UID animationUID = 0;
 };
 
 struct ModelNode //Used to stre the info of a .scene file in a tree to be interpreted later

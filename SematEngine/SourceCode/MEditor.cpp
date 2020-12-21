@@ -30,7 +30,7 @@
 #include "Dependecies/imgui/imgui_impl_sdl.h"
 #include "Dependecies/imgui/imgui_impl_opengl3.h"
 
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 {

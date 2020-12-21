@@ -42,7 +42,7 @@
 #pragma comment (lib, "Dependecies/Glew/libx86/glew32.lib")
 
 #include "Dependecies/MathGeoLib/include/MathGeoLib.h"
-#include "Dependecies/mmgr/mmgr.h"
+//#include "Dependecies/mmgr/mmgr.h"
 
 MRenderer3D::MRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {

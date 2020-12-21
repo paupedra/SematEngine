@@ -102,12 +102,6 @@
     <ClInclude Include="Dependecies\Glew\include\wglew.h">
       <Filter>Dependencies\Glew</Filter>
     </ClInclude>
-    <ClInclude Include="Dependecies\mmgr\mmgr.h">
-      <Filter>Dependencies\mmgr</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependecies\mmgr\nommgr.h">
-      <Filter>Dependencies\mmgr</Filter>
-    </ClInclude>
     <ClInclude Include="Dependecies\parson\parson.h">
       <Filter>Dependencies\parson</Filter>
     </ClInclude>
@@ -486,6 +480,12 @@
     <ClInclude Include="IMaterial.h">
       <Filter>Source Code\Importer</Filter>
     </ClInclude>
+    <ClInclude Include="RAnimation.h">
+      <Filter>Source Code\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="IAnimation.h">
+      <Filter>Source Code\Importer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -505,9 +505,6 @@
     </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Code\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependecies\mmgr\mmgr.cpp">
-      <Filter>Dependencies\mmgr</Filter>
     </ClCompile>
     <ClCompile Include="Dependecies\parson\parson.c">
       <Filter>Dependencies\parson</Filter>
@@ -771,6 +768,12 @@
       <Filter>Source Code\Editor\Windows</Filter>
     </ClCompile>
     <ClCompile Include="IMaterial.cpp">
+      <Filter>Source Code\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="RAnimation.cpp">
+      <Filter>Source Code\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="IAnimation.cpp">
       <Filter>Source Code\Importer</Filter>
     </ClCompile>
   </ItemGroup>

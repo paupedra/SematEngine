@@ -12,6 +12,7 @@ enum class ResourceType
 	mesh,
 	model,
 	scene,
+	animation,
 	none
 };
 
