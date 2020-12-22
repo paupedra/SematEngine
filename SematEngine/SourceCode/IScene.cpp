@@ -64,6 +64,7 @@ void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiN
 	RModel model(Random::GenerateUID());
 	
 	model.parentUID = parentUID;
+	model.name = node->mName.C_Str();
 
 	node = ProcessTransformModel(node, &model);
 
@@ -148,7 +149,7 @@ void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const a
 
 void Importer::SceneImporter::ProcessAnimationModel(const aiScene* scene, const aiNode* node, RModel* model)
 {
-
+	//node.
 }
 
 GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)

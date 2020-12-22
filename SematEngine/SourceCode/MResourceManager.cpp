@@ -133,6 +133,7 @@ Resource* MResourceManager::CreateNewResource(const char* assetsFile, ResourceTy
 		case ResourceType::mesh:	 ret = (Resource*) new RMesh(uid); break;
 		case ResourceType::material: ret = (Resource*) new RMaterial(uid); break;
 		case ResourceType::model:	 ret = (Resource*) new RScene(uid); break;
+		case ResourceType::animation: ret = (Resource*) new RAnimation(uid); break;
 	}
 	if (ret != nullptr)
 	{
@@ -153,7 +154,6 @@ uint MResourceManager::ImportMaterial(const char* file,uint textureUID, Color co
 	resource->SetColor(color);
 	
 	resource->GenerateCustomFile(textureUID); //cff with the color and texture id
-	
 
 	//SaveResource(resource,false);
 
@@ -213,6 +213,11 @@ std::string MResourceManager::GenerateLibraryFile(Resource* resource)
 			path += std::to_string(resource->GetUID());
 			path += MATERIAL_EXTENTION;
 			break;
+		case ResourceType::animation:
+			path = ANIMATIONS_PATH;
+			path += std::to_string(resource->GetUID());
+			path += ANIMATION_EXTENSION;
+			break;
 	}
 	return path;
 }
@@ -233,14 +238,9 @@ UID MResourceManager::LoadResource(UID uid)
 	
 	switch (resource.type)
 	{
-		case ResourceType::model: 
-			LoadScene(resource);
+		case ResourceType::model: LoadScene(resource);
 			break;
-		case ResourceType::mesh:
-			LoadMesh(uid);
-			break;
-		case ResourceType::texture:
-			LoadTexture(resource);
+		case ResourceType::texture: LoadTexture(resource);
 			return uid;
 			break;
 		case ResourceType::none:
@@ -274,6 +274,9 @@ UID MResourceManager::LoadModelResource(UID uid,ResourceType type)
 			break;
 		case ResourceType::material:
 			LoadMaterial(uid);
+			break;
+		case ResourceType::animation:
+			LoadAnimation(uid);
 			break;
 	}
 	return ret;
@@ -387,6 +390,11 @@ RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when lo
 	RELEASE_ARRAY(buffer2);
 
 	return material;
+}
+
+void MResourceManager::LoadAnimation(UID uid)
+{
+
 }
 
 void MResourceManager::LoadTexture(ResourceData resource)

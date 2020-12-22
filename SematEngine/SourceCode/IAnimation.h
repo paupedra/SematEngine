@@ -1,9 +1,15 @@
 #include "Globals.h"
 #include <vector>
+#include <map>
 
 struct aiScene;
 struct aiAnimation;
 class RAnimation;
+struct Bone;
+
+#include "Dependecies/MathGeoLib/include/Math/float3.h"
+#include "Dependecies/MathGeoLib/include/Math/Quat.h"
+
 
 namespace Importer
 {
@@ -13,8 +19,14 @@ namespace Importer
 
 		void ImportAllAnimationsInScene(const aiScene* scene, std::vector<uint>& animations);
 
-		uint64 Save(const RAnimation animation, const char* name);	//Store RAnimation into cff
+		uint64 Save(RAnimation* animation, const char* name);	//Store RAnimation into cff
 
-		void Load(const char* fileBuffer, RAnimation* mesh); //Load buffer from custom format file and store into RAnimation
+		void SaveBones(char** cursor, Bone bone);
+
+		void Load(const char* fileBuffer, RAnimation* animation); //Load buffer from custom format file and store into RAnimation
+
+		std::map<double, float3> LoadVector3Key(const char** cursor);
+
+		std::map<double, Quat> LoadQuatKey(const char** cursor);
 	}
 }

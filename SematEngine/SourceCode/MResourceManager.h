@@ -43,6 +43,7 @@ public:
 
 	void LoadScene(ResourceData resource); //Load scene from library file
 	void LoadMesh(UID uid);
+	void LoadAnimation(UID uid);
 	RMaterial* LoadMaterial(UID uid);
 	void LoadTexture(ResourceData resource);
 

@@ -1,9 +1,14 @@
+#include "Application.h"
+#include "Globals.h"
 #include "Random.h"
 #include "Resource.h"
+#include "Config.h"
 
-#include "IAnimation.h"
+#include "MFileSystem.h"
 
 #include "RAnimation.h"
+
+#include "IAnimation.h"
 
 #include "Dependecies/Assimp/include/cimport.h"
 #include "Dependecies/Assimp/include/scene.h"
@@ -27,34 +32,24 @@ uint Importer::AnimationImporter::Import(const aiAnimation* animation)
 		int p;
 		for ( p = 0 ; p < animation->mChannels[i]->mNumPositionKeys; p++) //process position keys
 		{
-			VectorKey newKey;
 			aiVector3D position = animation->mChannels[i]->mPositionKeys[p].mValue;
-			newKey.value = float3(position.x, position.y, position.z);
-			newKey.time = animation->mChannels[i]->mPositionKeys[p].mTime;
-			newBone.positionKeys.push_back(newKey);
+			newBone.positionKeys.emplace(animation->mChannels[i]->mPositionKeys[p].mTime, float3(position.x, position.y, position.z));
 		}
-
 		for (p = 0; p < animation->mChannels[i]->mNumScalingKeys; p++) 	//process scale keys
 		{
-			VectorKey newKey;
 			aiVector3D scale = animation->mChannels[i]->mScalingKeys[p].mValue;
-			newKey.value = float3(scale.x, scale.y, scale.z);
-			newKey.time = animation->mChannels[i]->mScalingKeys[p].mTime;
-			newBone.scaleKeys.push_back(newKey);
+			newBone.scaleKeys.emplace(animation->mChannels[i]->mScalingKeys[p].mTime, float3(scale.x, scale.y, scale.z));
 		}
-		
 		for (p = 0; p < animation->mChannels[i]->mNumRotationKeys; p++)	//process quaternion keys
 		{
-			QuaternionKey newKey;
 			aiQuaternion rotation = animation->mChannels[i]->mRotationKeys[p].mValue;
-			newKey.value = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
-			newKey.time = animation->mChannels[i]->mScalingKeys[p].mTime;
-			newBone.quaternionKeys.push_back(newKey);
+			newBone.quaternionKeys.emplace(animation->mChannels[i]->mRotationKeys[p].mTime, Quat(rotation.x, rotation.y, rotation.z, rotation.w));
 		}
 
 		newAnimation.bones.push_back(newBone);
 	}
 	//save in cff
+	newAnimation.GenerateCustomFile();
 
 	LOG("Finished importing animation: %s", newAnimation.name.c_str());
 
@@ -71,13 +66,180 @@ void Importer::AnimationImporter::ImportAllAnimationsInScene(const aiScene* scen
 	}
 }
 
-uint64 Importer::AnimationImporter::Save(const RAnimation animation, const char* name)
+uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name)
 {
+	//save basic animation data
+	uint size = sizeof(uint) + sizeof(double) + sizeof(double);
+
+	//calc size iterating channels
+	uint i;
+	for (i = 0; i < animation->bones.size(); i++)
+	{
+		size += sizeof(char) * animation->bones[i].name.size();
+		size += sizeof(uint) * 3; //sizes of maps
+		size += (sizeof(double) + sizeof(float)*3) * animation->bones[i].positionKeys.size();
+		size += (sizeof(double) + sizeof(float) * 3) * animation->bones[i].scaleKeys.size();
+		size += (sizeof(double) + sizeof(float) * 4) * animation->bones[i].quaternionKeys.size();
+	}
+
+	char* buffer = nullptr;
+	buffer = new char[size];
+	char* cursor = buffer;
+
+	uint bonesSize[1] = { animation->bones.size() };
+
+	uint bytes = sizeof(bonesSize); //size of bones
+	memcpy(cursor, bonesSize, bytes);
+	cursor += bytes;
+
+	double times[2] = { animation->duration, animation->speed };
+
+	bytes = sizeof(times); //duration + speed
+	memcpy(cursor, times, bytes);
+	cursor += bytes;
+
+	for (i = 0;i< animation->bones.size(); i++)
+	{
+		SaveBones(&cursor, animation->bones[i] );
+	}
+	
+	LOG("Saved animation in file: %s", name);
+
+	App->fileSystem->Save(name, buffer, size); //idk if I like this being done here...
+
+	RELEASE_ARRAY(buffer);
 
 	return 0;
 }
 
-void Importer::AnimationImporter::Load(const char* fileBuffer, RAnimation* mesh)
+void Importer::AnimationImporter::SaveBones(char** cursor, Bone bone)
 {
+	uint nameSize[1] = { bone.name.size() };
+	memcpy(*cursor, nameSize, sizeof(uint));
+	*cursor += sizeof(uint);
 
+	memcpy(*cursor, &bone.name, sizeof(char) * nameSize[0]);
+	*cursor += sizeof(char) * nameSize[0];
+
+	uint boneSizes[3] = { bone.positionKeys.size() , bone.scaleKeys.size(), bone.quaternionKeys.size() };
+
+	memcpy(*cursor, boneSizes, sizeof(boneSizes));
+	*cursor += sizeof(boneSizes);
+
+	//position loop
+	std::map<double, float3>::const_iterator it;
+	for (it = bone.positionKeys.begin(); it != bone.positionKeys.end(); it++)
+	{
+		memcpy(*cursor, &it->second, sizeof(float)*3);
+		*cursor += sizeof(float) * 3;
+
+		memcpy(*cursor, &it->first, sizeof(double));
+		*cursor += sizeof(double);
+	}
+	//scale loop
+	for (it = bone.scaleKeys.begin(); it != bone.scaleKeys.end(); it++)
+	{
+		memcpy(*cursor, &it->second, sizeof(float) * 3);
+		*cursor += sizeof(float) * 3;
+
+		memcpy(*cursor, &it->first, sizeof(double));
+		*cursor += sizeof(double);
+	}
+	//quat loop
+	std::map<double, Quat>::const_iterator it2;
+	for (it2 = bone.quaternionKeys.begin(); it2 != bone.quaternionKeys.end(); it2++)
+	{
+		memcpy(*cursor, &it2->second, sizeof(float)*4);
+		*cursor += sizeof(float) * 4;
+
+		memcpy(*cursor, &it2->first, sizeof(double));
+		*cursor += sizeof(double);
+	}
+}
+
+void Importer::AnimationImporter::Load(const char* fileBuffer, RAnimation* animation)
+{
+	//read basic data
+	const char* cursor = fileBuffer;
+
+	uint bonesSize[1];
+	uint bytes = sizeof(bonesSize);
+	memcpy(bonesSize, cursor, bytes);
+	cursor += bytes;
+
+	double time[2];
+	bytes = sizeof(time);
+	memcpy(time, cursor, bytes);
+	cursor += bytes;
+
+	animation->duration = time[0];
+	animation->speed = time[1];
+
+	for (int i = 0; i < bonesSize[0]; i++)
+	{
+		uint boneSizes[3];
+
+		bytes = sizeof(boneSizes);
+		memcpy(boneSizes, cursor, bytes);
+		cursor += bytes;
+
+		int p;
+		for (p = 0; p < boneSizes[0]; p++)
+		{
+			std::map<double, float3> pos = LoadVector3Key(&cursor);
+			animation->bones[i].positionKeys.emplace(pos.begin()->first, pos.begin()->second);
+		}
+		for (p = 0; p < boneSizes[1]; p++)
+		{
+			std::map<double, float3> scale = LoadVector3Key(&cursor);
+			animation->bones[i].scaleKeys.emplace(scale.begin()->first, scale.begin()->second);
+		}
+		for (p = 0; p < boneSizes[2]; p++)
+		{
+			std::map<double, Quat> rot = LoadQuatKey(&cursor);
+			animation->bones[i].quaternionKeys.emplace(rot.begin()->first, rot.begin()->second);
+		}
+	}
+}
+
+std::map<double,float3> Importer::AnimationImporter::LoadVector3Key(const char** cursor)
+{
+	std::map<double, float3> ret;
+	float vector[3];
+
+	uint bytes = sizeof(float) * 3;
+	memcpy(vector, cursor, bytes);
+	cursor += bytes;
+
+	double time[1];
+
+	bytes = sizeof(double);
+	memcpy(time, cursor, bytes);
+	cursor += bytes;
+
+	float3 vector3 = float3(vector[0], vector[1], vector[2]);
+	ret.emplace(time[0], vector3);
+
+	return ret;
+}
+
+std::map<double, Quat> Importer::AnimationImporter::LoadQuatKey(const char** cursor)
+{
+	std::map<double, Quat> ret;
+	float vector[4];
+
+	uint bytes = sizeof(float) * 4;
+	memcpy(vector, cursor, bytes);
+	cursor += bytes;
+
+	double time[1];
+
+	bytes = sizeof(double);
+	memcpy(time, cursor, bytes);
+	cursor += bytes;
+
+	Quat quat = Quat(vector[0], vector[1], vector[2],vector[3]);
+	ret.emplace(time[0], quat);
+
+	return ret;
 }

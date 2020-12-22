@@ -56,6 +56,7 @@ enum updateStatus
 #define SCENE_EXTENTION ".scene"
 #define MODEL_EXTENTION ".model"
 #define MATERIAL_EXTENTION ".material"
+#define ANIMATION_EXTENSION ".animation"
 
 // Deletes a buffer -----------
 #define RELEASE( x )\

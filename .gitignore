@@ -387,3 +387,4 @@ SematEngine/Engine/Library/Meshes/898335407
 *.material
 *.model
 *.texture
+*.animation

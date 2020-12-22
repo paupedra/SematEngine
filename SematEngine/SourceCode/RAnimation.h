@@ -3,27 +3,17 @@
 
 class Resource;
 #include <vector>
+#include <map>
+
 #include "Dependecies/MathGeoLib/include/Math/float3.h"
 #include "Dependecies/MathGeoLib/include/Math/Quat.h"
-
-struct VectorKey
-{
-	double time = 0;
-	float3 value = float3::zero;
-};
-
-struct QuaternionKey
-{
-	double time = 0;
-	Quat value = Quat::identity;
-};
 
 struct Bone
 {
 	std::string name;
-	std::vector<VectorKey> positionKeys;
-	std::vector<VectorKey> scaleKeys;
-	std::vector<QuaternionKey> quaternionKeys;
+	std::map<double, float3> positionKeys; //double is time
+	std::map<double, float3> scaleKeys;
+	std::map<double, Quat> quaternionKeys;
 };
 
 class RAnimation : public Resource
@@ -36,12 +26,12 @@ public:
 
 	void CleanUp() override;
 
-	UID GenerateCustomFile(UID textureUID);
+	UID GenerateCustomFile();
 
 public:
-	std::string name;
-	double duration = 0;	//Ticks
-	double speed = 1;		//Ticks per second
 	std::vector<Bone> bones;
+	std::string name;
+	double duration = 0;		//Ticks
+	double speed = 1;			//Ticks per second
 };
 #endif //__RESOURCEANIMATION_H__
