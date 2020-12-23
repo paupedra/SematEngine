@@ -9,6 +9,7 @@
 RScene::RScene()
 {
 	resourceData.type = ResourceType::model;
+	
 }
 
 RScene::RScene(uint UID) : Resource(UID)
@@ -29,6 +30,8 @@ void RScene::CleanUp()
 UID RScene::GenerateCustomFile()
 {
 	JsonNode node;
+
+	node.AddNumber("Animation Collection",animationsCollection.GetUID());
 
 	JsonArray modelsJson = node.InitArray("Models");
 

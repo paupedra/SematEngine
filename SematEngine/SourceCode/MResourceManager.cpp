@@ -17,10 +17,12 @@
 #include "RScene.h"
 #include "RModel.h"
 #include "RAnimation.h"
+#include "RAnimationCollection.h"
 
 #include "IScene.h"
 #include "ITexture.h"
 #include "IMesh.h"
+#include "IAnimation.h"
 
 #include "MResourceManager.h"
 
@@ -76,7 +78,7 @@ void MResourceManager::Import(const char* path)
 	}
 }
 
-uint MResourceManager::ImportFile(const char* newFileInAssets, ResourceType type)
+uint MResourceManager::ImportFileFromAssets(const char* newFileInAssets, ResourceType type)
 {
 	int ret = 0;
 
@@ -129,11 +131,12 @@ Resource* MResourceManager::CreateNewResource(const char* assetsFile, ResourceTy
 
 	switch (type) 
 	{
-		case ResourceType::texture:  ret = (Resource*) new RTexture(uid); break;
-		case ResourceType::mesh:	 ret = (Resource*) new RMesh(uid); break;
-		case ResourceType::material: ret = (Resource*) new RMaterial(uid); break;
-		case ResourceType::model:	 ret = (Resource*) new RScene(uid); break;
-		case ResourceType::animation: ret = (Resource*) new RAnimation(uid); break;
+		case ResourceType::texture:				ret = (Resource*) new RTexture(uid); break;
+		case ResourceType::mesh:				ret = (Resource*) new RMesh(uid); break;
+		case ResourceType::material:			ret = (Resource*) new RMaterial(uid); break;
+		case ResourceType::model:				ret = (Resource*) new RScene(uid); break;
+		case ResourceType::animation:			ret = (Resource*) new RAnimation(uid); break;
+		case ResourceType::animationCollection: ret = (Resource*) new RAnimationCollection(uid); break;
 	}
 	if (ret != nullptr)
 	{
@@ -145,19 +148,24 @@ Resource* MResourceManager::CreateNewResource(const char* assetsFile, ResourceTy
 	return ret;
 }
 
-uint MResourceManager::ImportMaterial(const char* file,uint textureUID, Color color) //create material resource and set it up
+uint MResourceManager::ImportMaterial(const char* file, uint textureUID, Color color) //create material resource and set it up
 {
 	RMaterial* resource = (RMaterial*)CreateNewResource(file, ResourceType::material);
 	uint uid = resource->resourceData.UID;
 
 	//add color 
 	resource->SetColor(color);
-	
+
 	resource->GenerateCustomFile(textureUID); //cff with the color and texture id
 
 	//SaveResource(resource,false);
 
 	return uid;
+}
+
+uint MResourceManager::ImportAnimationCollection()
+{
+	return 0;
 }
 
 const char* MResourceManager::GenerateMetaFile(Resource* resource)
@@ -284,8 +292,8 @@ UID MResourceManager::LoadModelResource(UID uid,ResourceType type)
 
 void MResourceManager::LoadScene(ResourceData resource)
 {
-	//Load .scene file and go through all the models and load and add to memory resources
-	char* buffer;
+	//Load .model file and go through all the models and load and add to memory resources
+	char* buffer = nullptr;
 	App->fileSystem->Load(resource.libraryFile.c_str(), &buffer);
 
 	JsonNode node(buffer);
@@ -321,7 +329,12 @@ void MResourceManager::LoadScene(ResourceData resource)
 		}
 	}
 
-	Importer::SceneImporter::LoadSceneResource(*root); //Create the game objects using the tree structure, passing the root
+	Importer::SceneImporter::LoadSceneResource(*root,0); //Create the game objects using the tree structure, passing the root
+
+	//Load the animations
+	uint animationCollection = node.GetNumber("Animation Collection");
+
+	//Importer::AnimationImporter::LoadAnimationResource();
 
 	RELEASE_ARRAY(buffer);
 }
@@ -527,7 +540,7 @@ void MResourceManager::ImportAllFoundAssets(const char* basePath)
 		{
 			std::string tmp1 = basePath;
 			tmp1 += "/" + (*i);
-			int ret = ImportFile(tmp1.c_str(), (ResourceType)GetResourceTypeFromPath(tmp1.c_str()));
+			int ret = ImportFileFromAssets(tmp1.c_str(), (ResourceType)GetResourceTypeFromPath(tmp1.c_str()));
 			LOG("Hello I'm here %d",ret);
 		}
 	}

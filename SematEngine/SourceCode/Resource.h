@@ -13,6 +13,7 @@ enum class ResourceType
 	model,
 	scene,
 	animation,
+	animationCollection,
 	none
 };
 
@@ -32,6 +33,7 @@ class Resource
 public:
 	Resource();
 	Resource(uint UID);
+	Resource(uint UID, ResourceType type);
 	~Resource();
 	virtual void CleanUp()=0;
 

@@ -486,6 +486,12 @@
     <ClInclude Include="IAnimation.h">
       <Filter>Source Code\Importer</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimator.h">
+      <Filter>Source Code\GameObject\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RAnimationCollection.h">
+      <Filter>Source Code\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -775,6 +781,12 @@
     </ClCompile>
     <ClCompile Include="IAnimation.cpp">
       <Filter>Source Code\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator.cpp">
+      <Filter>Source Code\GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="RAnimationCollection.cpp">
+      <Filter>Source Code\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

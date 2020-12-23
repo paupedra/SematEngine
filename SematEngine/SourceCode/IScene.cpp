@@ -13,6 +13,7 @@
 #include "CTransform.h"
 #include "CMesh.h"
 #include "CMaterial.h"
+#include "CAnimator.h"
 
 #include "IScene.h"
 #include "IMesh.h"
@@ -39,18 +40,16 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 		const aiScene* scene = aiImportFileFromMemory(buffer, size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 		const aiNode* rootNode = scene->mRootNode;
 
-		
 		//save all the meshes and add them to RScene->meshes (list containing the id of the meshes, models will use this to get their id)
 		Importer::MeshImporter::ImportAllMeshesInScene(scene,resource->meshes);
 		Importer::MaterialImporter::ImportAllMaterialsInScene(scene, resource->materials);
-		Importer::AnimationImporter::ImportAllAnimationsInScene(scene, resource->animations);
+		Importer::AnimationImporter::ImportAllAnimationsInScene(scene, &resource->animationsCollection);
 
 		//add model
 		ProcessAiNodeModel(scene, rootNode, resource,0); //Process node tree
 
-		RScene* sceneResource = (RScene*)resource;
-		sceneResource->GenerateCustomFile();
-
+		resource->GenerateCustomFile();
+		
 		LOG("Finished importing: %s",resource->resourceData.assetsFile.c_str());
 	}
 	else
@@ -149,20 +148,32 @@ void Importer::SceneImporter::ProcessMaterialModel(const aiScene* scene, const a
 
 void Importer::SceneImporter::ProcessAnimationModel(const aiScene* scene, const aiNode* node, RModel* model)
 {
-	//node.
+	
+
+
 }
 
-GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
+GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node, UID animationsUID)
+{
+	//load animation collection? and add it to the root game object
+	Importer::AnimationImporter::LoadAnimationCollection();
+
+	LoadSceneResourceNode(node);
+
+	return nullptr;
+}
+
+GameObject* Importer::SceneImporter::LoadSceneResourceNode(ModelNode node)
 {
 	//Start creating game objects and requesting meshes through UID (loading it into memory in resources map), if the UID is already loaded it will return it
 	GameObject* newGameObject;
 	if (node.parent == nullptr)
 	{
-		newGameObject = new GameObject(App->scene->rootObject,node.model.name.c_str());
+		newGameObject = new GameObject(App->scene->rootObject, node.model.name.c_str());
 	}
 	else
 	{
-		newGameObject = new GameObject( node.model.name.c_str()); //We'll set parent later
+		newGameObject = new GameObject(node.model.name.c_str()); //We'll set parent later
 	}
 
 	//transform
@@ -181,7 +192,7 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 
 			newGameObject->AddComponent(cMesh);
 			cMesh->SetMesh(loadedMesh);
-		
+
 			CMaterial* cmaterial = new CMaterial(newGameObject);
 			newGameObject->AddComponent(cmaterial);
 
@@ -189,7 +200,7 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 			{
 				cmaterial->SetMaterial(App->resourceManager->LoadMaterial(node.model.materialUID));
 			}
-			
+
 		}
 	}
 
@@ -198,10 +209,10 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node)
 
 	for (std::vector<ModelNode*>::iterator child = node.children.begin(); child != node.children.end(); child++)
 	{
-		GameObject* object = LoadSceneResource(*(*child));
+		GameObject* object = LoadSceneResourceNode(*(*child));
 		newGameObject->AddChild(object);
 	}
-	
+
 	return newGameObject;
 }
 

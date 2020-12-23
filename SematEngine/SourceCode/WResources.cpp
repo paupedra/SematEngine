@@ -51,10 +51,11 @@ void WResources::Draw()
 
 		switch ((*resourceLib).second.type)
 		{
-			case ResourceType::texture: ImGui::Text("Texture"); break;
-			case ResourceType::material: ImGui::Text("Material"); break;
-			case ResourceType::model: ImGui::Text("Model"); break;
-			case ResourceType::none: ImGui::Text("none"); break;
+			case ResourceType::texture:		ImGui::Text("Texture"); break;
+			case ResourceType::material:	ImGui::Text("Material"); break;
+			case ResourceType::model:		ImGui::Text("Model"); break;
+			case ResourceType::animation:	ImGui::Text("Animation"); break;
+			case ResourceType::none:		ImGui::Text("none"); break;
 		}
 	}
 

@@ -19,6 +19,12 @@ Resource::Resource(uint UID)
 	resourceData.UID = UID;
 }
 
+Resource::Resource(uint UID,ResourceType type)
+{
+	resourceData.UID = UID;
+	resourceData.type = type;
+}
+
 Resource::~Resource()
 {}
 

@@ -8,9 +8,9 @@ class Resource;
 #include "Dependecies/MathGeoLib/include/Math/float3.h"
 #include "Dependecies/MathGeoLib/include/Math/Quat.h"
 
+
 struct Bone
 {
-	std::string name;
 	std::map<double, float3> positionKeys; //double is time
 	std::map<double, float3> scaleKeys;
 	std::map<double, Quat> quaternionKeys;
@@ -29,7 +29,7 @@ public:
 	UID GenerateCustomFile();
 
 public:
-	std::vector<Bone> bones;
+	std::map<std::string,Bone> bones;
 	std::string name;
 	double duration = 0;		//Ticks
 	double speed = 1;			//Ticks per second

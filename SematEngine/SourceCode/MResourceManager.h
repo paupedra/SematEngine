@@ -27,12 +27,14 @@ public:
 
 	bool FindMeta(const char* fileInAssets); //Look if we have a meta file for this assets files
 	void Import(const char* path);
-	uint ImportFile(const char* newFileInAssets, ResourceType type);
+	uint ImportFileFromAssets(const char* newFileInAssets, ResourceType type);
 
 	uint GetResourceUID(const char* metaFile); //Get the metaFile's uid
 
-	uint ImportModelResource(const char* newFileInAssets, ResourceType type); //Import resources from scene/model (mesh,material)
+	uint ImportModelResource(const char* newFileInAssets, ResourceType type); //Import resources from model (mesh, material, animation)
+
 	uint ImportMaterial(const char* file,uint textureUID,Color color); //Creates RMaterial and saves .material (cff)
+	uint ImportAnimationCollection();
 
 	const char* GenerateMetaFile(Resource* resource); //Generate meta file that holds UID and other information
 	std::string GenerateLibraryFile(Resource* resource); //Generates and saves the resource's custom file format

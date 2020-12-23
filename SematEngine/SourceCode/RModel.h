@@ -40,7 +40,6 @@ struct RModel //This resource holds it's meshes/materials uids
 
 	UID meshUID = -1; //Position in the vector of meshes uid of the RScene (much like assimp does) -1 if no mesh
 	UID materialUID = 0;
-	UID animationUID = 0;
 };
 
 struct ModelNode //Used to stre the info of a .scene file in a tree to be interpreted later

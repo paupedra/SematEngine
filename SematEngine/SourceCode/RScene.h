@@ -3,6 +3,7 @@
 
 #include "Globals.h"
 #include <vector>
+#include "RAnimationCollection.h"
 
 struct RModel;
 class Resource;
@@ -23,6 +24,6 @@ public:
 	std::vector<RModel> models;
 	std::vector<UID> meshes; //uids of the fbx meshes, RModels will reference this list
 	std::vector<UID> materials;
-	std::vector<UID> animations;
+	RAnimationCollection animationsCollection;
 };
 #endif //__RESOURCESCENE_H__
