@@ -26,7 +26,7 @@ namespace Importer
 
 		void Load(const char* fileBuffer, RAnimation* animation); //Load buffer from custom format file and store into RAnimation
 
-		void LoadAnimationCollection(RAnimationCollection* collection);
+		std::vector < RAnimation*> LoadAnimationCollection(uint  collection);
 
 		std::map<double, float3> LoadVector3Key(const char** cursor);
 

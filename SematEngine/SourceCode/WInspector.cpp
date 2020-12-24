@@ -13,11 +13,12 @@
 #include "CMesh.h"
 #include "CMaterial.h"
 #include "CCamera.h"
+#include "CAnimator.h"
 
 #include "RMesh.h"
 #include "RMaterial.h"
 #include "RTexture.h"
-
+#include "RAnimation.h"
 
 #include "WInspector.h"
 
@@ -107,6 +108,10 @@ void WInspector::DrawComponent(Component* component)
 
 		case ComponentType::CAMERA:
 			DrawCamera((CCamera*)component);
+			break;
+
+		case ComponentType::ANIMATOR:
+
 			break;
 	}
 }
@@ -213,6 +218,20 @@ void WInspector::DrawCamera(CCamera* component)
 		if (ImGui::Button("Set As Culling Camera"))
 		{
 			App->camera->SetCullingCamera(component);
+		}
+	}
+}
+
+void WInspector::DrawAnimator(CAnimator* animator)
+{
+	if (ImGui::CollapsingHeader("Animator"))
+	{
+		ImGui::Text("Amount of animations: %s", animator->GetAnimations().size());
+
+		std::vector<RAnimation*> animations = animator->GetAnimations();
+		for (std::vector<RAnimation*>::iterator it = animations.begin(); it != animations.end(); it++)
+		{
+			ImGui::Button((*it)->name.c_str());
 		}
 	}
 }

@@ -25,6 +25,7 @@
 #include "RMaterial.h"
 #include "RScene.h"
 #include "RModel.h"
+#include "RAnimation.h"
 
 #include "Dependecies/Assimp/include/cimport.h"
 #include "Dependecies/Assimp/include/scene.h"
@@ -156,9 +157,11 @@ void Importer::SceneImporter::ProcessAnimationModel(const aiScene* scene, const 
 GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node, UID animationsUID)
 {
 	//load animation collection? and add it to the root game object
-	Importer::AnimationImporter::LoadAnimationCollection();
+	Importer::AnimationImporter::LoadAnimationCollection(animationsUID);
 
-	LoadSceneResourceNode(node);
+	GameObject* rootObject = LoadSceneResourceNode(node);
+
+	LOG("returned %s",rootObject->GetName());
 
 	return nullptr;
 }

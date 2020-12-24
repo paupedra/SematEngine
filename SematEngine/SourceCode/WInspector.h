@@ -4,6 +4,7 @@ class CTransform;
 class CMesh;
 class CMaterial;
 class CCamera;
+class CAnimator;
 
 class WInspector : public Window
 {
@@ -20,6 +21,7 @@ public:
 	void DrawMesh(CMesh* component);
 	void DrawMaterial(CMaterial* component);
 	void DrawCamera(CCamera* component);
+	void DrawAnimator(CAnimator* animator);
 
 	void CleanUp() override;
 

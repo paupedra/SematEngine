@@ -329,10 +329,12 @@ void MResourceManager::LoadScene(ResourceData resource)
 		}
 	}
 
-	Importer::SceneImporter::LoadSceneResource(*root,0); //Create the game objects using the tree structure, passing the root
+	uint animationCollection = node.GetNumber("Animation Collection");
+
+	Importer::SceneImporter::LoadSceneResource(*root,animationCollection); //Create the game objects using the tree structure, passing the root
 
 	//Load the animations
-	uint animationCollection = node.GetNumber("Animation Collection");
+	
 
 	//Importer::AnimationImporter::LoadAnimationResource();
 

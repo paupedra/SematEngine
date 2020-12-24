@@ -231,9 +231,31 @@ void Importer::AnimationImporter::Load(const char* fileBuffer, RAnimation* anima
 	}
 }
 
-void Importer::AnimationImporter::LoadAnimationCollection(RAnimationCollection* collection)
+std::vector<RAnimation*> Importer::AnimationImporter::LoadAnimationCollection(uint collection)
 {
+	std::vector<RAnimation*> ret;
 
+	//Load animation collection file
+	std::string path = ANIMATIONS_PATH;
+	path += std::to_string(collection);
+	path += ANIMATION_EXTENSION;
+
+	char* buffer = nullptr;
+	App->fileSystem->Load(path.c_str(), &buffer);
+
+	JsonNode node(buffer);
+	JsonArray animationsJson = node.GetArray("Animations");
+
+	std::vector<uint> animationsUID;
+
+	for (int i = 0; i < animationsJson.size; i++)
+	{
+		animationsUID.push_back(animationsJson.GetNumber(i, 0));
+	}
+
+	RELEASE_ARRAY(buffer);
+
+	return ret;
 }
 
 std::map<double,float3> Importer::AnimationImporter::LoadVector3Key(const char** cursor)
