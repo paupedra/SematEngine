@@ -31,7 +31,7 @@ GameObject::~GameObject()
 }
 
 
-void GameObject::Update()
+void GameObject::Update(float dt)
 {
 	UpdateBoundingBoxes();
 
@@ -40,7 +40,7 @@ void GameObject::Update()
 		std::vector<Component*>::iterator item = components.begin();
 		for (; item != components.end(); ++item)
 		{
-			(*item)->Update();
+			(*item)->Update(dt);
 		}
 	}
 }
@@ -133,6 +133,10 @@ Component* GameObject::AddComponent(Component* component)
 			else
 				LOG("(ERROR) Error adding Camera: Object already has camera");
 
+			break;
+
+		case ComponentType::ANIMATOR:
+			components.push_back(component);
 			break;
 	}
 
@@ -233,7 +237,7 @@ void GameObject::Reparent(GameObject* newParent)
 		return;
 	}
 	//check if newParent is children
-	if (FindChild(newParent))
+	if (HasChild(newParent))
 	{
 		LOG("(ERROR) Reparent target is in object's children");
 		return;
@@ -250,7 +254,7 @@ void GameObject::SetParent(GameObject* newParent)
 	transform->updateTransform = true;
 }
 
-bool GameObject::FindChild(GameObject* newParent)
+bool GameObject::HasChild(GameObject* newParent)
 {
 	for (std::vector<GameObject*>::iterator child = children.begin(); child != children.end(); child++)
 	{
@@ -258,13 +262,38 @@ bool GameObject::FindChild(GameObject* newParent)
 		{
 			return true;
 		}
-		(*child)->FindChild(newParent);
+		(*child)->HasChild(newParent);
 	}
 
 	return false;
 }
 
+void GameObject::GetChildByName(const char* name, GameObject** recipient)const
+{
+	for (std::vector<GameObject*>::const_iterator child = children.begin(); child != children.end(); child++)
+	{
+		if (strcmp(name,(*child)->GetName()) == 0)
+		{
+			*recipient = (*child);
+			return;
+		}
 
+		(*child)->GetChildByName(name,recipient);
+	}
+}
+
+GameObject* GameObject::GetOwnChildByName(const char* name)const
+{
+	for (std::vector<GameObject*>::const_iterator child = children.begin(); child != children.end(); child++)
+	{
+		if (strcmp(name, (*child)->GetName()) == 0)
+		{
+			return (*child);
+		}
+	}
+
+	return nullptr;
+}
 
 void GameObject::Enable()
 {

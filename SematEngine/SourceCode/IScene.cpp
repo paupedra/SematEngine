@@ -46,6 +46,8 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 		Importer::MaterialImporter::ImportAllMaterialsInScene(scene, resource->materials);
 		Importer::AnimationImporter::ImportAllAnimationsInScene(scene, &resource->animationsCollection);
 
+		scene->mNumAnimations;
+
 		//add model
 		ProcessAiNodeModel(scene, rootNode, resource,0); //Process node tree
 
@@ -75,7 +77,7 @@ void Importer::SceneImporter::ProcessAiNodeModel(const aiScene* scene, const aiN
 		ProcessMaterialModel(scene, node, &model);
 	}
 
-	ProcessAnimationModel(scene, node, &model);
+	//ProcessAnimationModel(scene, node, &model);
 
 	_scene->models.push_back(model);
 
@@ -157,9 +159,18 @@ void Importer::SceneImporter::ProcessAnimationModel(const aiScene* scene, const 
 GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node, UID animationsUID)
 {
 	//load animation collection? and add it to the root game object
-	Importer::AnimationImporter::LoadAnimationCollection(animationsUID);
+	std::vector<RAnimation*> animations = Importer::AnimationImporter::LoadAnimationCollection(animationsUID);
+
 
 	GameObject* rootObject = LoadSceneResourceNode(node);
+
+	//link bones to the game objects
+	CAnimator* animator = new CAnimator(rootObject);
+
+	rootObject->AddComponent(animator);
+
+	for (int i = 0; i < animations.size(); i++)
+		animator->AddAnimation(animations[i]);
 
 	LOG("returned %s",rootObject->GetName());
 

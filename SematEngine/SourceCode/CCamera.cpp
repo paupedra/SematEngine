@@ -29,7 +29,7 @@ CCamera::CCamera(GameObject* owner) : Component(ComponentType::CAMERA, owner)
 	corners = new vec[8];
 }
 
-void CCamera::Update()
+void CCamera::Update(float dt)
 {
 	if (!isCurrentCamera)
 	{

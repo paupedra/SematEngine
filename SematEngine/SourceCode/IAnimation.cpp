@@ -5,6 +5,7 @@
 #include "Config.h"
 
 #include "MFileSystem.h"
+#include "MResourceManager.h"
 
 #include "RAnimation.h"
 #include "RAnimationCollection.h"
@@ -52,6 +53,8 @@ uint Importer::AnimationImporter::Import(const aiAnimation* animation)
 	//save in cff
 	newAnimation.GenerateCustomFile();
 
+	//App->resourceManager->AddResourceToLibrary((Resource*)&newAnimation);
+
 	LOG("Finished importing animation: %s", newAnimation.name.c_str());
 
 	return newAnimation.GetUID();
@@ -73,7 +76,7 @@ void Importer::AnimationImporter::ImportAllAnimationsInScene(const aiScene* scen
 uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name)
 {
 	//save basic animation data
-	uint size = sizeof(uint) + sizeof(char) * animation->name.size()+ sizeof(uint) + sizeof(double) + sizeof(double);
+	uint size = sizeof(uint) + sizeof(char) * animation->name.size() + sizeof(uint) + sizeof(double) + sizeof(double);
 
 	//calc size iterating channels
 	std::map<std::string, Bone>::const_iterator i;
@@ -95,7 +98,7 @@ uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name
 	memcpy(cursor, nameSize, sizeof(uint));
 	cursor += sizeof(uint);
 
-	memcpy(cursor, &animation->name, sizeof(char) * animation->name.size());
+	memcpy(cursor, animation->name.c_str(), sizeof(char) * animation->name.size());
 	cursor += sizeof(char) * animation->name.size();
 
 	uint bonesSize[1] = { animation->bones.size() };//size of bones
@@ -114,7 +117,7 @@ uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name
 		memcpy(cursor, nameSize, sizeof(uint));
 		cursor += sizeof(uint);
 
-		memcpy(cursor, &(*i).first, sizeof(char) * nameSize[0]);
+		memcpy(cursor, (*i).first.c_str(), sizeof(char) * nameSize[0]);
 		cursor += sizeof(char) * nameSize[0];
 
 		SaveBones(&cursor, (*i).second );
@@ -177,7 +180,8 @@ void Importer::AnimationImporter::Load(const char* fileBuffer, RAnimation* anima
 	memcpy(animNameSize, cursor, sizeof(uint));
 	cursor += sizeof(uint);
 
-	memcpy(&animation->name, cursor, sizeof(char) * animNameSize[0]);
+	animation->name.resize(animNameSize[0]);
+	memcpy(&animation->name[0], cursor, sizeof(char) * animNameSize[0]);
 	cursor += sizeof(char) * animNameSize[0];
 
 	uint bonesSize[1];
@@ -200,7 +204,8 @@ void Importer::AnimationImporter::Load(const char* fileBuffer, RAnimation* anima
 		cursor += sizeof(uint);
 
 		std::string boneName;
-		memcpy(&boneName, cursor, sizeof(char) * nameSize[0]);
+		boneName.resize(nameSize[0]);
+		memcpy(&boneName[0], cursor, sizeof(char) * nameSize[0]);
 		cursor += sizeof(char) * nameSize[0];
 
 		uint boneSizes[3];
@@ -250,7 +255,37 @@ std::vector<RAnimation*> Importer::AnimationImporter::LoadAnimationCollection(ui
 
 	for (int i = 0; i < animationsJson.size; i++)
 	{
-		animationsUID.push_back(animationsJson.GetNumber(i, 0));
+		uint uid = animationsJson.GetNumber(i, 0);
+		animationsUID.push_back(uid);
+
+		//now load the animations in RAnimation vector (ret)
+
+		//they should be added to resource map
+
+		RAnimation* res = (RAnimation*)App->resourceManager->RequestResource(uid);
+		if (res != nullptr)
+		{
+			ret.push_back(res);
+		}
+		else
+		{
+			//load it
+			std::string path = ANIMATIONS_PATH;
+			path += std::to_string(uid);
+			path += ANIMATION_EXTENSION;
+
+			char* secondBuffer = nullptr;
+
+			App->fileSystem->Load(path.c_str(),&secondBuffer);
+
+			res = new RAnimation(uid);
+
+			Load(secondBuffer, res);
+
+			ret.push_back(res);
+
+			RELEASE_ARRAY(secondBuffer);
+		}
 	}
 
 	RELEASE_ARRAY(buffer);
@@ -264,14 +299,14 @@ std::map<double,float3> Importer::AnimationImporter::LoadVector3Key(const char**
 	float vector[3];
 
 	uint bytes = sizeof(float) * 3;
-	memcpy(vector, cursor, bytes);
-	cursor += bytes;
+	memcpy(vector, *cursor, bytes);
+	*cursor += bytes;
 
 	double time[1];
 
 	bytes = sizeof(double);
-	memcpy(time, cursor, bytes);
-	cursor += bytes;
+	memcpy(time, *cursor, bytes);
+	*cursor += bytes;
 
 	float3 vector3 = float3(vector[0], vector[1], vector[2]);
 	ret.emplace(time[0], vector3);
@@ -285,14 +320,14 @@ std::map<double, Quat> Importer::AnimationImporter::LoadQuatKey(const char** cur
 	float vector[4];
 
 	uint bytes = sizeof(float) * 4;
-	memcpy(vector, cursor, bytes);
-	cursor += bytes;
+	memcpy(vector, *cursor, bytes);
+	*cursor += bytes;
 
 	double time[1];
 
 	bytes = sizeof(double);
-	memcpy(time, cursor, bytes);
-	cursor += bytes;
+	memcpy(time, *cursor, bytes);
+	*cursor += bytes;
 
 	Quat quat = Quat(vector[0], vector[1], vector[2],vector[3]);
 	ret.emplace(time[0], quat);

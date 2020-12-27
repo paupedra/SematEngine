@@ -20,8 +20,8 @@ public:
 	GameObject(GameObject* parent, const char* name);
 	~GameObject();
 
-	void Start();
-	void Update();
+	//void Start();
+	void Update(float dt);
 	void CleanUp();
 
 	Component* AddComponent(Component* component);
@@ -51,7 +51,10 @@ public:
 
 	void Reparent(GameObject* newParent);
 	void SetParent(GameObject* newParent);
-	bool FindChild(GameObject* newParent);
+	bool HasChild(GameObject* newParent);
+
+	void GetChildByName(const char* name,GameObject** recipient)const; //Iterates all children in tree and sets recipient to the fund object when found
+	GameObject* GetOwnChildByName(const char* name)const; //Only gets from own children list
 
 	template<typename CTemplate>
 	CTemplate* GetComponent()

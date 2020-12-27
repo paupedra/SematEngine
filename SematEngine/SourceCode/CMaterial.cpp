@@ -36,7 +36,7 @@ CMaterial::~CMaterial()
 
 }
 
-void CMaterial::Update()
+void CMaterial::Update(float dt)
 {
 	
 }

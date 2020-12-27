@@ -111,7 +111,7 @@ void WInspector::DrawComponent(Component* component)
 			break;
 
 		case ComponentType::ANIMATOR:
-
+			DrawAnimator((CAnimator*)component);
 			break;
 	}
 }
@@ -226,12 +226,41 @@ void WInspector::DrawAnimator(CAnimator* animator)
 {
 	if (ImGui::CollapsingHeader("Animator"))
 	{
-		ImGui::Text("Amount of animations: %s", animator->GetAnimations().size());
+		ImGui::Text("Amount of animations: %d", animator->GetAnimationsSize());
+		ImGui::Text("Current animation: %s", animator->GetAnimationName());
+		ImGui::Separator();
 
-		std::vector<RAnimation*> animations = animator->GetAnimations();
-		for (std::vector<RAnimation*>::iterator it = animations.begin(); it != animations.end(); it++)
+		if (animator->GetCurrentAnimation() != nullptr)
 		{
-			ImGui::Button((*it)->name.c_str());
+			if (ImGui::Button("Play"))
+				animator->Play();
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Pause"))
+				animator->Pause();
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Stop"))
+				animator->Stop();
+
+			ImGui::Text("Animation Ticks: %f", animator->GetAnimationTicks());
+			ImGui::Text("Animation Speed: %f", animator->GetAnimationSpeed());
+			ImGui::Text("Animation Duration: %f", animator->GetAnimationDuration());
+
+			bool drawBones = animator->GetDrawBones();
+			if (ImGui::Checkbox("Draw Bones", &drawBones)) { animator->SwitchDrawBones(); }
+		
+			ImGui::Separator();
+		}
+		ImGui::Text("Animations:");
+		for (uint i = 0; i < animator->GetAnimationsSize(); i++)
+		{
+			if(ImGui::Button(animator->GetAnimation(i)->name.c_str()))
+			{
+				animator->SetCurrentAnimation(animator->GetAnimation(i));
+			}
 		}
 	}
 }

@@ -12,7 +12,7 @@ public:
 	CMesh(GameObject* owner, char* path, RMesh* mesh);
 	~CMesh();
 
-	void Update() override;
+	void Update(float dt) override;
 	void CleanUp() override;
 	void DrawMesh();
 

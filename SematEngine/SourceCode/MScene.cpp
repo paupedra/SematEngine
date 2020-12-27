@@ -72,7 +72,7 @@ updateStatus MScene::Update(float dt)
 			continue;
 		}
 
-		gameObjects[i]->Update();
+		gameObjects[i]->Update(dt);
 	}
 
 	return UPDATE_CONTINUE;

@@ -26,7 +26,7 @@ CTransform::~CTransform()
 
 }
 
-void CTransform::Update()
+void CTransform::Update(float dt)
 {
 	if (updateTransform)
 	{

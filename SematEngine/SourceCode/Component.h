@@ -20,7 +20,7 @@ public:
 	Component(ComponentType type,GameObject* owner);
 	~Component();
 
-	virtual void Update() = 0;
+	virtual void Update(float dt) = 0;
 	virtual void CleanUp() = 0;
 	void Enable();
 	void Disable();

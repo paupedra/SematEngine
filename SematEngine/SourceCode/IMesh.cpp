@@ -29,53 +29,13 @@ std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
     {
         for (int i = 0; i < scene->mNumMeshes; i++)// Use scene->mNumMeshes to iterate on scene->mMeshes array
         {
-            RMesh* newMesh = new RMesh();
-            
-            newMesh->buffersSize[RMesh::vertex] = scene->mMeshes[i]->mNumVertices;
-            newMesh->vertices = new float[newMesh->buffersSize[RMesh::vertex] * 3];
-            memcpy(newMesh->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * newMesh->buffersSize[RMesh::vertex] * 3);
-            LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
-
-            if (scene->mMeshes[i]->HasFaces())
-            {
-                newMesh->buffersSize[RMesh::index] = scene->mMeshes[i]->mNumFaces * 3;
-                newMesh->indices = new uint[newMesh->buffersSize[RMesh::index]];
-                for (uint f = 0; f < scene->mMeshes[i]->mNumFaces; ++f)
-                {
-                    if (scene->mMeshes[i]->mFaces[f].mNumIndices != 3)
-                    {
-                        LOG("WARNING, geometery face with != 3 indices!");
-                    }
-                    else
-                    {
-                        memcpy(&newMesh->indices[f * 3], scene->mMeshes[i]->mFaces[f].mIndices, 3 * sizeof(uint));
-                    }
-                }
-            }
-
-            if (scene->mMeshes[i]->HasNormals())
-            {
-                newMesh->buffersSize[RMesh::normal] = scene->mMeshes[i]->mNumVertices;
-                newMesh->normals = new float[newMesh->buffersSize[RMesh::normal] * 3];
-                memcpy(newMesh->normals, scene->mMeshes[i]->mNormals, sizeof(float) * newMesh->buffersSize[RMesh::normal] * 3);
-            }
-
-            if (scene->mMeshes[i]->HasTextureCoords(0))
-            {
-                newMesh->buffersSize[RMesh::texture] = scene->mMeshes[i]->mNumVertices;
-                newMesh->textureCoords = new float[scene->mMeshes[i]->mNumVertices * 2];
-
-                for (int j = 0; j < newMesh->buffersSize[RMesh::texture]; j++)
-                {
-                    newMesh->textureCoords[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
-                    newMesh->textureCoords[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
-                }
-            }
+            RMesh* newMesh = ProcessMesh(scene->mMeshes[i]);
 
             App->renderer3D->GenerateBuffers(newMesh);
 
             ret.push_back(newMesh);
         }
+
         aiReleaseImport(scene);
         LOG("Time spent Importing Mesh: %d ms", timeImporting->Read());
     }
@@ -89,11 +49,51 @@ std::vector<RMesh*> Importer::MeshImporter::Import(const char* file)
     return ret;
 }
 
-RMesh Importer::MeshImporter::ProcessMesh(const aiScene* scene, const aiNode* node)
+RMesh* Importer::MeshImporter::ProcessMesh(const aiMesh* mesh)
 {
-    RMesh newMesh;
+    RMesh* newMesh = new RMesh();
 
+    newMesh->buffersSize[RMesh::vertex] = mesh->mNumVertices;
+    newMesh->vertices = new float[newMesh->buffersSize[RMesh::vertex] * 3];
+    memcpy(newMesh->vertices, mesh->mVertices, sizeof(float) * newMesh->buffersSize[RMesh::vertex] * 3);
+    //LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
 
+    if (mesh->HasFaces())
+    {
+        newMesh->buffersSize[RMesh::index] = mesh->mNumFaces * 3;
+        newMesh->indices = new uint[newMesh->buffersSize[RMesh::index]];
+
+        for (uint f = 0; f < mesh->mNumFaces; ++f)
+        {
+            if (mesh->mFaces[f].mNumIndices != 3)
+            {
+                LOG("WARNING, geometery face with != 3 indices!"); //Problems with != 3 faces
+            }
+            else
+            {
+                memcpy(&newMesh->indices[f * 3], mesh->mFaces[f].mIndices, 3 * sizeof(uint));
+            }
+        }
+    }
+
+    if (mesh->HasNormals())
+    {
+        newMesh->buffersSize[RMesh::normal] = mesh->mNumVertices;
+        newMesh->normals = new float[newMesh->buffersSize[RMesh::normal] * 3];
+        memcpy(newMesh->normals, mesh->mNormals, sizeof(float) * newMesh->buffersSize[RMesh::normal] * 3);
+    }
+
+    if (mesh->HasTextureCoords(0))
+    {
+        newMesh->buffersSize[RMesh::texture] = mesh->mNumVertices;
+        newMesh->textureCoords = new float[mesh->mNumVertices * 2];
+
+        for (int j = 0; j < newMesh->buffersSize[RMesh::texture]; j++)
+        {
+            newMesh->textureCoords[j * 2] = mesh->mTextureCoords[0][j].x;
+            newMesh->textureCoords[j * 2 + 1] = mesh->mTextureCoords[0][j].y;
+        }
+    }
     return newMesh;
 }
 
@@ -101,49 +101,7 @@ void Importer::MeshImporter::LoadNodeMesh(const aiScene* scene, const aiNode* no
 {
     for (int i = 0; i < node->mNumMeshes; i++)
     {
-        RMesh* newMesh = new RMesh();
-        
-        newMesh->buffersSize[RMesh::vertex] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
-        newMesh->vertices = new float[newMesh->buffersSize[RMesh::vertex] * 3];
-        memcpy(newMesh->vertices, scene->mMeshes[node->mMeshes[i]]->mVertices, sizeof(float) * newMesh->buffersSize[RMesh::vertex] * 3);
-        //LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
-
-        if (scene->mMeshes[node->mMeshes[i]]->HasFaces())
-        {
-            newMesh->buffersSize[RMesh::index] = scene->mMeshes[node->mMeshes[i]]->mNumFaces * 3;
-            newMesh->indices = new uint[newMesh->buffersSize[RMesh::index]];
-
-            for (uint f = 0; f < scene->mMeshes[node->mMeshes[i]]->mNumFaces; ++f)
-            {
-                if (scene->mMeshes[node->mMeshes[i]]->mFaces[f].mNumIndices != 3)
-                {
-                    LOG("WARNING, geometery face with != 3 indices!"); //Problems with != 3 faces
-                }
-                else
-                {
-                    memcpy(&newMesh->indices[f * 3], scene->mMeshes[node->mMeshes[i]]->mFaces[f].mIndices, 3 * sizeof(uint));
-                }
-            }
-        }
-
-        if (scene->mMeshes[node->mMeshes[i]]->HasNormals())
-        {
-            newMesh->buffersSize[RMesh::normal] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
-            newMesh->normals = new float[newMesh->buffersSize[RMesh::normal] * 3];
-            memcpy(newMesh->normals, scene->mMeshes[node->mMeshes[i]]->mNormals, sizeof(float) * newMesh->buffersSize[RMesh::normal] * 3);
-        }
-
-        if (scene->mMeshes[node->mMeshes[i]]->HasTextureCoords(0))
-        {
-            newMesh->buffersSize[RMesh::texture] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
-            newMesh->textureCoords = new float[scene->mMeshes[node->mMeshes[i]]->mNumVertices * 2];
-
-            for (int j = 0; j < newMesh->buffersSize[RMesh::texture]; j++)
-            {
-                newMesh->textureCoords[j * 2] = scene->mMeshes[node->mMeshes[i]]->mTextureCoords[0][j].x;
-                newMesh->textureCoords[j * 2 + 1] = scene->mMeshes[node->mMeshes[i]]->mTextureCoords[0][j].y;
-            }
-        }
+        RMesh* newMesh = ProcessMesh(scene->mMeshes[node->mMeshes[i]]);
 
         //generate bounding box
         newMesh->aabb.SetNegativeInfinity();
@@ -261,53 +219,9 @@ void Importer::MeshImporter::LoadNodeMeshModel(const aiScene* scene, const aiNod
 {
     for (int i = 0; i < node->mNumMeshes; i++)
     {
-        RMesh newMesh;
+        RMesh* newMesh = ProcessMesh(scene->mMeshes[i]);
 
-        newMesh.buffersSize[RMesh::vertex] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
-        newMesh.vertices = new float[newMesh.buffersSize[RMesh::vertex] * 3];
-        memcpy(newMesh.vertices, scene->mMeshes[node->mMeshes[i]]->mVertices, sizeof(float) * newMesh.buffersSize[RMesh::vertex] * 3);
-        //LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
-
-        if (scene->mMeshes[node->mMeshes[i]]->HasFaces())
-        {
-            newMesh.buffersSize[RMesh::index] = scene->mMeshes[node->mMeshes[i]]->mNumFaces * 3;
-            newMesh.indices = new uint[newMesh.buffersSize[RMesh::index]];
-
-            for (uint f = 0; f < scene->mMeshes[node->mMeshes[i]]->mNumFaces; ++f)
-            {
-                if (scene->mMeshes[node->mMeshes[i]]->mFaces[f].mNumIndices != 3)
-                {
-                    LOG("WARNING, geometery face with != 3 indices!"); //Problems with != 3 faces
-                }
-                else
-                {
-                    memcpy(&newMesh.indices[f * 3], scene->mMeshes[node->mMeshes[i]]->mFaces[f].mIndices, 3 * sizeof(uint));
-                }
-            }
-        }
-
-        if (scene->mMeshes[node->mMeshes[i]]->HasNormals())
-        {
-            newMesh.buffersSize[RMesh::normal] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
-            newMesh.normals = new float[newMesh.buffersSize[RMesh::normal] * 3];
-            memcpy(newMesh.normals, scene->mMeshes[node->mMeshes[i]]->mNormals, sizeof(float) * newMesh.buffersSize[RMesh::normal] * 3);
-        }
-
-        if (scene->mMeshes[node->mMeshes[i]]->HasTextureCoords(0))
-        {
-            newMesh.buffersSize[RMesh::texture] = scene->mMeshes[node->mMeshes[i]]->mNumVertices;
-            newMesh.textureCoords = new float[scene->mMeshes[node->mMeshes[i]]->mNumVertices * 2];
-
-            for (int j = 0; j < newMesh.buffersSize[RMesh::texture]; j++)
-            {
-                newMesh.textureCoords[j * 2] = scene->mMeshes[node->mMeshes[i]]->mTextureCoords[0][j].x;
-                newMesh.textureCoords[j * 2 + 1] = scene->mMeshes[node->mMeshes[i]]->mTextureCoords[0][j].y;
-            }
-        }
-
-
-        //App->renderer3D->GenerateBuffers(&newMesh); //Crashes
-        meshes.push_back(newMesh);
+        meshes.push_back(*newMesh);
     }
 }
 
@@ -315,55 +229,13 @@ void Importer::MeshImporter::ImportAllMeshesInScene(const aiScene* scene, std::v
 {
     for (int i = 0; i < scene->mNumMeshes; i++)
     {
-        RMesh newMesh;
+        RMesh* newMesh = ProcessMesh(scene->mMeshes[i]);
 
-        newMesh.buffersSize[RMesh::vertex] = scene->mMeshes[i]->mNumVertices;
-        newMesh.vertices = new float[newMesh.buffersSize[RMesh::vertex] * 3];
-        memcpy(newMesh.vertices, scene->mMeshes[i]->mVertices, sizeof(float) * newMesh.buffersSize[RMesh::vertex] * 3);
-        //LOG("New mesh with %d vertices", newMesh->buffersSize[RMesh::vertex]);
+        meshes.push_back(newMesh->GenerateCustomFile()); //Generate cff file and add UID to meshes list
 
-        if (scene->mMeshes[i]->HasFaces())
-        {
-            newMesh.buffersSize[RMesh::index] = scene->mMeshes[i]->mNumFaces * 3;
-            newMesh.indices = new uint[newMesh.buffersSize[RMesh::index]];
-
-            for (uint f = 0; f < scene->mMeshes[i]->mNumFaces; ++f)
-            {
-                if (scene->mMeshes[i]->mFaces[f].mNumIndices != 3)
-                {
-                    LOG("WARNING, geometery face with != 3 indices!"); //Problems with != 3 faces
-                }
-                else
-                {
-                    memcpy(&newMesh.indices[f * 3], scene->mMeshes[i]->mFaces[f].mIndices, 3 * sizeof(uint));
-                }
-            }
-        }
-
-        if (scene->mMeshes[i]->HasNormals())
-        {
-            newMesh.buffersSize[RMesh::normal] = scene->mMeshes[i]->mNumVertices;
-            newMesh.normals = new float[newMesh.buffersSize[RMesh::normal] * 3];
-            memcpy(newMesh.normals, scene->mMeshes[i]->mNormals, sizeof(float) * newMesh.buffersSize[RMesh::normal] * 3);
-        }
-
-        if (scene->mMeshes[i]->HasTextureCoords(0))
-        {
-            newMesh.buffersSize[RMesh::texture] = scene->mMeshes[i]->mNumVertices;
-            newMesh.textureCoords = new float[scene->mMeshes[i]->mNumVertices * 2];
-
-            for (int j = 0; j < newMesh.buffersSize[RMesh::texture]; j++)
-            {
-                newMesh.textureCoords[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
-                newMesh.textureCoords[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
-            }
-        }
-
-        meshes.push_back(newMesh.GenerateCustomFile()); //Generate cff file and add UID to meshes list
-
-        RELEASE_ARRAY(newMesh.indices);
-        RELEASE_ARRAY(newMesh.normals);
-        RELEASE_ARRAY(newMesh.vertices);
-        RELEASE_ARRAY(newMesh.textureCoords);
+        RELEASE_ARRAY(newMesh->indices);
+        RELEASE_ARRAY(newMesh->normals);
+        RELEASE_ARRAY(newMesh->vertices);
+        RELEASE_ARRAY(newMesh->textureCoords);
     }
 }

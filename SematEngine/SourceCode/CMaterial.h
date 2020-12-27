@@ -13,7 +13,7 @@ public:
 	CMaterial(GameObject* owner, const char* path, RMaterial* material = nullptr,RTexture* texture = nullptr);
 	~CMaterial();
 
-	void Update() override;
+	void Update(float dt) override;
 	void CleanUp() override;
 
 	void OnSave(JsonNode* node);

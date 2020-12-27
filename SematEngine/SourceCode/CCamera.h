@@ -11,7 +11,7 @@ class CCamera : public Component
 public:
 	CCamera(GameObject* owner);
 
-	void Update()override;
+	void Update(float dt)override;
 	void CleanUp() override;
 
 	static inline ComponentType GetType() { return ComponentType::CAMERA; };

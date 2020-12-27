@@ -48,7 +48,7 @@ bool MResourceManager::Init()
 bool MResourceManager::Start()
 {
 	//LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
-	//LoadResourceFromMeta("Assets/Mesh/aniTest.fbx.meta");
+	LoadResourceFromMeta("Assets/Mesh/aniTest.fbx.meta");
 	return true;
 }
 
@@ -447,6 +447,10 @@ Resource* MResourceManager::RequestResource(uint uid)
 		LOG("Resource %s has been referenced %d times", it->second->resourceData.assetsFile.c_str(), it->second->resourceData.referenceCount);
 		return it->second;
 	}
+
+	//this should look for the resource in library and load it...
+
+
 	return nullptr;
 }
 
@@ -495,8 +499,7 @@ void MResourceManager::DereferenceResource(uint uid)
 
 void MResourceManager::AddResourceToLibrary(Resource* resource)
 {
-	ResourceData res;
-	res = resource->resourceData;
+	ResourceData res = resource->resourceData;
 	resourcesInLibrary.emplace(res.UID, res);
 }
 
@@ -522,7 +525,8 @@ int MResourceManager::AddResourceToLibraryFromMeta(const char* file)
 		return uid;
 	}
 
-	resource.type = (ResourceType)node.GetNumber("Type");
+	int tmp = (int)node.GetNumber("Type");
+	resource.type = (ResourceType)tmp;
 	resource.assetsFile = node.GetString("Assets File");
 	resource.libraryFile = node.GetString("Library File");
 

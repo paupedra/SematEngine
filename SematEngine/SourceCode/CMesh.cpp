@@ -34,7 +34,7 @@ CMesh::~CMesh()
 
 }
 
-void CMesh::Update()
+void CMesh::Update(float dt)
 {
 	DrawMesh();
 }

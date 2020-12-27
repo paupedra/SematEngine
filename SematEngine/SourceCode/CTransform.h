@@ -13,7 +13,7 @@ public:
 	CTransform(GameObject* owner);
 	~CTransform();
 
-	void Update() override;
+	void Update(float dt) override;
 	void CleanUp() override;
 	
 	void OnSave(JsonNode* node);
