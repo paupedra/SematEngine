@@ -79,6 +79,16 @@ float4x4 CTransform::GetGlobalTransform()const
 	return globalTransform;
 }
 
+float3 CTransform::GetGlobalPosition()const
+{
+	float3 position = float3::zero;
+	Quat rotation;
+	float3 scale;
+	globalTransform.Decompose(position,rotation,scale);
+
+	return position;
+}
+
 float3 CTransform::GetEulerRotation()const
 {
 	return eulerRotation;
@@ -93,6 +103,12 @@ void CTransform::SetPosition(float3 position)
 void CTransform::SetScale(float3 scale)
 {
 	this->scale = scale;
+	UpdateLocalTransform();
+}
+
+void CTransform::SetRotation(Quat rotation)
+{
+	this->rotation = rotation;
 	UpdateLocalTransform();
 }
 

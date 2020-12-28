@@ -97,7 +97,7 @@ uint MResourceManager::ImportFileFromAssets(const char* newFileInAssets, Resourc
 		return ret;
 	}
 
-	char* fileBuffer;
+	char* fileBuffer = nullptr;
 	uint size = App->fileSystem->Load(newFileInAssets,&fileBuffer);
 	Resource* resource = CreateNewResource(newFileInAssets, type);
 

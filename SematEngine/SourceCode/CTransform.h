@@ -22,6 +22,7 @@ public:
 	float3 GetPosition()const;
 	float3 GetScale()const;
 	float4x4 GetGlobalTransform()const;
+	float3 GetGlobalPosition()const;
 	float3 GetEulerRotation()const;
 
 
@@ -32,6 +33,7 @@ public:
 	void SetTransform(float3 position,float3 scale ,Quat rotation); 
 	void SetLocalTransform(float3 position, float3 scale, Quat rotation);
 	void SetLocalTransform(float4x4 matrix);
+	void SetRotation(Quat rotation);
 
 	void UpdateLocalTransform();
 	void SetEulerRotation(float3 eulerAngles);

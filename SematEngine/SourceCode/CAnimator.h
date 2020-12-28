@@ -23,6 +23,7 @@ public:
 	void LinkBones(); //Fills linked bones list with the game objects corresponding to them
 
 	void DrawBones();
+	void UpdateBones(); //Updated linked Bones position
 
 	void Play();
 	void Pause();

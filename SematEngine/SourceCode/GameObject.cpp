@@ -43,6 +43,9 @@ void GameObject::Update(float dt)
 			(*item)->Update(dt);
 		}
 	}
+
+	//if(parent != nullptr)
+		//transform->UpdatedTransform(parent->transform->GetTransform());
 }
 
 void GameObject::CleanUp()

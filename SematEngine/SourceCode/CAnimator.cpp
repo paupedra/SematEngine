@@ -12,7 +12,6 @@
 #include "CAnimator.h"
 #include "CTransform.h"
 
-
 CAnimator::CAnimator(GameObject* owner) : Component(ComponentType::ANIMATOR, owner)
 {
 
@@ -40,6 +39,9 @@ void CAnimator::Update(float dt)
 			//should take into account amount of times ticks is bigger then duration ( % ?) but they are not int
 			currentAnimationTicks = (uint)currentAnimationTicks % (uint)currentAnimation->duration;
 		}
+
+		//update bones positions
+		UpdateBones();
 	}
 
 	//move and draw the bones according to current animation
@@ -47,9 +49,6 @@ void CAnimator::Update(float dt)
 	{
 		DrawBones();
 	}
-
-	//update bones positions
-
 }
 
 void CAnimator::CleanUp()
@@ -72,8 +71,6 @@ void CAnimator::LinkBones()
 {
 	linkedBones.clear();
 	rootBone = nullptr;
-
-	
 
 	//find bones one by one and FindChild
 	for (std::map<std::string,Bone>::const_iterator it = currentAnimation->bones.begin(); it != currentAnimation->bones.end(); it++)
@@ -100,7 +97,52 @@ void CAnimator::DrawBones()
 	{
 		for (int i = 0; i < it->second->children.size(); i++)
 		{
-			App->renderer3D->DrawLine(it->second->transform->GetPosition(), it->second->children[i]->transform->GetPosition());
+			App->renderer3D->DrawLine(it->second->transform->GetGlobalPosition(), it->second->children[i]->transform->GetGlobalPosition());
+		}
+	}
+}
+
+void CAnimator::UpdateBones()
+{
+	std::map<std::string, Bone>::const_iterator bone = currentAnimation->bones.begin();
+	for (bone; bone != currentAnimation->bones.end(); bone++)
+	{
+
+		std::map<std::string, GameObject*>::const_iterator it = linkedBones.find(bone->first);
+		if (it == linkedBones.end())
+		{
+			break;
+		}
+
+		float3 newPosition = float3::zero;
+
+		//get last and next bone
+		std::map<double, float3>::const_iterator i = bone->second.positionKeys.lower_bound(currentAnimationTicks);
+
+		if (i != bone->second.positionKeys.end())
+		{
+			newPosition = i->second;
+			it->second->transform->SetPosition(newPosition);
+		}
+
+		float3 newScale = float3::zero;
+
+		std::map<double, float3>::const_iterator sca = bone->second.scaleKeys.lower_bound(currentAnimationTicks);
+
+		if (sca != bone->second.scaleKeys.end())
+		{
+			newScale = sca->second;
+			it->second->transform->SetScale(newScale);
+		}
+
+		Quat newRotation = Quat::identity;
+
+		std::map<double, Quat>::const_iterator rot = bone->second.quaternionKeys.lower_bound(currentAnimationTicks);
+
+		if (rot != bone->second.quaternionKeys.end())
+		{
+			newRotation = rot->second;
+			it->second->transform->SetRotation(newRotation);
 		}
 	}
 }
