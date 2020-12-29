@@ -12,6 +12,7 @@ class WInspector;
 class WAssets;
 class WPlay;
 class WResources;
+class WGame;
 struct HardwareInfo;
 class JsonNode;
 
@@ -56,5 +57,6 @@ public:
 	WAssets* assets = nullptr;
 	WPlay* play = nullptr;
 	WResources* resources = nullptr;
+	WGame* game = nullptr;
 	bool mouseHovered = false;
 };

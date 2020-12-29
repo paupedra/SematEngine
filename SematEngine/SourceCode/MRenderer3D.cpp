@@ -461,6 +461,7 @@ void MRenderer3D::DrawBox(float3* corners)
 
 void MRenderer3D::DrawLine(float3 a, float3 b)
 {
+	glDisable(GL_LIGHTING);
 	glColor4f(0, 1, 0, 1);
 	glLineWidth(2.0f);
 	glBegin(GL_LINES);
@@ -471,6 +472,7 @@ void MRenderer3D::DrawLine(float3 a, float3 b)
 	glEnd();
 	glColor4f(1, 1, 1, 1);
 	glLineWidth(1.0f);
+	SwitchLighting();
 }
 
 void MRenderer3D::DrawScenePlane(int size)

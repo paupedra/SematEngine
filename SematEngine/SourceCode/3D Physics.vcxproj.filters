@@ -492,6 +492,9 @@
     <ClInclude Include="RAnimationCollection.h">
       <Filter>Source Code\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="WGame.h">
+      <Filter>Source Code\Editor\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -787,6 +790,9 @@
     </ClCompile>
     <ClCompile Include="RAnimationCollection.cpp">
       <Filter>Source Code\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="WGame.cpp">
+      <Filter>Source Code\Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

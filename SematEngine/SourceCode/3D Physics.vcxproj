@@ -208,6 +208,7 @@
     <ClInclude Include="RTexture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WAssets.h" />
+    <ClInclude Include="WGame.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WAbout.h" />
     <ClInclude Include="WConfiguration.h" />
@@ -308,6 +309,7 @@
     <ClCompile Include="RTexture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WAssets.cpp" />
+    <ClCompile Include="WGame.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WAbout.cpp" />
     <ClCompile Include="WConfiguration.cpp" />

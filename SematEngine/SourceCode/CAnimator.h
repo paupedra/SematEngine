@@ -7,6 +7,8 @@ class GameObject;
 class Component;
 class RAnimation;
 
+class Bone;
+
 class CAnimator : public Component
 {
 public:
@@ -25,9 +27,15 @@ public:
 	void DrawBones();
 	void UpdateBones(); //Updated linked Bones position
 
+	void UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it,float time);
+	void UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, float time);
+
 	void Play();
 	void Pause();
 	void Stop(); //Resets and pauses animtion
+
+	double TicksToTime(double ticks); //converts animation ticks to equivalent time
+	double TimeToTicks(double time); //converts animation time to equivalent ticks
 
 	inline void SwitchDrawBones() { drawBones = !drawBones; };
 
@@ -35,6 +43,7 @@ public:
 	inline RAnimation* GetCurrentAnimation()const { return currentAnimation; };
 
 	inline double GetAnimationTicks()const { return currentAnimationTicks; };
+	inline double GetAnimationTime()const { return currentAnimationTime; };
 	double GetAnimationSpeed()const ;
 	double GetAnimationDuration()const;
 	const char* GetAnimationName()const ;
@@ -56,6 +65,8 @@ private:
 
 	double currentAnimationTime = 0;
 	double currentAnimationTicks = 0;
+
+	float durationInSeconds = 0;
 
 	bool paused = true;
 };

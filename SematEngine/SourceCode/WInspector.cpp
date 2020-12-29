@@ -246,6 +246,7 @@ void WInspector::DrawAnimator(CAnimator* animator)
 				animator->Stop();
 
 			ImGui::Text("Animation Ticks: %f", animator->GetAnimationTicks());
+			ImGui::Text("Animation Time: %f", animator->GetAnimationTime());
 			ImGui::Text("Animation Speed: %f", animator->GetAnimationSpeed());
 			ImGui::Text("Animation Duration: %f", animator->GetAnimationDuration());
 

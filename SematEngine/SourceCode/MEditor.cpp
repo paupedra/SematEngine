@@ -17,6 +17,7 @@
 #include "WAssets.h"
 #include "WPlay.h"
 #include "WResources.h"
+#include "WGame.h"
 
 #include "IScene.h"
 
@@ -42,6 +43,7 @@ MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 	assets = new WAssets(true);
 	play = new WPlay(true);
 	resources = new WResources(true);
+	game = new WGame(false);
 
 	AddWindow(configuration);
 	AddWindow(console);
@@ -51,6 +53,7 @@ MEditor::MEditor(bool start_enabled) : Module(start_enabled)
 	AddWindow(assets);
 	AddWindow(play);
 	AddWindow(resources);
+	AddWindow(game);
 }
 
 MEditor::~MEditor()
@@ -162,6 +165,10 @@ void MEditor::DrawMainMenuBar()
 			if (ImGui::MenuItem("Configuration", " ", configuration->active)) { configuration->SetActive(); }
 			if (ImGui::MenuItem("Hierarchy", " ", hierarchy->active)) { hierarchy->SetActive(); }
 			if (ImGui::MenuItem("Inspector", " ", inspector->active)) { inspector->SetActive(); }
+			if (ImGui::MenuItem("Console", " ", assets->active)) {assets->SetActive(); }
+			if (ImGui::MenuItem("Configuration", " ", play->active)) { play->SetActive(); }
+			if (ImGui::MenuItem("Hierarchy", " ", resources->active)) { resources->SetActive(); }
+			if (ImGui::MenuItem("Inspector", " ", game->active)) { game->SetActive(); }
 
 			ImGui::EndMenu();
 		}
