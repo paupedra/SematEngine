@@ -35,3 +35,18 @@ UID RAnimation::GenerateCustomFile()
 
 	return resourceData.UID;
 }
+
+void AnimationChop::SetStartKey(float _startKey)
+{
+	
+}
+
+void AnimationChop::SetEndKey(float _endKey)
+{
+
+}
+
+void AnimationChop::SetSpeed(float _speed)
+{
+
+}

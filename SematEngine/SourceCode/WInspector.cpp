@@ -230,6 +230,12 @@ void WInspector::DrawAnimator(CAnimator* animator)
 		ImGui::Text("Current animation: %s", animator->GetAnimationName());
 		ImGui::Separator();
 
+		float speed = animator->GetPlaybackSpeed();
+		if (ImGui::DragFloat("Playback Speed", &speed, 0.1,0.1,10))
+		{
+			animator->SetPlaybackSpeed(speed);
+		}
+
 		if (animator->GetCurrentAnimation() != nullptr)
 		{
 			if (ImGui::Button("Play"))
@@ -245,18 +251,63 @@ void WInspector::DrawAnimator(CAnimator* animator)
 			if (ImGui::Button("Stop"))
 				animator->Stop();
 
-			ImGui::Text("Animation Ticks: %f", animator->GetAnimationTicks());
-			ImGui::Text("Animation Time: %f", animator->GetAnimationTime());
-			ImGui::Text("Animation Speed: %f", animator->GetAnimationSpeed());
-			ImGui::Text("Animation Duration: %f", animator->GetAnimationDuration());
+			ImGui::Text("Ticks: %f ticks", animator->GetAnimationTicks());
+			ImGui::Text("Time: %f seconds", animator->GetAnimationTime());
+			ImGui::Text("Speed: %f ticks/s", animator->GetAnimationSpeed());
+			ImGui::Text("Duration in ticks: %f ticks", animator->GetAnimationDuration());
+			ImGui::Text("Duration in seconds: %f seconds", animator->GetDurationInSeconds());
 
 			bool drawBones = animator->GetDrawBones();
 			if (ImGui::Checkbox("Draw Bones", &drawBones)) { animator->SwitchDrawBones(); }
 		
 			ImGui::Separator();
+
+			ImGui::Text("Chops:");
+			for (std::vector<AnimationChop>::iterator it = animator->GetChops().begin(); it != animator->GetChops().end(); it++)
+			{
+				float startKey, endKey, speed = 0;
+				if (ImGui::SliderFloat("Start Key: ", &startKey, 0, it->owner->duration))
+				{
+
+				}
+				
+				if (ImGui::SliderFloat("End Key: ", &endKey, 1, it->owner->duration))
+				{
+
+				}
+
+				if (ImGui::SliderFloat("Speed: ", &speed, 0, 100))
+				{
+
+				}
+
+
+				ImGui::Separator();
+			}
+
+			if (ImGui::Button("Add Chop"))
+			{
+				ImGui::OpenPopup("Add Chop Popup");
+			}
 		}
+
+		
+
+		if(ImGui::BeginPopup("Add Chop Popup"))
+		{
+			float startKey, endKey, speed = 0;
+			ImGui::InputFloat("Start Key:", &startKey);
+			ImGui::InputFloat("End Key:", &endKey);
+			ImGui::InputFloat("Speed:", &speed);
+
+			if (ImGui::Button("Add"))
+			{
+				animator->AddChop(startKey, endKey, speed);
+			}
+		}
+
 		ImGui::Text("Animations:");
-		for (uint i = 0; i < animator->GetAnimationsSize(); i++)
+		for (uint i = 0; i < animator->GetAnimations().size(); i++)
 		{
 			if(ImGui::Button(animator->GetAnimation(i)->name.c_str()))
 			{

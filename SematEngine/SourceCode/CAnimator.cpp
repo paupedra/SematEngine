@@ -30,15 +30,19 @@ void CAnimator::Update(float dt)
 	//update current animation time/ticks
 	if (!paused)
 	{
-		currentAnimationTime += dt/2;
+		currentAnimationTime += dt * (double)playbackSpeed;
 
-		currentAnimationTicks += (dt/2) * currentAnimation->speed; //augmented ticks
+		uint timeMs = currentAnimationTime * 1000;
+		uint durationMs = (durationInSeconds * 1000);
 
-		if (currentAnimationTicks > currentAnimation->duration) //ticks wrap arround the duration
+		if (timeMs > durationMs) //ticks wrap arround the duration
 		{
 			//should take into account amount of times ticks is bigger then duration ( % ?) but they are not int
-			currentAnimationTicks = (uint)currentAnimationTicks % (uint)currentAnimation->duration;
+			currentAnimationTime = timeMs % durationMs;
+			currentAnimationTime /= 1000;
 		}
+
+		currentAnimationTicks = currentAnimationTime  * currentAnimation->speed; //augmented ticks
 
 		//update bones positions
 		UpdateBones();
@@ -61,11 +65,19 @@ void CAnimator::AddAnimation(RAnimation* newAnimation)
 	animations.push_back(newAnimation);
 }
 
-void CAnimator::SetCurrentAnimation(RAnimation* animation)
+void CAnimator::AddChop(float startKey, float endKey, float speed)
 {
-	currentAnimation = animation;
-	LinkBones(); 
-	durationInSeconds = currentAnimation->duration / currentAnimation->speed ;
+
+
+
+	AnimationChop newChop(currentAnimation,startKey, endKey, speed);
+	chops.push_back(newChop);
+}
+
+void CAnimator::AddTransition(AnimationChop* chop, float duration)
+{
+	AnimationTransition newTransition(chop, duration);
+	transitionQueue.push(newTransition);
 }
 
 void CAnimator::LinkBones()
@@ -108,10 +120,6 @@ void CAnimator::DrawBones()
 
 void CAnimator::UpdateBones()
 {
-	uint aniamtionTimeMs = currentAnimationTime * 1000;
-
-
-	float animationTime =  0; //time of current animation in seconds
 
 	std::map<std::string, Bone>::const_iterator bone = currentAnimation->bones.begin();
 	for (bone; bone != currentAnimation->bones.end(); bone++)
@@ -124,27 +132,17 @@ void CAnimator::UpdateBones()
 			if (it->second == nullptr)
 				break;
 
-		UpdateBonePosition(bone, it,animationTime);
+		UpdateBonePosition(bone, it);
 
-		//scale
-		float3 newScale = float3::zero;
+	
 
-		std::map<double, float3>::const_iterator sca = bone->second.scaleKeys.lower_bound(currentAnimationTicks);
-
-		if (sca != bone->second.scaleKeys.end())
-		{
-			newScale = sca->second;
-			it->second->transform->SetScale(newScale);
-		}
-
-		UpdateBoneRotation(bone, it, animationTime);
+		UpdateBoneRotation(bone, it);
 		
 	}
 }
 
-void CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, float time)
+void CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
 {
-	//position
 	float3 prevPosition = float3::zero;
 	float3 nextPosition = float3::zero;
 	float3 finalPosition = float3::zero;
@@ -152,30 +150,31 @@ void CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator b
 	double prevTicks = 0;
 	double nextTicks = 0;
 
-	std::map<double, float3>::const_iterator i = bone->second.positionKeys.lower_bound(currentAnimationTicks); //get prev
+	std::map<double, float3>::const_iterator pos = bone->second.positionKeys.lower_bound(currentAnimationTicks);
+	pos--;
 
-	if (i != bone->second.positionKeys.end())
+	if (pos != bone->second.positionKeys.end())
 	{
-		prevPosition = i->second;
-		prevTicks = i->first;
+		prevPosition = pos->second;
+		prevTicks = pos->first;
+		pos++;
 	}
-		
-	i = bone->second.positionKeys.upper_bound(currentAnimationTicks);
 
-	if (i != bone->second.positionKeys.end()) //it there is an upper (not last)
+	if (pos != bone->second.positionKeys.end()) //it there is an upper (not last)
 	{
-		nextPosition = i->second;
-		nextTicks = i->first;
+		nextPosition = pos->second;
+		nextTicks = pos->first;
 
-		float lerpT = (TicksToTime(prevTicks) - (double)time) / (TicksToTime(prevTicks) - TicksToTime(nextTicks));
+		float a = (double)currentAnimationTime - TicksToTime(prevTicks);
+		float b = TicksToTime(nextTicks) - TicksToTime(prevTicks);
+		float lerpT = a / b;
 
 		if (lerpT > 1)
-		{
 			lerpT = 1;
-		}
+		if (lerpT < 0)
+			lerpT = 0;
 
 		finalPosition = float3::Lerp(prevPosition, nextPosition, lerpT); //t is between 0 and 1 (0 is previous key time 1 is next key time)
-		//finalPosition = prevPosition;
 	}
 	else //blending here
 	{
@@ -185,7 +184,50 @@ void CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator b
 	it->second->transform->SetPosition(finalPosition);
 }
 
-void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, float time)
+void CAnimator::UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
+{
+	float3 prevScale = float3::zero;
+	float3 nextScale = float3::zero;
+	float3 finalScale = float3::zero;
+
+	double prevTicks = 0;
+	double nextTicks = 0;
+
+	std::map<double, float3>::const_iterator scale = bone->second.scaleKeys.lower_bound(currentAnimationTicks);
+	scale--;
+
+	if (scale != bone->second.scaleKeys.end())
+	{
+		prevScale = scale->second;
+		prevTicks = scale->first;
+		scale++;
+	}
+
+	if (scale != bone->second.scaleKeys.end()) //it there is an upper (not last)
+	{
+		nextScale = scale->second;
+		nextTicks = scale->first;
+
+		float a = (double)currentAnimationTime - TicksToTime(prevTicks);
+		float b = TicksToTime(nextTicks) - TicksToTime(prevTicks);
+		float lerpT = a / b;
+
+		if (lerpT > 1)
+			lerpT = 1;
+		if (lerpT < 0)
+			lerpT = 0;
+
+		finalScale = float3::Lerp(prevScale, nextScale, lerpT); //t is between 0 and 1 (0 is previous key time 1 is next key time)
+	}
+	else //blending here
+	{
+		finalScale = prevScale;
+	}
+
+	it->second->transform->SetPosition(finalScale);
+}
+
+void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
 {
 	//rotation
 	Quat prevRotation = Quat::identity;
@@ -196,27 +238,30 @@ void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator b
 	double nextTicks = 0;
 
 	std::map<double, Quat>::const_iterator rot = bone->second.quaternionKeys.lower_bound(currentAnimationTicks);
+	rot--;
 
 	if (rot != bone->second.quaternionKeys.end())
 	{
 		prevRotation = rot->second;
 		prevTicks = rot->first;
+		rot++;
 	}
-
-	rot = bone->second.quaternionKeys.upper_bound(currentAnimationTicks);
 
 	if (rot != bone->second.quaternionKeys.end()) //it there is an upper (not last)
 	{
 		nextRotation = rot->second;
 		nextTicks = rot->first;
 
-		float lerpT = (TicksToTime(prevTicks) - time) / (TicksToTime(prevTicks) - TicksToTime(nextTicks));
+		float a = (double)currentAnimationTime - TicksToTime(prevTicks);
+		float b = TicksToTime(nextTicks) - TicksToTime(prevTicks);
+		float lerpT = a / b;
 
 		if (lerpT > 1)
 			lerpT = 1;
+		if (lerpT < 0)
+			lerpT = 0;
 
 		finalRotation = Quat::Slerp(prevRotation, nextRotation, lerpT); //t is between 0 and 1 (0 is previous key time 1 is next key time)
-		//finalPosition = prevPosition;
 	}
 	else //blending here
 	{
@@ -252,7 +297,7 @@ double CAnimator::TicksToTime(double ticks) //converts animation ticks to equiva
 {
 	float ret = 0;
 
-	ret = ticks / currentAnimation->speed;
+	ret = (ticks / currentAnimation->speed);
 
 	return ret;
 }
@@ -260,6 +305,18 @@ double CAnimator::TicksToTime(double ticks) //converts animation ticks to equiva
 double CAnimator::TimeToTicks(double time) //converts animation time to equivalent ticks
 {
 	return 0;
+}
+
+void CAnimator::SetCurrentAnimation(RAnimation* animation)
+{
+	currentAnimation = animation;
+	LinkBones();
+	durationInSeconds = currentAnimation->duration / currentAnimation->speed;
+}
+
+void CAnimator::SetPlaybackSpeed(float speed)
+{
+	playbackSpeed = speed;
 }
 
 double CAnimator::GetAnimationSpeed() const 

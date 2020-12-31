@@ -39,6 +39,13 @@ void Importer::SceneImporter::ImportSceneResource(const char* buffer, RScene* re
 	if (size > 0)
 	{
 		const aiScene* scene = aiImportFileFromMemory(buffer, size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+
+		if (scene == nullptr)
+		{
+			LOG("(ERROR) Could not import: %s", resource->resourceData.assetsFile.c_str());
+			return;
+		}
+
 		const aiNode* rootNode = scene->mRootNode;
 
 		//save all the meshes and add them to RScene->meshes (list containing the id of the meshes, models will use this to get their id)
