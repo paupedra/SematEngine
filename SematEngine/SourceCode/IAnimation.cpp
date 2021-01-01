@@ -76,7 +76,12 @@ void Importer::AnimationImporter::ImportAllAnimationsInScene(const aiScene* scen
 uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name)
 {
 	//save basic animation data
-	uint size = sizeof(uint) + sizeof(char) * animation->name.size() + sizeof(uint) + sizeof(double) + sizeof(double);
+	uint size = sizeof(uint) + sizeof(char) * animation->name.size() + sizeof(uint) + sizeof(double) + sizeof(double) + sizeof(uint);
+
+	for (std::vector<AnimationChop>::iterator chop = animation->chops.begin(); chop != animation->chops.end(); chop++)
+	{
+		size += sizeof(float) * 3;
+	}
 
 	//calc size iterating channels
 	std::map<std::string, Bone>::const_iterator i;

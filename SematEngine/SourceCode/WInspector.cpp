@@ -264,8 +264,8 @@ void WInspector::DrawAnimator(CAnimator* animator)
 
 			ImGui::Text("Chops:");
 			//for (std::vector<AnimationChop>::iterator it = animator->GetChops(); it != animator->GetChops().end(); it++)
-			std::vector<AnimationChop> chops = animator->GetChops();
-			for(std::vector<AnimationChop>::iterator it = chops.begin(); it != chops.end(); it++)
+			std::vector<AnimationChop>* chops = animator->GetChops();
+			for(std::vector<AnimationChop>::iterator it = chops->begin(); it != chops->end(); it++)
 			{
 				float _startKey = it->startKey;
 				float _endKey = it->endKey;
@@ -274,18 +274,14 @@ void WInspector::DrawAnimator(CAnimator* animator)
 				{
 					it->SetStartKey(_startKey);
 				}
-				
 				if (ImGui::SliderFloat("End Key: ", &_endKey, 0, it->owner->duration))
 				{
 					it->SetEndKey(_endKey);
 				}
-
 				if (ImGui::SliderFloat("Speed: ", &_speed, 1, 100))
 				{
 					it->SetSpeed(_speed);
 				}
-
-
 				ImGui::Separator();
 			}
 

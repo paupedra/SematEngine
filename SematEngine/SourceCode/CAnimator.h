@@ -59,16 +59,17 @@ public:
 	inline bool GetDrawBones()const { return drawBones; };
 	inline RAnimation* GetCurrentAnimation()const { return currentAnimation; };
 
-	inline double GetAnimationTicks()const { return currentAnimationTicks; };
-	inline double GetAnimationTime()const { return currentAnimationTime; };
-	inline double GetPlaybackSpeed()const { return playbackSpeed; } //returns the multiplier at which animation is being played
-	inline float GetDurationInSeconds()const { return durationInSeconds; }
+	inline double GetAnimationTicks()const	  { return currentAnimationTicks; };
+	inline double GetAnimationTime()const	  { return currentAnimationTime; };
+	inline double GetPlaybackSpeed()const	  { return playbackSpeed; } //returns the multiplier at which animation is being played
+	inline float  GetDurationInSeconds()const { return durationInSeconds; }
+
 	double GetAnimationSpeed()const;
 	double GetAnimationDuration()const;
 	const char* GetAnimationName()const ;
 
 	inline std::vector<RAnimation*> GetAnimations() const { return animations; };
-	std::vector<AnimationChop> GetChops();
+	std::vector<AnimationChop>* GetChops();
 
 	uint GetAnimationsSize() const { return animations.size(); };
 	RAnimation* GetAnimation(uint index) const { return animations[index]; }

@@ -342,7 +342,7 @@ const char* CAnimator::GetAnimationName()const
 	return "No animation selected";
 }
 
-std::vector<AnimationChop> CAnimator::GetChops()
+std::vector<AnimationChop>* CAnimator::GetChops()
 { 
-	return chops; 
+	return &chops; 
 }
