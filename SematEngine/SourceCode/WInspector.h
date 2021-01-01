@@ -26,5 +26,7 @@ public:
 	void CleanUp() override;
 
 private:
-
+	float startKey = 0;
+	float endKey = 0;
+	float speed = 0;
 };

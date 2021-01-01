@@ -14,6 +14,7 @@ struct AnimationChop
 {
 	AnimationChop(RAnimation* _owner , float _startKey, float _endKey, float _speed)
 	{
+		owner = _owner;
 		_startKey < 0 ? startKey = 0 : startKey = _startKey;
 		endKey = _endKey;
 

@@ -38,12 +38,27 @@ UID RAnimation::GenerateCustomFile()
 
 void AnimationChop::SetStartKey(float _startKey)
 {
-	
+	if (_startKey < 0)
+		_startKey = 0;
+
+	if (_startKey >= owner->duration)
+		_startKey = owner->duration - 1;
+
+	if (_startKey > endKey)
+		endKey = _startKey + 1;
+
+	startKey = _startKey;
 }
 
 void AnimationChop::SetEndKey(float _endKey)
 {
+	if (_endKey < startKey)
+		_endKey = startKey + 1;
 
+	if (_endKey > owner->duration)
+		_endKey = owner->duration;
+
+	endKey = _endKey;
 }
 
 void AnimationChop::SetSpeed(float _speed)

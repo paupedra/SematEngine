@@ -67,10 +67,12 @@ void CAnimator::AddAnimation(RAnimation* newAnimation)
 
 void CAnimator::AddChop(float startKey, float endKey, float speed)
 {
-
-
-
 	AnimationChop newChop(currentAnimation,startKey, endKey, speed);
+
+	newChop.SetStartKey(startKey);
+	newChop.SetEndKey(endKey);
+	newChop.SetSpeed(speed);
+
 	chops.push_back(newChop);
 }
 
@@ -338,4 +340,9 @@ const char* CAnimator::GetAnimationName()const
 	if (currentAnimation != nullptr)
 		return currentAnimation->name.c_str();
 	return "No animation selected";
+}
+
+std::vector<AnimationChop> CAnimator::GetChops()
+{ 
+	return chops; 
 }

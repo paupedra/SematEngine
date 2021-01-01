@@ -68,7 +68,7 @@ public:
 	const char* GetAnimationName()const ;
 
 	inline std::vector<RAnimation*> GetAnimations() const { return animations; };
-	inline std::vector<AnimationChop> GetChops()const { return chops; };
+	std::vector<AnimationChop> GetChops();
 
 	uint GetAnimationsSize() const { return animations.size(); };
 	RAnimation* GetAnimation(uint index) const { return animations[index]; }

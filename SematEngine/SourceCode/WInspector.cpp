@@ -230,10 +230,10 @@ void WInspector::DrawAnimator(CAnimator* animator)
 		ImGui::Text("Current animation: %s", animator->GetAnimationName());
 		ImGui::Separator();
 
-		float speed = animator->GetPlaybackSpeed();
-		if (ImGui::DragFloat("Playback Speed", &speed, 0.1,0.1,10))
+		float playbackSpeed = animator->GetPlaybackSpeed();
+		if (ImGui::DragFloat("Playback Speed", &playbackSpeed, 0.1,0.1,10))
 		{
-			animator->SetPlaybackSpeed(speed);
+			animator->SetPlaybackSpeed(playbackSpeed);
 		}
 
 		if (animator->GetCurrentAnimation() != nullptr)
@@ -263,22 +263,26 @@ void WInspector::DrawAnimator(CAnimator* animator)
 			ImGui::Separator();
 
 			ImGui::Text("Chops:");
-			for (std::vector<AnimationChop>::iterator it = animator->GetChops().begin(); it != animator->GetChops().end(); it++)
+			//for (std::vector<AnimationChop>::iterator it = animator->GetChops(); it != animator->GetChops().end(); it++)
+			std::vector<AnimationChop> chops = animator->GetChops();
+			for(std::vector<AnimationChop>::iterator it = chops.begin(); it != chops.end(); it++)
 			{
-				float startKey, endKey, speed = 0;
-				if (ImGui::SliderFloat("Start Key: ", &startKey, 0, it->owner->duration))
+				float _startKey = it->startKey;
+				float _endKey = it->endKey;
+				float _speed = it->speed;
+				if (ImGui::SliderFloat("Start Key: ", &_startKey, 0, it->owner->duration))
 				{
-
+					it->SetStartKey(_startKey);
 				}
 				
-				if (ImGui::SliderFloat("End Key: ", &endKey, 1, it->owner->duration))
+				if (ImGui::SliderFloat("End Key: ", &_endKey, 0, it->owner->duration))
 				{
-
+					it->SetEndKey(_endKey);
 				}
 
-				if (ImGui::SliderFloat("Speed: ", &speed, 0, 100))
+				if (ImGui::SliderFloat("Speed: ", &_speed, 1, 100))
 				{
-
+					it->SetSpeed(_speed);
 				}
 
 
@@ -288,21 +292,21 @@ void WInspector::DrawAnimator(CAnimator* animator)
 			if (ImGui::Button("Add Chop"))
 			{
 				ImGui::OpenPopup("Add Chop Popup");
+				speed = animator->GetAnimationSpeed();
 			}
-		}
 
-		
-
-		if(ImGui::BeginPopup("Add Chop Popup"))
-		{
-			float startKey, endKey, speed = 0;
-			ImGui::InputFloat("Start Key:", &startKey);
-			ImGui::InputFloat("End Key:", &endKey);
-			ImGui::InputFloat("Speed:", &speed);
-
-			if (ImGui::Button("Add"))
+			if (ImGui::BeginPopup("Add Chop Popup"))
 			{
-				animator->AddChop(startKey, endKey, speed);
+				ImGui::InputFloat("Start Key", &startKey);
+				ImGui::InputFloat("End Key", &endKey);
+				ImGui::InputFloat("Speed", &speed);
+
+				if (ImGui::Button("Add"))
+				{
+					animator->AddChop(startKey, endKey, speed);
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
 			}
 		}
 
