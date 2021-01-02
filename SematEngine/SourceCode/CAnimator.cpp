@@ -27,22 +27,63 @@ void CAnimator::Update(float dt)
 	if (currentAnimation == nullptr)
 		return;
 
-	//update current animation time/ticks
-	if (!paused)
-	{
-		currentAnimationTime += dt * (double)playbackSpeed;
 
-		uint timeMs = currentAnimationTime * 1000;
+
+	switch (state)
+	{
+		case AnimatorState::PLAYING:
+
+			break;
+		case AnimatorState::PAUSED:
+
+			break;
+		case AnimatorState::TRANSITIONING:
+
+			break;
+	}
+
+	if (!transitionQueue.empty() && !transitioning)
+	{
+		transitioning = true;
+		currentTransition = &transitionQueue.front();
+	}
+
+	if (transitioning)
+	{
+		UpdateTransitionTime(dt);
+
+		//check if transition time is bigger than transition duration
+		if (transitionTime > currentTransition->duration)
+		{
+			SetCurrentClip(currentTransition->clip);
+			currentClipTicks = transitionClipTicks;
+			currentClipTime = transitionClipTime;
+			currentTransition = nullptr;
+			transitioning = false;
+		}
+		
+		//transitionTicks;
+
+	}
+
+	//update current animation time/ticks
+	if (!paused && !transitioning)
+	{
+		currentClipTime += dt * (double)playbackSpeed;
+
+		durationInSeconds = (currentClip->endKey - currentClip->startKey) / currentClip->speed;
+
+		uint timeMs = currentClipTime * 1000;
 		uint durationMs = (durationInSeconds * 1000);
 
 		if (timeMs > durationMs) //ticks wrap arround the duration
 		{
 			//should take into account amount of times ticks is bigger then duration ( % ?) but they are not int
-			currentAnimationTime = timeMs % durationMs;
-			currentAnimationTime /= 1000;
+			currentClipTime = timeMs % durationMs;
+			currentClipTime /= 1000;
 		}
 
-		currentAnimationTicks = currentAnimationTime  * currentAnimation->speed; //augmented ticks
+		currentClipTicks = currentClipTime  * currentClip->speed + currentClip->startKey; //augmented ticks
 
 		//update bones positions
 		UpdateBones();
@@ -65,20 +106,20 @@ void CAnimator::AddAnimation(RAnimation* newAnimation)
 	animations.push_back(newAnimation);
 }
 
-void CAnimator::AddChop(float startKey, float endKey, float speed)
+void CAnimator::AddClip(float startKey, float endKey, float speed)
 {
-	AnimationChop newChop(currentAnimation,startKey, endKey, speed);
+	AnimationClip newClip(currentAnimation,startKey, endKey, speed);
 
-	newChop.SetStartKey(startKey);
-	newChop.SetEndKey(endKey);
-	newChop.SetSpeed(speed);
+	newClip.SetStartKey(startKey);
+	newClip.SetEndKey(endKey);
+	newClip.SetSpeed(speed);
 
-	chops.push_back(newChop);
+	currentAnimation->clips.push_back(newClip);
 }
 
-void CAnimator::AddTransition(AnimationChop* chop, float duration)
+void CAnimator::AddTransition(AnimationClip* clip, float duration)
 {
-	AnimationTransition newTransition(chop, duration);
+	AnimationTransition newTransition(clip, duration);
 	transitionQueue.push(newTransition);
 }
 
@@ -122,11 +163,9 @@ void CAnimator::DrawBones()
 
 void CAnimator::UpdateBones()
 {
-
 	std::map<std::string, Bone>::const_iterator bone = currentAnimation->bones.begin();
 	for (bone; bone != currentAnimation->bones.end(); bone++)
 	{
-
 		std::map<std::string, GameObject*>::const_iterator it = linkedBones.find(bone->first);
 		if (it == linkedBones.end())
 			break;
@@ -136,10 +175,9 @@ void CAnimator::UpdateBones()
 
 		UpdateBonePosition(bone, it);
 
-	
+		UpdateBoneScale(bone,it);
 
 		UpdateBoneRotation(bone, it);
-		
 	}
 }
 
@@ -152,7 +190,7 @@ void CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator b
 	double prevTicks = 0;
 	double nextTicks = 0;
 
-	std::map<double, float3>::const_iterator pos = bone->second.positionKeys.lower_bound(currentAnimationTicks);
+	std::map<double, float3>::const_iterator pos = bone->second.positionKeys.lower_bound(currentClipTicks);
 	pos--;
 
 	if (pos != bone->second.positionKeys.end())
@@ -167,7 +205,7 @@ void CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator b
 		nextPosition = pos->second;
 		nextTicks = pos->first;
 
-		float a = (double)currentAnimationTime - TicksToTime(prevTicks);
+		float a = (double)currentClipTime - TicksToTime(prevTicks);
 		float b = TicksToTime(nextTicks) - TicksToTime(prevTicks);
 		float lerpT = a / b;
 
@@ -195,7 +233,7 @@ void CAnimator::UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone
 	double prevTicks = 0;
 	double nextTicks = 0;
 
-	std::map<double, float3>::const_iterator scale = bone->second.scaleKeys.lower_bound(currentAnimationTicks);
+	std::map<double, float3>::const_iterator scale = bone->second.scaleKeys.lower_bound(currentClipTicks);
 	scale--;
 
 	if (scale != bone->second.scaleKeys.end())
@@ -210,7 +248,7 @@ void CAnimator::UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone
 		nextScale = scale->second;
 		nextTicks = scale->first;
 
-		float a = (double)currentAnimationTime - TicksToTime(prevTicks);
+		float a = (double)currentClipTime - TicksToTime(prevTicks);
 		float b = TicksToTime(nextTicks) - TicksToTime(prevTicks);
 		float lerpT = a / b;
 
@@ -226,7 +264,7 @@ void CAnimator::UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone
 		finalScale = prevScale;
 	}
 
-	it->second->transform->SetPosition(finalScale);
+	it->second->transform->SetScale(finalScale);
 }
 
 void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
@@ -239,7 +277,7 @@ void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator b
 	double prevTicks = 0;
 	double nextTicks = 0;
 
-	std::map<double, Quat>::const_iterator rot = bone->second.quaternionKeys.lower_bound(currentAnimationTicks);
+	std::map<double, Quat>::const_iterator rot = bone->second.quaternionKeys.lower_bound(currentClipTicks);
 	rot--;
 
 	if (rot != bone->second.quaternionKeys.end())
@@ -254,7 +292,7 @@ void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator b
 		nextRotation = rot->second;
 		nextTicks = rot->first;
 
-		float a = (double)currentAnimationTime - TicksToTime(prevTicks);
+		float a = (double)currentClipTime - TicksToTime(prevTicks);
 		float b = TicksToTime(nextTicks) - TicksToTime(prevTicks);
 		float lerpT = a / b;
 
@@ -271,6 +309,42 @@ void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator b
 	}
 
 	it->second->transform->SetRotation(finalRotation);
+}
+
+void CAnimator::UpdateTransitionTime(float dt)
+{
+	transitionTime += dt;
+
+	//current animation timers ----------------------------------------------------------------------
+	currentClipTime += dt * (double)playbackSpeed;
+	durationInSeconds = (currentClip->endKey - currentClip->startKey) / currentClip->speed;
+	uint timeMs = currentClipTime * 1000;
+	uint durationMs = (durationInSeconds * 1000);
+
+	if (timeMs > durationMs) //ticks wrap arround the duration
+	{
+		currentClipTime = timeMs % durationMs;
+		currentClipTime /= 1000;
+	}
+	currentClipTicks = currentClipTime * currentClip->speed + currentClip->startKey; //augmented ticks
+
+	//Transition timers -----------------------------------------------------------------------------
+	transitionClipTime += dt * (double)playbackSpeed;
+	transitionDurationInSeconds = (currentTransition->clip->endKey - currentTransition->clip->startKey) / currentTransition->clip->speed;
+	timeMs = transitionClipTime * 1000;
+	durationMs = (transitionDurationInSeconds * 1000);
+
+	if (timeMs > durationMs) //ticks wrap arround the duration
+	{
+		transitionClipTime = timeMs % durationMs;
+		transitionClipTime /= 1000;
+	}
+	transitionClipTicks = transitionClipTime * currentTransition->clip->speed + currentTransition->clip->startKey; //augmented ticks
+}
+
+void CAnimator::UpdateTransitionBones()
+{
+
 }
 
 void CAnimator::Play()
@@ -290,8 +364,8 @@ void CAnimator::Stop()
 	if (currentAnimation == nullptr)
 		return;
 
-	currentAnimationTime = 0;
-	currentAnimationTicks = 0;
+	currentClipTime = 0;
+	currentClipTicks = 0;
 	paused = true;
 }
 
@@ -299,7 +373,7 @@ double CAnimator::TicksToTime(double ticks) //converts animation ticks to equiva
 {
 	float ret = 0;
 
-	ret = (ticks / currentAnimation->speed);
+	ret = (ticks / currentClip->speed);
 
 	return ret;
 }
@@ -313,7 +387,19 @@ void CAnimator::SetCurrentAnimation(RAnimation* animation)
 {
 	currentAnimation = animation;
 	LinkBones();
-	durationInSeconds = currentAnimation->duration / currentAnimation->speed;
+	
+	if (animation->clips.empty())
+	{
+		AddClip(0, currentAnimation->duration, currentAnimation->speed);
+	}
+
+	SetCurrentClip(animation->clips.begin()._Ptr);
+}
+
+void CAnimator::SetCurrentClip(AnimationClip* clip)
+{
+	currentClip = clip;
+	
 }
 
 void CAnimator::SetPlaybackSpeed(float speed)
@@ -342,7 +428,7 @@ const char* CAnimator::GetAnimationName()const
 	return "No animation selected";
 }
 
-std::vector<AnimationChop>* CAnimator::GetChops()
+std::vector<AnimationClip>* CAnimator::GetClips()
 { 
-	return &chops; 
+	return &currentAnimation->clips;
 }

@@ -78,7 +78,7 @@ uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name
 	//save basic animation data
 	uint size = sizeof(uint) + sizeof(char) * animation->name.size() + sizeof(uint) + sizeof(double) + sizeof(double) + sizeof(uint);
 
-	for (std::vector<AnimationChop>::iterator chop = animation->chops.begin(); chop != animation->chops.end(); chop++)
+	for (std::vector<AnimationClip>::iterator clip = animation->clips.begin(); clip != animation->clips.end(); clip++)
 	{
 		size += sizeof(float) * 3;
 	}

@@ -6,6 +6,8 @@ class CMaterial;
 class CCamera;
 class CAnimator;
 
+struct AnimationClip;
+
 class WInspector : public Window
 {
 public:
@@ -29,4 +31,7 @@ private:
 	float startKey = 0;
 	float endKey = 0;
 	float speed = 0;
+
+	float transitionDuration = 0;
+	AnimationClip* transitionClip = nullptr;
 };

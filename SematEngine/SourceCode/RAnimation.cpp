@@ -36,7 +36,7 @@ UID RAnimation::GenerateCustomFile()
 	return resourceData.UID;
 }
 
-void AnimationChop::SetStartKey(float _startKey)
+void AnimationClip::SetStartKey(float _startKey)
 {
 	if (_startKey < 0)
 		_startKey = 0;
@@ -50,7 +50,7 @@ void AnimationChop::SetStartKey(float _startKey)
 	startKey = _startKey;
 }
 
-void AnimationChop::SetEndKey(float _endKey)
+void AnimationClip::SetEndKey(float _endKey)
 {
 	if (_endKey < startKey)
 		_endKey = startKey + 1;
@@ -61,7 +61,7 @@ void AnimationChop::SetEndKey(float _endKey)
 	endKey = _endKey;
 }
 
-void AnimationChop::SetSpeed(float _speed)
+void AnimationClip::SetSpeed(float _speed)
 {
-
+	speed = _speed;
 }

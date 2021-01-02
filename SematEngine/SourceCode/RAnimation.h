@@ -10,9 +10,9 @@ class Resource;
 
 class RAnimation;
 
-struct AnimationChop
+struct AnimationClip
 {
-	AnimationChop(RAnimation* _owner , float _startKey, float _endKey, float _speed)
+	AnimationClip(RAnimation* _owner , float _startKey, float _endKey, float _speed)
 	{
 		owner = _owner;
 		_startKey < 0 ? startKey = 0 : startKey = _startKey;
@@ -55,6 +55,6 @@ public:
 	std::string name;
 	double duration = 0;		//Ticks
 	double speed = 1;			//Ticks per second
-	std::vector<AnimationChop> chops;	//Contais chops that this animation is divided in
+	std::vector<AnimationClip> clips;	//Contais clips that this animation is divided in
 };
 #endif //__RESOURCEANIMATION_H__

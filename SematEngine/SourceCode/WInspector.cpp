@@ -261,37 +261,55 @@ void WInspector::DrawAnimator(CAnimator* animator)
 			if (ImGui::Checkbox("Draw Bones", &drawBones)) { animator->SwitchDrawBones(); }
 		
 			ImGui::Separator();
+			ImGui::Text("Clips:");
+			ImGui::Separator();
 
-			ImGui::Text("Chops:");
-			//for (std::vector<AnimationChop>::iterator it = animator->GetChops(); it != animator->GetChops().end(); it++)
-			std::vector<AnimationChop>* chops = animator->GetChops();
-			for(std::vector<AnimationChop>::iterator it = chops->begin(); it != chops->end(); it++)
+			int i = 0;
+			std::vector<AnimationClip>* clips = animator->GetClips();
+			for(std::vector<AnimationClip>::iterator it = clips->begin(); it != clips->end(); it++,i++)
 			{
+				bool isCurrentClip = false;
+				if (animator->GetCurrentClip() == &(*it))
+				{
+					isCurrentClip = true;
+				}
+				std::string n = "Current Clip " + std::to_string(i);
+				if (ImGui::Checkbox(n.c_str(), &isCurrentClip))
+				{
+					animator->SetCurrentClip(&(*it));
+				}
+
 				float _startKey = it->startKey;
 				float _endKey = it->endKey;
 				float _speed = it->speed;
-				if (ImGui::SliderFloat("Start Key: ", &_startKey, 0, it->owner->duration))
+
+				n = "Start Key " + std::to_string(i);
+				if (ImGui::SliderFloat(n.c_str(), &_startKey, 0, it->owner->duration))
 				{
 					it->SetStartKey(_startKey);
 				}
-				if (ImGui::SliderFloat("End Key: ", &_endKey, 0, it->owner->duration))
+				n = "End Key " + std::to_string(i);
+				if (ImGui::SliderFloat(n.c_str(), &_endKey, 0, it->owner->duration))
 				{
 					it->SetEndKey(_endKey);
 				}
-				if (ImGui::SliderFloat("Speed: ", &_speed, 1, 100))
+				n = "Speed " + std::to_string(i);
+				if (ImGui::SliderFloat(n.c_str(), &_speed, 1, 100))
 				{
 					it->SetSpeed(_speed);
 				}
 				ImGui::Separator();
+
+				
 			}
 
-			if (ImGui::Button("Add Chop"))
+			if (ImGui::Button("Add Clip"))
 			{
-				ImGui::OpenPopup("Add Chop Popup");
+				ImGui::OpenPopup("Add Clip Popup");
 				speed = animator->GetAnimationSpeed();
 			}
 
-			if (ImGui::BeginPopup("Add Chop Popup"))
+			if (ImGui::BeginPopup("Add Clip Popup"))
 			{
 				ImGui::InputFloat("Start Key", &startKey);
 				ImGui::InputFloat("End Key", &endKey);
@@ -299,7 +317,43 @@ void WInspector::DrawAnimator(CAnimator* animator)
 
 				if (ImGui::Button("Add"))
 				{
-					animator->AddChop(startKey, endKey, speed);
+					animator->AddClip(startKey, endKey, speed);
+					startKey, endKey, speed = 0;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+
+			if (ImGui::Button("Add Transition"))
+			{
+				ImGui::OpenPopup("Add Transition Popup");
+			}
+
+			if (ImGui::BeginPopup("Add Transition Popup"))
+			{
+				int y = 0;
+				std::vector<AnimationClip>* clips = animator->GetClips();
+				for (std::vector<AnimationClip>::iterator it = clips->begin(); it != clips->end(); it++, i++)
+				{
+					std::string str = "Clip" + std::to_string(y);
+					if (ImGui::Button(str.c_str()))
+					{
+						transitionClip = &(*it);
+					}
+
+					y++;
+				}
+
+				ImGui::InputFloat("Duration", &transitionDuration);
+
+				if (ImGui::Button("Add"))
+				{
+					if (transitionClip == nullptr)
+						transitionClip = &animator->GetClips()->front();
+
+					animator->AddTransition(transitionClip,transitionDuration);
+					transitionClip = nullptr;
+					transitionDuration = 0;
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::EndPopup();
