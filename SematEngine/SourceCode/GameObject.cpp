@@ -62,7 +62,16 @@ void GameObject::CleanUp()
 	children.clear();
 }
 
-void  GameObject::AddChild(GameObject* gameObject)
+void GameObject::OnPlay()
+{
+	std::vector<Component*>::iterator item = components.begin();
+	for (; item != components.end(); ++item)
+	{
+		(*item)->OnPlay();
+	}
+}
+
+void GameObject::AddChild(GameObject* gameObject)
 {
 	gameObject->SetParent(this);
 	children.push_back(gameObject);

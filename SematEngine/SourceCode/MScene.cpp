@@ -107,6 +107,13 @@ bool MScene::Save(JsonNode* config)
 	return ret;
 }
 
+void MScene::OnPlay()
+{
+	SaveScene();
+
+
+}
+
 void MScene::SaveScene()
 {
 	LOG("Started saving current scene");

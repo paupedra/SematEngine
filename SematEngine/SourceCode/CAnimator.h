@@ -17,7 +17,7 @@ enum class AnimatorState
 	NONE
 };
 
-struct AnimationTransition
+struct AnimationTransition 
 {
 	AnimationTransition(AnimationClip* _clip,float _duration)
 	{
@@ -40,20 +40,30 @@ public:
 
 	void Update(float dt)override;
 	void CleanUp() override;
+	void OnPlay() override;
 
 	void AddAnimation(RAnimation* newAnimation);
 	void AddClip(float startKey, float endKey, float speed);
 	void AddTransition(AnimationClip* clip, float duration);	//Adds an AnimationTransition to the transitionqueue
 
-	void LinkBones(); //Fills linked bones list with the game objects corresponding to them
-	void DrawBones();
-	void UpdateBones(); //Updated linked Bones position
+	void LinkBones();											//Fills linked bones list with the game objects corresponding to them
+	void DrawBones();											//Draws lines between bones
+
+	// Bones Updates -------------------------------------------------------------------------------------------------------------
+	void UpdateBones();											//Updated linked Bones position
 	void UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
 	void UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
 	void UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
 
 	void UpdateTransitionTime(float dt);
 	void UpdateTransitionBones();
+	void UpdateTransitionBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
+	void UpdateTransitionBoneScale(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
+	void UpdateTransitionBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
+
+	float3 ComputeBonePositionInterpolation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, double ticks, double time);
+	float3 ComputeBoneScaleInterpolation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, double ticks, double time);
+	Quat ComputeBoneRotationInterpolation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, double ticks, double time);
 
 	void Play();
 	void Pause();
@@ -62,12 +72,14 @@ public:
 	double TicksToTime(double ticks); //converts animation ticks to equivalent time
 	double TimeToTicks(double time); //converts animation time to equivalent ticks
 
+	//Seters ---------------------------------------------------------------------------------------------------------------------
 	inline void SwitchDrawBones() { drawBones = !drawBones; };
 
 	void SetCurrentAnimation(RAnimation* animation); //sets new current animation and links its bones?
 	void SetCurrentClip(AnimationClip* clip);
 	void SetPlaybackSpeed(float speed);
 
+	// Geters --------------------------------------------------------------------------------------------------------------------
 	inline bool GetDrawBones()const { return drawBones; };
 	inline RAnimation* GetCurrentAnimation()const { return currentAnimation; };
 	inline AnimationClip* GetCurrentClip()const { return currentClip; };
@@ -81,15 +93,15 @@ public:
 	double GetAnimationDuration()const;
 	const char* GetAnimationName()const ;
 
-	inline std::vector<RAnimation*> GetAnimations() const { return animations; };
 	std::vector<AnimationClip>* GetClips();
 
+	inline std::vector<RAnimation*> GetAnimations() const { return animations; };
 	uint GetAnimationsSize() const { return animations.size(); };
 	RAnimation* GetAnimation(uint index) const { return animations[index]; }
 
 private:
 	std::vector<RAnimation*> animations;
-	std::map<std::string,GameObject*> linkedBones;		//These are the game objects linked to the animations (linke dby name)
+	std::map<std::string,GameObject*> linkedBones;		//These are the game objects linked to the animations (linked by name)
 
 	GameObject* rootBone = nullptr;
 	RAnimation* currentAnimation = nullptr;
@@ -97,21 +109,23 @@ private:
 	AnimationTransition* currentTransition = nullptr;
 
 	std::queue<AnimationTransition> transitionQueue;	//Transitions to a different clip
-	bool transitioning = false;
-	float transitionTime = 0;							//Time the transition has been going on
+	
+	float transitionTime = 0;							//Time the transition has been going on for
 
 	double transitionClipTicks = 0;						//Ticks the transition has been going on
 	double transitionClipTime = 0;
-	float transitionDurationInSeconds = 0;
+	float  transitionDurationInSeconds = 0;
 
 	double currentClipTime = 0;
 	double currentClipTicks = 0;
+	float  durationInSeconds = 0;
 
-	float durationInSeconds = 0;
-	float playbackSpeed = 1;
+	float playbackSpeed = 1;				// Factor the time is multiplied by
+											
+	bool transitioning = false;				// State booleans
 	bool paused = true;
-	bool drawBones = false;		//Modified through Inspector
+	bool drawBones = false;					//Modified through Inspector
 
-	AnimatorState state = AnimatorState::NONE;
+	AnimatorState state = AnimatorState::NONE; //May be deleted
 };
 #endif //__COMPONENTTEXTURE__

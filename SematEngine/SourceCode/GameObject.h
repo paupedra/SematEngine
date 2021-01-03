@@ -23,6 +23,7 @@ public:
 	//void Start();
 	void Update(float dt);
 	void CleanUp();
+	void OnPlay();
 
 	Component* AddComponent(Component* component);
 	Component* AddComponent(ComponentType type);

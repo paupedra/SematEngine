@@ -18,35 +18,6 @@ class MResourceManager;
 class Application
 {
 public:
-	MWindow* window;
-	MInput* input;
-	MScene* scene;
-	MRenderer3D* renderer3D;
-	MCamera3D* camera;
-	MEditor* editor;
-	MFileSystem* fileSystem;
-	MResourceManager* resourceManager;
-
-	bool debug;
-	bool vsync;
-
-private:
-
-	bool wantToExit;
-	bool wantToSave;
-	bool cleaningUp = false;
-
-	Timer*	frameTimer;
-	Timer*	secondsTimer;
-	uint	frameCapMs;
-	float	dt;
-	float	frameCap;
-	int		frameCount;
-
-	std::vector<Module*> modules;
-	std::string title;
-
-public:
 
 	Application();
 	~Application();
@@ -62,6 +33,7 @@ public:
 	void WantToSave();
 	void ExitApp();
 	void OpenLink(const char* link);
+
 	std::string ReadTxt(const char* path);
 	 
 	const char* GetTitle() const;
@@ -69,11 +41,54 @@ public:
 
 	bool IsCleaningUp() const;
 
-private:
+	void Play();
+	void Pause();
+	void Stop();
 
+	inline void SetTimeMultiplier(float _timeMultiplier) { timeMultiplier = _timeMultiplier; };
+
+	inline float GetPlayTime()const { return playTime; };
+	inline float GetTimeMultiplier()const { return timeMultiplier; };
+
+private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
 	void FrameCalculations();
 	void Save();
+
+public:
+	MWindow* window;
+	MInput* input;
+	MScene* scene;
+	MRenderer3D* renderer3D;
+	MCamera3D* camera;
+	MEditor* editor;
+	MFileSystem* fileSystem;
+	MResourceManager* resourceManager;
+
+	bool debug;
+	bool vsync;
+
+private:
+
+	bool wantToExit = false;
+	bool wantToSave = false;
+	bool cleaningUp = false;
+
+	bool play = false;
+	bool paused = false;
+	float playTime = 0;
+	float timeMultiplier = 1;
+
+	Timer* frameTimer = nullptr;
+	Timer* secondsTimer = nullptr;
+	uint	frameCapMs=0;
+	float	dt=0;
+	float	frameCap =0;
+	int		frameCount= 0;
+
+	std::vector<Module*> modules;
+	std::string title;
+
 };

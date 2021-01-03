@@ -37,7 +37,28 @@ void WPlay::Draw()
 
 	if (ImGui::Button("Play"))
 	{
+		App->Play();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Pause"))
+	{
+		App->Pause();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Stop"))
+	{
+		App->Stop();
+	}
+	ImGui::SameLine();
 
+	ImGui::Text("Play Time: %f", App->GetPlayTime());
+
+	ImGui::SameLine();
+
+	float timeMultiplier = App->GetTimeMultiplier();
+	if (ImGui::DragFloat("Time Multiplier",&timeMultiplier,0.1,0.1,5))
+	{
+		App->SetTimeMultiplier(timeMultiplier);
 	}
 	
 	if (ImGui::IsWindowHovered())

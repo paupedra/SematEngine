@@ -90,7 +90,11 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
+	playTime += play ? (float)frameTimer->Read() / 1000.0f : 0;
+
+	//dt = play ?  paused ? 0 : ((float)frameTimer->Read() / 1000.0f) : ((float)frameTimer->Read() / 1000.0f);
 	dt = (float)frameTimer->Read() / 1000.0f;
+
 	frameTimer->Start();
 }
 
@@ -275,6 +279,25 @@ void Application::AddModule(Module* mod)
 bool Application::IsCleaningUp() const
 {
 	return cleaningUp;
+}
+
+void Application::Play()
+{
+	play = true;
+	paused = false;
+}
+
+void Application::Pause()
+{
+	paused = true;
+	
+}
+
+void Application::Stop()
+{
+	play = false;
+	paused = false;
+	playTime = 0;
 }
 
 Application* App = nullptr;

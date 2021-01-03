@@ -6,6 +6,8 @@ class GameObject;
 class JsonNode;
 class Component;
 
+
+
 class MScene : public Module
 {
 public:
@@ -17,6 +19,7 @@ public:
 	updateStatus PostUpdate(float dt) override;
 	bool CleanUp() override;
 	bool Save(JsonNode* config) override;
+	void OnPlay();
 
 	void SaveScene();
 	uint SaveSceneNode(JsonNode* config, std::vector<GameObject*> gameObjects);
@@ -39,4 +42,7 @@ public:
 	std::vector<GameObject*> gameObjects;
 	GameObject* rootObject = nullptr;
 	GameObject* selectedObject = nullptr;
+
+
+
 };

@@ -49,4 +49,19 @@ public:
 	{
 		return true;
 	}
+
+	virtual void OnPlay()
+	{
+
+	}
+
+	virtual void OnPause()
+	{
+
+	}
+
+	virtual void OnStop()
+	{
+
+	}
 };

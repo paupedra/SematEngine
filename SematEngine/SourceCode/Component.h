@@ -25,6 +25,8 @@ public:
 	void Enable();
 	void Disable();
 
+	virtual void OnPlay() = 0;
+
 	bool IsActive();
 	inline ComponentType GetType() const { return type; };
 	GameObject* GetOwner();
