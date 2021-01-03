@@ -48,7 +48,7 @@ void CAnimator::Update(float dt)
 		currentTransition = &transitionQueue.front();
 	}
 
-	if (transitioning)
+	if (transitioning && !paused)
 	{
 		UpdateTransitionTime(dt);
 
@@ -58,12 +58,17 @@ void CAnimator::Update(float dt)
 			SetCurrentClip(currentTransition->clip);
 			currentClipTicks = transitionClipTicks;
 			currentClipTime = transitionClipTime;
+
+			transitionTime = 0;
+
 			currentTransition = nullptr;
 			transitioning = false;
+			transitionQueue.pop();
 		}
-		
-		//transitionTicks;
-
+		else
+		{
+			UpdateTransitionBones();
+		}
 	}
 
 	//update current animation time/ticks
@@ -344,6 +349,71 @@ void CAnimator::UpdateTransitionTime(float dt)
 
 void CAnimator::UpdateTransitionBones()
 {
+
+	std::map<std::string, Bone>::const_iterator bone = currentAnimation->bones.begin();
+	for (bone; bone != currentAnimation->bones.end(); bone++)
+	{
+		std::map<std::string, GameObject*>::const_iterator it = linkedBones.find(bone->first);
+		if (it == linkedBones.end())
+			break;
+		else
+			if (it->second == nullptr)
+				break;
+
+		float3 currentPosition = float3::zero;
+		float3 transitionPosition = float3::zero;
+		float3 finalPosition = float3::zero;
+
+		std::map<double, float3>::const_iterator currentPos = bone->second.positionKeys.lower_bound(currentClipTicks);
+		//currentPos--;
+
+		if (currentPos != bone->second.positionKeys.end())
+		{
+			currentPosition = currentPos->second;
+		}
+
+		std::map<double, float3>::const_iterator transitionPos = bone->second.positionKeys.lower_bound(transitionClipTicks); //get the transition clip position
+		//transitionPos--;
+
+		if (transitionPos != bone->second.positionKeys.end())
+		{
+			transitionPosition = transitionPos->second;
+		}
+
+		float lerpT = transitionTime / currentTransition->duration;
+		
+		finalPosition = float3::Lerp(currentPosition, transitionPosition, lerpT);
+
+		it->second->transform->SetPosition(finalPosition);
+
+		Quat currentRotation = Quat::identity;
+		Quat transitionRotation = Quat::identity;
+		Quat finalRotation = Quat::identity;
+
+		std::map<double, Quat>::const_iterator currentRot = bone->second.quaternionKeys.lower_bound(currentClipTicks);
+		//currentPos--;
+
+		if (currentRot != bone->second.quaternionKeys.end())
+		{
+			currentRotation = currentRot->second;
+		}
+
+		std::map<double, Quat>::const_iterator transitionRot = bone->second.quaternionKeys.lower_bound(transitionClipTicks); //get the transition clip position
+		//transitionPos--;
+
+		if (transitionRot != bone->second.quaternionKeys.end())
+		{
+			transitionRotation = transitionRot->second;
+		}
+
+		//lerpT = transitionTime / currentTransition->duration;
+
+		finalRotation = Quat::Slerp(currentRotation, transitionRotation, lerpT);
+
+		it->second->transform->SetRotation(finalRotation);
+	}
+
+
 
 }
 
