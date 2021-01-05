@@ -173,6 +173,7 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node, UID anima
 
 	//link bones to the game objects
 	CAnimator* animator = new CAnimator(rootObject);
+	animator->SetCollectionUID(animationsUID);
 
 	rootObject->AddComponent(animator);
 

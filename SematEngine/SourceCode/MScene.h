@@ -20,9 +20,10 @@ public:
 	bool CleanUp() override;
 	bool Save(JsonNode* config) override;
 	void OnPlay();
+	void OnStop();
 
 	void SaveScene();
-	uint SaveSceneNode(JsonNode* config, std::vector<GameObject*> gameObjects);
+	uint SaveSceneNode(JsonNode* config);
 	void SaveSceneComponent(JsonNode* node, Component* component);
 
 	GameObject* CreateGameObject(char* name, GameObject* parent= nullptr, bool isRoot = false);

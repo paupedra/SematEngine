@@ -44,6 +44,11 @@ void CTransform::CleanUp()
 
 }
 
+void CTransform::Serialize(JsonNode* node)
+{
+
+}
+
 void CTransform::UpdateTRS()
 {
 	transform.Decompose(position, rotation, scale);
@@ -82,8 +87,8 @@ float4x4 CTransform::GetGlobalTransform()const
 float3 CTransform::GetGlobalPosition()const
 {
 	float3 position = float3::zero;
-	Quat rotation;
-	float3 scale;
+	Quat rotation = Quat::identity;
+	float3 scale = float3::zero;
 	globalTransform.Decompose(position,rotation,scale);
 
 	return position;

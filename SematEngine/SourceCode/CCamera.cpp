@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "Config.h"
 #include "Application.h"
 #include "GameObject.h"
 
@@ -43,6 +44,11 @@ void CCamera::Update(float dt)
 void CCamera::CleanUp()
 {
 	delete[] corners;
+}
+
+void CCamera::Serialize(JsonNode* node)
+{
+
 }
 
 float* CCamera::GetViewMatrix()

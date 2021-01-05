@@ -2,6 +2,7 @@
 #define __COMPONENT__
 
 class GameObject;
+class JsonNode;
 
 enum class ComponentType
 {
@@ -26,6 +27,9 @@ public:
 	void Disable();
 
 	virtual void OnPlay() = 0;
+	virtual void OnStop() = 0;
+
+	virtual void Serialize(JsonNode* node) = 0;
 
 	bool IsActive();
 	inline ComponentType GetType() const { return type; };

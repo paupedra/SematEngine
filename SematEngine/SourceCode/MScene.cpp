@@ -72,7 +72,7 @@ updateStatus MScene::Update(float dt)
 			continue;
 		}
 
-		gameObjects[i]->Update(dt);
+		gameObjects[i]->Update(App->GetPlayDt());
 	}
 
 	return UPDATE_CONTINUE;
@@ -111,7 +111,20 @@ void MScene::OnPlay()
 {
 	SaveScene();
 
+	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
+	{
+		(*item)->OnPlay();
+	}
+}
 
+void MScene::OnStop()
+{
+	//load scene
+
+	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
+	{
+		(*item)->OnStop();
+	}
 }
 
 void MScene::SaveScene()
@@ -119,9 +132,9 @@ void MScene::SaveScene()
 	LOG("Started saving current scene");
 	JsonNode sceneNode;
 
-	uint64 id = SaveSceneNode(&sceneNode, gameObjects);
+	uint64 id = SaveSceneNode(&sceneNode);
 
-	std::string path = "Library/Scenes/";
+	std::string path = "Assets/Scenes/";
 	std::string idString ;
 	idString += "SerializedCurrentScene";
 	path += idString + ".scene";
@@ -133,28 +146,15 @@ void MScene::SaveScene()
 	delete[] buffer;
 }
 
-uint MScene::SaveSceneNode(JsonNode* config, std::vector<GameObject*> gameObjects)
+uint MScene::SaveSceneNode(JsonNode* config)
 {
-	//gameObjects -----------------------
 	JsonArray gameObjectsJson = config->InitArray("GameObjects");
 
-	std::vector<GameObject*>::iterator item = gameObjects.begin();
-	for (; item != gameObjects.end(); item++)
+	for (std::vector<GameObject*>::iterator item = gameObjects.begin() ; item != gameObjects.end(); item++)
 	{
 		JsonNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
 
-		newObject.AddString("Name", (*item)->GetName());
-
-		//Components -----------------------
-		JsonArray components = newObject.InitArray("Components"); //Create array in GO node
-		std::vector<Component*> comps = (*item)->GetComponents();
-		for (int i = 0; i < comps.size(); i++)
-		{
-			JsonNode newComponent = components.AddNode(); //Add Component object
-
-			newComponent.AddNumber("Type", (double)comps[i]->GetType());
-			SaveSceneComponent(&newComponent, comps[i]);
-		}
+		(*item)->Serialize(&newObject);
 	}
 
 	return Random::GenerateUID();

@@ -56,6 +56,11 @@ void CMaterial::OnSave(JsonNode* node)
 	//id textura?
 }
 
+void CMaterial::Serialize(JsonNode* node)
+{
+
+}
+
 void CMaterial::SetTexture(RTexture* texture)
 {
 	material->SetTexture(texture);

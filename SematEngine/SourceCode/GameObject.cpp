@@ -1,4 +1,6 @@
 #include "Globals.h"
+#include "Config.h"
+#include "Random.h"
 #include "GameObject.h"
 #include "Component.h"
 #include "Resource.h"
@@ -15,12 +17,15 @@
 GameObject::GameObject(const char* name) : name(name)
 {
 	AddComponent(new CTransform(this));
+	uid = Random::GenerateUID();
 }
 
 GameObject::GameObject(GameObject* parent = nullptr, const char* name = "Object") : parent(parent), name(name)
 {
 	AddComponent(new CTransform(this));
-	
+
+	uid = Random::GenerateUID();
+
 	if(parent != nullptr)
 		parent->AddChild(this);
 }
@@ -68,6 +73,30 @@ void GameObject::OnPlay()
 	for (; item != components.end(); ++item)
 	{
 		(*item)->OnPlay();
+	}
+}
+
+void GameObject::OnStop()
+{
+	for (std::vector<Component*>::iterator item = components.begin(); item != components.end(); ++item)
+	{
+		(*item)->OnStop();
+	}
+}
+
+void GameObject::Serialize(JsonNode* node)
+{
+	node->AddString("Name", name.c_str());
+
+	//Components -----------------------
+	JsonArray componentsJson = node->InitArray("Components"); //Create array in GO node
+
+	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); comp++)
+	{
+		JsonNode newComponent = componentsJson.AddNode(); //Add Component object
+
+		newComponent.AddNumber("Type", (double)(*comp)->GetType());
+		(*comp)->Serialize(&newComponent);
 	}
 }
 

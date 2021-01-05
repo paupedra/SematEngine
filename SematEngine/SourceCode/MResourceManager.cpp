@@ -417,7 +417,7 @@ void MResourceManager::LoadTexture(ResourceData resource)
 	std::string path = TEXTURES_PATH;
 	path += std::to_string(resource.UID) + TEXTURE_EXTENTION;
 
-	char* buffer;
+	char* buffer = nullptr;
 	uint size = App->fileSystem->Load(path.c_str(), &buffer);
 
 	RTexture* texture = new RTexture(resource.UID);
@@ -425,6 +425,7 @@ void MResourceManager::LoadTexture(ResourceData resource)
 	texture->usesTexture = true;
 	resources.emplace(resource.UID, texture);
 
+	RELEASE_ARRAY(buffer);
 	LOG("Mesh added into memory");
 }
 
@@ -509,9 +510,12 @@ int MResourceManager::AddResourceToLibraryFromMeta(const char* file)
 	//fullName += ".meta";
 
 	//Read meta and stor into new ResourceData and sore it
-	char* buffer;
+	char* buffer = nullptr;
 	if (App->fileSystem->Load(file, &buffer) == 0)
+	{
+		RELEASE_ARRAY(buffer);
 		return 0;
+	}
 
 	JsonNode node(buffer);
 	ResourceData resource;
@@ -531,6 +535,9 @@ int MResourceManager::AddResourceToLibraryFromMeta(const char* file)
 	resource.libraryFile = node.GetString("Library File");
 
 	resourcesInLibrary.emplace(resource.UID, resource);
+
+	RELEASE_ARRAY(buffer);
+
 	return uid;
 }
 

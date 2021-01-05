@@ -116,6 +116,19 @@ uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name
 	memcpy(cursor, times, bytes);
 	cursor += bytes;
 
+	//clips -----------------------------------------------------
+	uint clipsSize[1] = { animation->clips.size() };//size of bones
+	bytes = sizeof(clipsSize);
+	memcpy(cursor, clipsSize, bytes);
+	cursor += bytes;
+
+	for (std::vector<AnimationClip>::iterator clip = animation->clips.begin(); clip != animation->clips.end(); clip++)
+	{
+		float clipData[3] = {clip->startKey,clip->endKey,clip->speed};
+		memcpy(cursor, clipData, sizeof(clipData));
+		cursor += sizeof(clipData);
+	}
+
 	for (i = animation->bones.begin(); i != animation->bones.end(); i++)
 	{
 		uint nameSize[1] = { (*i).first.size() };
@@ -139,9 +152,7 @@ uint64 Importer::AnimationImporter::Save(RAnimation* animation, const char* name
 
 void Importer::AnimationImporter::SaveBones(char** cursor, Bone bone)
 {
-	
 	uint boneSizes[3] = { bone.positionKeys.size() , bone.scaleKeys.size(), bone.quaternionKeys.size() };
-
 	memcpy(*cursor, boneSizes, sizeof(boneSizes));
 	*cursor += sizeof(boneSizes);
 
@@ -202,7 +213,22 @@ void Importer::AnimationImporter::Load(const char* fileBuffer, RAnimation* anima
 	animation->duration = time[0];
 	animation->speed = time[1];
 
-	for (int i = 0; i < bonesSize[0]; i++)
+	uint clipsSize[1];
+	memcpy(clipsSize, cursor, sizeof(uint));
+	cursor += sizeof(uint);
+
+	for (uint i=0; i < clipsSize[0]; i++)
+	{
+		float clipsData[3];
+		memcpy(clipsData, cursor, sizeof(clipsData));
+		cursor += sizeof(clipsData);
+
+		AnimationClip newClip(animation,clipsData[0],clipsData[1],clipsData[2]);
+		animation->clips.push_back(newClip);
+	}
+
+
+	for (uint i = 0; i < bonesSize[0]; i++)
 	{
 		uint nameSize[1];
 		memcpy(nameSize, cursor, sizeof(uint));

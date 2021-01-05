@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Globals.h"
+#include "Config.h"
 #include "Component.h"
 #include "GameObject.h"
 #include "Resource.h"
@@ -27,6 +28,13 @@ void CAnimator::Update(float dt)
 	if (currentAnimation == nullptr)
 		return;
 
+	float thisDt = 0;
+
+	if (App->IsInPlayMode())
+		thisDt = dt;
+	else
+		thisDt = App->GetDt();
+
 	if (!transitionQueue.empty() && !transitioning)
 	{
 		transitioning = true;
@@ -35,7 +43,7 @@ void CAnimator::Update(float dt)
 
 	if (transitioning && !paused)
 	{
-		UpdateTransitionTime(dt);
+		UpdateTransitionTime(thisDt);
 
 		//check if transition time is bigger than transition duration
 		if (transitionTime > currentTransition->duration)
@@ -59,7 +67,7 @@ void CAnimator::Update(float dt)
 	//update current animation time/ticks
 	if (!paused && !transitioning)
 	{
-		currentClipTime += dt * (double)playbackSpeed;
+		currentClipTime += thisDt * (double)playbackSpeed;
 
 		durationInSeconds = (currentClip->endKey - currentClip->startKey) / currentClip->speed;
 
@@ -93,8 +101,21 @@ void CAnimator::CleanUp()
 
 void CAnimator::OnPlay()
 {
-	Stop();
+	if (currentAnimation == nullptr)
+		if(!animations.empty())
+			SetCurrentAnimation(animations.front());
+
 	Play();
+}
+
+void CAnimator::OnStop()
+{
+	Stop();
+}
+
+void CAnimator::Serialize(JsonNode* node)
+{
+	node->AddNumber("Collection UID", collectionUID);
 }
 
 void CAnimator::AddAnimation(RAnimation* newAnimation)
@@ -169,25 +190,30 @@ void CAnimator::UpdateBones()
 			if (it->second == nullptr)
 				break;
 
-		UpdateBonePosition(bone, it);
+		float3 position = UpdateBonePosition(bone, it);
 
-		UpdateBoneScale(bone,it);
+		float3 scale = UpdateBoneScale(bone,it);
 
-		UpdateBoneRotation(bone, it);
+		Quat rotation = UpdateBoneRotation(bone, it);
+
+		float4x4 mat = float4x4::FromTRS(position, rotation, scale);
+		it->second->transform->SetLocalTransform(mat);
 	}
 }
 
-void CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
+float3 CAnimator::UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
 {
 	float3 finalPosition = ComputeBonePositionInterpolation(bone,it,currentClipTicks,currentClipTime);
-	it->second->transform->SetPosition(finalPosition);
+	return finalPosition;
 }
 
-void CAnimator::UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
+float3 CAnimator::UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
 {
-	float3 prevScale, nextScale, finalScale = float3::zero;
+	float3 prevScale, nextScale, finalScale;
+	prevScale = nextScale = finalScale = float3::zero;
 
-	double prevTicks, nextTicks = 0;
+	double prevTicks, nextTicks;
+	prevTicks = nextTicks = 0;
 
 	std::map<double, float3>::const_iterator scale = bone->second.scaleKeys.lower_bound(currentClipTicks);
 	scale--;
@@ -220,13 +246,13 @@ void CAnimator::UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone
 		finalScale = prevScale;
 	}
 
-	it->second->transform->SetScale(finalScale);
+	return finalScale;
 }
 
-void CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
+Quat CAnimator::UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it)
 {
 	Quat finalRotation = ComputeBoneRotationInterpolation(bone, it, currentClipTicks, currentClipTime);
-	it->second->transform->SetRotation(finalRotation);
+	return finalRotation;
 }
 
 void CAnimator::UpdateTransitionTime(float dt)
@@ -323,9 +349,11 @@ void CAnimator::UpdateTransitionBoneRotation(std::map<std::string, Bone>::const_
 
 float3 CAnimator::ComputeBonePositionInterpolation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it,double ticks,double time)
 {
-	float3 prevPosition, nextPosition, finalPosition = float3::zero;
+	float3 prevPosition, nextPosition, finalPosition ;
+	prevPosition = nextPosition = finalPosition = float3::zero;
 
-	double prevTicks, nextTicks = 0;
+	double prevTicks, nextTicks;
+	prevTicks = nextTicks = 0;
 
 	std::map<double, float3>::const_iterator pos = bone->second.positionKeys.lower_bound(ticks);
 	pos--;
@@ -363,9 +391,11 @@ float3 CAnimator::ComputeBonePositionInterpolation(std::map<std::string, Bone>::
 
 float3 CAnimator::ComputeBoneScaleInterpolation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, double ticks, double time)
 {
-	float3 prevScale,nextScale, finalScale = float3::zero;
+	float3 prevScale,nextScale, finalScale ;
+	prevScale = nextScale = finalScale = float3::zero;
 
-	double prevTicks, nextTicks = 0;
+	double prevTicks, nextTicks;
+	prevTicks = nextTicks = 0;
 
 	std::map<double, float3>::const_iterator sca = bone->second.scaleKeys.lower_bound(ticks);
 	sca--;
@@ -403,9 +433,11 @@ float3 CAnimator::ComputeBoneScaleInterpolation(std::map<std::string, Bone>::con
 
 Quat CAnimator::ComputeBoneRotationInterpolation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it, double ticks, double time)
 {
-	Quat prevRotation, nextRotation, finalRotation = Quat::identity;
+	Quat prevRotation, nextRotation, finalRotation ;
+	prevRotation = nextRotation = finalRotation = Quat::identity;
 
-	double prevTicks, nextTicks = 0;
+	double prevTicks, nextTicks;
+	prevTicks = nextTicks = 0;
 
 	std::map<double, Quat>::const_iterator rot = bone->second.quaternionKeys.lower_bound(ticks);
 	rot--;
@@ -447,7 +479,16 @@ void CAnimator::Play()
 		paused = false;
 
 		if (currentClip == nullptr)
-			currentClip = &currentAnimation->clips.front();
+		{
+			if (!currentAnimation->clips.empty())
+			{
+				SetCurrentClip(&currentAnimation->clips.front());
+			}
+			else
+			{
+				paused = true;
+			}
+		}
 	}
 }
 

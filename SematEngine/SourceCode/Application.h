@@ -47,6 +47,10 @@ public:
 
 	inline void SetTimeMultiplier(float _timeMultiplier) { timeMultiplier = _timeMultiplier; };
 
+	inline bool IsInPlayMode()const { return play; };
+
+	inline float GetDt()const		{ return dt; }
+	inline float GetPlayDt()const	{ return playDt; };
 	inline float GetPlayTime()const { return playTime; };
 	inline float GetTimeMultiplier()const { return timeMultiplier; };
 
@@ -71,22 +75,23 @@ public:
 	bool vsync;
 
 private:
-
 	bool wantToExit = false;
 	bool wantToSave = false;
 	bool cleaningUp = false;
 
-	bool play = false;
-	bool paused = false;
+	bool  play = false;
+	bool  paused = false;
 	float playTime = 0;
 	float timeMultiplier = 1;
 
-	Timer* frameTimer = nullptr;
-	Timer* secondsTimer = nullptr;
+	Timer*	frameTimer = nullptr;
+	Timer*	secondsTimer = nullptr;
 	uint	frameCapMs=0;
-	float	dt=0;
-	float	frameCap =0;
-	int		frameCount= 0;
+
+	float	playDt = 0;	//This dt effects objects in Play mode
+	float	dt = 0;		//independent App dt
+	float	frameCap = 0;
+	int		frameCount = 0;
 
 	std::vector<Module*> modules;
 	std::string title;

@@ -90,10 +90,10 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	playTime += play ? (float)frameTimer->Read() / 1000.0f : 0;
+	playTime += play ? paused ? 0 : (float)frameTimer->Read() / 1000.0f : 0;
+	playDt = play ? paused ? 0 : ((float)frameTimer->Read() / 1000.0f) * timeMultiplier : 0;
 
-	//dt = play ?  paused ? 0 : ((float)frameTimer->Read() / 1000.0f) : ((float)frameTimer->Read() / 1000.0f);
-	dt = (float)frameTimer->Read() / 1000.0f;
+	dt = ((float)frameTimer->Read() / 1000.0f);
 
 	frameTimer->Start();
 }
@@ -133,8 +133,6 @@ void Application::FrameCalculations()
 void Application::Save()
 {
 	JsonNode config;
-
-
 
 	std::vector<Module*>::iterator item = modules.begin();
 
@@ -285,12 +283,16 @@ void Application::Play()
 {
 	play = true;
 	paused = false;
+
+	for (auto item = modules.begin(); item != modules.end(); ++item)
+	{
+		(*item)->OnPlay();
+	}
 }
 
 void Application::Pause()
 {
 	paused = true;
-	
 }
 
 void Application::Stop()
@@ -298,6 +300,11 @@ void Application::Stop()
 	play = false;
 	paused = false;
 	playTime = 0;
+
+	for (auto item = modules.begin(); item != modules.end(); ++item)
+	{
+		(*item)->OnStop();
+	}
 }
 
 Application* App = nullptr;

@@ -45,6 +45,11 @@ void CMesh::CleanUp()
 	App->resourceManager->DereferenceResource(mesh->resourceData.UID);
 }
 
+void CMesh::Serialize(JsonNode* node)
+{
+
+}
+
 void CMesh::DrawMesh()
 {
 	if (!this->active)

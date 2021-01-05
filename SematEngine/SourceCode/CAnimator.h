@@ -41,6 +41,8 @@ public:
 	void Update(float dt)override;
 	void CleanUp() override;
 	void OnPlay() override;
+	void OnStop() override;
+	void Serialize(JsonNode* node)override;
 
 	void AddAnimation(RAnimation* newAnimation);
 	void AddClip(float startKey, float endKey, float speed);
@@ -51,9 +53,9 @@ public:
 
 	// Bones Updates -------------------------------------------------------------------------------------------------------------
 	void UpdateBones();											//Updated linked Bones position
-	void UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
-	void UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
-	void UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
+	float3 UpdateBonePosition(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
+	float3 UpdateBoneScale(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
+	Quat UpdateBoneRotation(std::map<std::string, Bone>::const_iterator bone, std::map<std::string, GameObject*>::const_iterator it);
 
 	void UpdateTransitionTime(float dt);
 	void UpdateTransitionBones();
@@ -75,6 +77,7 @@ public:
 	//Seters ---------------------------------------------------------------------------------------------------------------------
 	inline void SwitchDrawBones() { drawBones = !drawBones; };
 
+	inline void SetCollectionUID(UID _uid) { collectionUID = _uid; };
 	void SetCurrentAnimation(RAnimation* animation); //sets new current animation and links its bones?
 	void SetCurrentClip(AnimationClip* clip);
 	void SetPlaybackSpeed(float speed);
@@ -83,7 +86,7 @@ public:
 	inline bool GetDrawBones()const { return drawBones; };
 	inline RAnimation* GetCurrentAnimation()const { return currentAnimation; };
 	inline AnimationClip* GetCurrentClip()const { return currentClip; };
-
+	inline UID GetCollectionUID()const { return collectionUID; };
 	inline double GetAnimationTicks()const	  { return currentClipTicks; };
 	inline double GetAnimationTime()const	  { return currentClipTime; };
 	inline double GetPlaybackSpeed()const	  { return playbackSpeed; } //returns the multiplier at which animation is being played
@@ -103,6 +106,7 @@ private:
 	std::vector<RAnimation*> animations;
 	std::map<std::string,GameObject*> linkedBones;		//These are the game objects linked to the animations (linked by name)
 
+	UID collectionUID = 0;
 	GameObject* rootBone = nullptr;
 	RAnimation* currentAnimation = nullptr;
 	AnimationClip* currentClip = nullptr;

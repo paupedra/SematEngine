@@ -12,6 +12,10 @@ enum class ComponentType;
 class CTransform;
 class CMesh;
 class CMaterial;
+class JsonNode;
+
+typedef unsigned int uint;
+typedef unsigned __int32 UID;
 
 class GameObject
 {
@@ -24,6 +28,9 @@ public:
 	void Update(float dt);
 	void CleanUp();
 	void OnPlay();
+	void OnStop();
+
+	void Serialize(JsonNode* node);
 
 	Component* AddComponent(Component* component);
 	Component* AddComponent(ComponentType type);
@@ -54,6 +61,10 @@ public:
 	void SetParent(GameObject* newParent);
 	bool HasChild(GameObject* newParent);
 
+	inline GameObject* GetParent()const { return parent; };
+
+	inline UID GetUid()const { return uid; };
+	inline void SetUid(uint _uid) { uid = _uid; };
 	void GetChildByName(const char* name,GameObject** recipient)const; //Iterates all children in tree and sets recipient to the fund object when found
 	GameObject* GetOwnChildByName(const char* name)const; //Only gets from own children list
 
@@ -84,6 +95,8 @@ public:
 
 	OBB OBB;
 	AABB AABB;
+
+	UID uid = 0;
 };
 
 #endif //__GAMEOBJECT__

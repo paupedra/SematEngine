@@ -55,11 +55,6 @@ public:
 
 	}
 
-	virtual void OnPause()
-	{
-
-	}
-
 	virtual void OnStop()
 	{
 
