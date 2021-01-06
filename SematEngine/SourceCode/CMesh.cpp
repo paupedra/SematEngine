@@ -47,6 +47,11 @@ void CMesh::CleanUp()
 
 void CMesh::Serialize(JsonNode* node)
 {
+	node->AddNumber("Mesh UID", mesh->GetUID());
+}
+
+void CMesh::Load(JsonNode* node)
+{
 
 }
 

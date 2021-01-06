@@ -31,6 +31,7 @@ public:
 	void OnStop();
 
 	void Serialize(JsonNode* node);
+	void Load(JsonNode* node);
 
 	Component* AddComponent(Component* component);
 	Component* AddComponent(ComponentType type);

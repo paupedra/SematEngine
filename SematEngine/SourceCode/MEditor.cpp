@@ -154,7 +154,7 @@ void MEditor::DrawMainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save")) { App->scene->SaveScene(); }
+			if (ImGui::MenuItem("Save")) { App->scene->SaveScene(false); }
 			if (ImGui::MenuItem("Exit")) { App->ExitApp(); }
 
 			ImGui::EndMenu();

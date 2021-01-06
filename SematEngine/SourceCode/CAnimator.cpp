@@ -118,6 +118,11 @@ void CAnimator::Serialize(JsonNode* node)
 	node->AddNumber("Collection UID", collectionUID);
 }
 
+void CAnimator::Load(JsonNode* node)
+{
+
+}
+
 void CAnimator::AddAnimation(RAnimation* newAnimation)
 {
 	animations.push_back(newAnimation);

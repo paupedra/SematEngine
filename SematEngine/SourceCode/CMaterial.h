@@ -16,8 +16,10 @@ public:
 	void Update(float dt) override;
 	void CleanUp() override;
 	void OnPlay() override {};
-	void OnStop() override {};
+	void OnStop() override {}
+
 	void Serialize(JsonNode* node)override;
+	void Load(JsonNode* node)override;
 
 	void OnSave(JsonNode* node);
 

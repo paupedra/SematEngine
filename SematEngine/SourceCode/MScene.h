@@ -22,9 +22,10 @@ public:
 	void OnPlay();
 	void OnStop();
 
-	void SaveScene();
-	uint SaveSceneNode(JsonNode* config);
-	void SaveSceneComponent(JsonNode* node, Component* component);
+	void SaveScene(bool isPlay); //Serialize and save scene, if isPlay saves it in playSavedScene
+	uint SerializeScene(JsonNode* node);
+
+	void LoadScene(uint sceneUid);
 
 	GameObject* CreateGameObject(char* name, GameObject* parent= nullptr, bool isRoot = false);
 	void SetSelectedObject(GameObject* gameObject);
@@ -39,11 +40,10 @@ public:
 	uint GetNameRepeats(const char* name); //Return how many times this name is repeated on scene
 
 public:
-
 	std::vector<GameObject*> gameObjects;
 	GameObject* rootObject = nullptr;
 	GameObject* selectedObject = nullptr;
 
-
-
+	UID playSavedScene = 0; //UID of the scene saved when hit play to be loaded on stop
+	std::vector<UID> savedScenes;
 };

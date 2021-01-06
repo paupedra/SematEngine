@@ -58,6 +58,20 @@ void CMaterial::OnSave(JsonNode* node)
 
 void CMaterial::Serialize(JsonNode* node)
 {
+	JsonArray colorJson = node->InitArray("Color");
+
+	Color c = material->GetColor();
+	colorJson.AddNumber(c.r);
+	colorJson.AddNumber(c.g);
+	colorJson.AddNumber(c.b);
+	colorJson.AddNumber(c.a);
+
+	node->AddNumber("Texture UID", material->GetTexture()->GetUID());
+
+}
+
+void CMaterial::Load(JsonNode* node)
+{
 
 }
 

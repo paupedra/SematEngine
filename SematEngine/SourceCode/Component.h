@@ -30,6 +30,7 @@ public:
 	virtual void OnStop() = 0;
 
 	virtual void Serialize(JsonNode* node) = 0;
+	virtual void Load(JsonNode* node) = 0;
 
 	bool IsActive();
 	inline ComponentType GetType() const { return type; };

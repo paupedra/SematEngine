@@ -46,6 +46,25 @@ void CTransform::CleanUp()
 
 void CTransform::Serialize(JsonNode* node)
 {
+	JsonArray _position = node->InitArray("Position");
+	_position.AddNumber(position.x);
+	_position.AddNumber(position.y);
+	_position.AddNumber(position.z);
+
+	JsonArray _scale = node->InitArray("Scale");
+	_scale.AddNumber(scale.x);
+	_scale.AddNumber(scale.y);
+	_scale.AddNumber(scale.z);
+
+	JsonArray _rotation = node->InitArray("Rotation");
+	_rotation.AddNumber(rotation.x);
+	_rotation.AddNumber(rotation.y);
+	_rotation.AddNumber(rotation.z);
+	_rotation.AddNumber(rotation.w);
+}
+
+void CTransform::Load(JsonNode* node)
+{
 
 }
 
@@ -160,19 +179,5 @@ void CTransform::UpdatedTransform(float4x4 parentGlobalTransform)
 
 void CTransform::OnSave(JsonNode* node)
 {
-	JsonArray _position = node->InitArray("Position");
-	_position.AddNumber(position.x);
-	_position.AddNumber(position.y);
-	_position.AddNumber(position.z);
-
-	JsonArray _scale = node->InitArray("Scale");
-	_scale.AddNumber(scale.x);
-	_scale.AddNumber(scale.y);
-	_scale.AddNumber(scale.z);
-
-	JsonArray _rotation = node->InitArray("Rotation");
-	_rotation.AddNumber(rotation.x);
-	_rotation.AddNumber(rotation.y);
-	_rotation.AddNumber(rotation.z);
-	_rotation.AddNumber(rotation.w);
+	
 }

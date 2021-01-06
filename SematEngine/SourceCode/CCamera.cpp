@@ -51,6 +51,11 @@ void CCamera::Serialize(JsonNode* node)
 
 }
 
+void CCamera::Load(JsonNode* node)
+{
+
+}
+
 float* CCamera::GetViewMatrix()
 {
 	static float4x4 m;

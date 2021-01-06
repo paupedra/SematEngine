@@ -9,6 +9,7 @@
 #include "CMesh.h"
 #include "CCamera.h"
 #include "CMaterial.h"
+#include "CAnimator.h"
 
 #include "RMesh.h"
 
@@ -88,6 +89,9 @@ void GameObject::Serialize(JsonNode* node)
 {
 	node->AddString("Name", name.c_str());
 
+	node->AddNumber("UID", uid);
+	parent == nullptr ? node->AddNumber("Parent UID", 0) : node->AddNumber("Parent UID", parent->GetUid());
+
 	//Components -----------------------
 	JsonArray componentsJson = node->InitArray("Components"); //Create array in GO node
 
@@ -97,6 +101,49 @@ void GameObject::Serialize(JsonNode* node)
 
 		newComponent.AddNumber("Type", (double)(*comp)->GetType());
 		(*comp)->Serialize(&newComponent);
+	}
+}
+
+void GameObject::Load(JsonNode* node)
+{
+	JsonArray componentsArray = node->GetArray("Components");
+
+	for (uint comp = 0; componentsArray.size; comp++)
+	{
+		JsonNode componentNode = componentsArray.GetNode(comp);
+		int typeInt = (int)componentNode.GetString("Type");
+		ComponentType type = (ComponentType)typeInt;
+
+		Component* newComponent = nullptr;
+
+		switch (type)
+		{
+		case ComponentType::TRANSFORM:
+			newComponent = AddComponent(ComponentType::TRANSFORM);
+			CTransform* cTrans = (CTransform*)newComponent;
+			cTrans->Load(&componentNode);
+			break;
+		case ComponentType::MESH:
+			newComponent = AddComponent(ComponentType::MESH);
+			CMesh* cTrans = (CMesh*)newComponent;
+			cTrans->Load(&componentNode);
+			break;
+		case ComponentType::MATERIAL:
+			newComponent = AddComponent(ComponentType::MATERIAL);
+			CMaterial* cTrans = (CMaterial*)newComponent;
+			cTrans->Load(&componentNode);
+			break;
+		case ComponentType::CAMERA:
+			newComponent = AddComponent(ComponentType::CAMERA);
+			CCamera* cTrans = (CCamera*)newComponent;
+			cTrans->Load(&componentNode);
+			break;
+		case ComponentType::ANIMATOR:
+			newComponent = AddComponent(ComponentType::ANIMATOR);
+			CAnimator* cTrans = (CAnimator*)newComponent;
+			cTrans->Load(&componentNode);
+			break;
+		}
 	}
 }
 

@@ -103,13 +103,14 @@ bool MScene::Save(JsonNode* config)
 {
 	bool ret = true;
 	LOG("Saving scene");
+	//SaveScene();
 
 	return ret;
 }
 
 void MScene::OnPlay()
 {
-	SaveScene();
+	SaveScene(true);
 
 	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
 	{
@@ -127,30 +128,36 @@ void MScene::OnStop()
 	}
 }
 
-void MScene::SaveScene()
+void MScene::SaveScene(bool isPlay)
 {
 	LOG("Started saving current scene");
 	JsonNode sceneNode;
 
-	uint64 id = SaveSceneNode(&sceneNode);
+	uint64 id = SerializeScene(&sceneNode);
 
-	std::string path = "Assets/Scenes/";
-	std::string idString ;
-	idString += "SerializedCurrentScene";
-	path += idString + ".scene";
+	std::string path = "Assets/Scenes/" + std::to_string(id) + ".scene";
 
 	//Create and save scene meta file
-	char* buffer;
+	char* buffer = nullptr;
 	uint size = sceneNode.Serialize(&buffer); //Saves for now
 	App->fileSystem->Save(path.c_str(), buffer, size);
-	delete[] buffer;
+	RELEASE_ARRAY(buffer);
+
+	if(isPlay)
+	{
+		playSavedScene = id;
+	}
+	else
+	{
+		savedScenes.push_back(id);
+	}
 }
 
-uint MScene::SaveSceneNode(JsonNode* config)
+uint MScene::SerializeScene(JsonNode* node)
 {
-	JsonArray gameObjectsJson = config->InitArray("GameObjects");
+	JsonArray gameObjectsJson = node->InitArray("GameObjects");
 
-	for (std::vector<GameObject*>::iterator item = gameObjects.begin() ; item != gameObjects.end(); item++)
+	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
 	{
 		JsonNode newObject = gameObjectsJson.AddNode(); //Create object in GOs array
 
@@ -160,37 +167,48 @@ uint MScene::SaveSceneNode(JsonNode* config)
 	return Random::GenerateUID();
 }
 
-void MScene::SaveSceneComponent(JsonNode* node, Component* component)
+void MScene::LoadScene(uint sceneUid)
 {
-	CMesh* cMesh = nullptr;
-	CMaterial* cMaterial = nullptr;
-	CTransform* cTransform = nullptr;
+	CleanUp();
 
-	switch (component->GetType())
+	//load file
+	std::string file = "Assets/Scenes/" + std::to_string(sceneUid) + ".scene";
+
+	char* buffer = nullptr;
+	App->fileSystem->Load(file.c_str(), &buffer);
+	JsonNode sceneNode(buffer);
+	RELEASE_ARRAY(buffer);
+
+	std::map<UID, GameObject*> gameObjectsMap; //Used to find parents later
+	JsonArray gameObjectsArray = sceneNode.GetArray("GameObjects");
+
+	for (uint i = 0; i < gameObjectsArray.size; i++)
 	{
-		case ComponentType::TRANSFORM:
+		JsonNode gameObjectNode = gameObjectsArray.GetNode(i);
+		GameObject* newGameObject = new GameObject(gameObjectNode.GetString("Name"));
+		newGameObject->SetUid(gameObjectNode.GetNumber("UID"));
 
-			cTransform = (CTransform*)component;
-			cTransform->OnSave(node);
+		newGameObject->Load(&gameObjectNode);
 
-			break;
-
-		case ComponentType::MESH:
-
-			cMesh = (CMesh*)component;
-			node->AddNumber("UID", cMesh->GetMesh()->GetUID());
-			cMesh->OnSave(node);
-
-			break;
-
-		case ComponentType::MATERIAL:
-
-			cMaterial = (CMaterial*)component;
-			node->AddNumber("UID", cMaterial->GetMaterial()->GetUID());
-			cMaterial->OnSave(node);
-
-			break;
+		gameObjectsMap.emplace(gameObjectNode.GetNumber("Parent UID"), newGameObject);
 	}
+	//parent
+
+	for (auto i = gameObjectsMap.begin(); i != gameObjectsMap.end(); i++)
+	{
+		if (i->first == 0)
+		{
+			continue;
+		}
+		std::map<UID, GameObject*>::const_iterator it = gameObjectsMap.find(i->first); //Parent
+		if (it != gameObjectsMap.end())
+		{
+			it->second->AddChild(i->second);
+		}
+
+	}
+
+	//add to scene
 }
 
 GameObject* MScene::CreateGameObject(char* name, GameObject* parent, bool isRoot)
