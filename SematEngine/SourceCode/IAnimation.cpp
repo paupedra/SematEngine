@@ -227,7 +227,6 @@ void Importer::AnimationImporter::Load(const char* fileBuffer, RAnimation* anima
 		animation->clips.push_back(newClip);
 	}
 
-
 	for (uint i = 0; i < bonesSize[0]; i++)
 	{
 		uint nameSize[1];

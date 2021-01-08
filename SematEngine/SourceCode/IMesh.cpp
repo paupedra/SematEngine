@@ -1,9 +1,11 @@
 #include "Application.h"
 #include "Timer.h"
+#include "Random.h"
 #include "Resource.h"
 
 #include "MRenderer3D.h"
 #include "MFileSystem.h"
+#include "MResourceManager.h"
 
 #include "IMesh.h"
 
@@ -231,7 +233,13 @@ void Importer::MeshImporter::ImportAllMeshesInScene(const aiScene* scene, std::v
     {
         RMesh* newMesh = ProcessMesh(scene->mMeshes[i]);
 
-        meshes.push_back(newMesh->GenerateCustomFile()); //Generate cff file and add UID to meshes list
+        newMesh->SetUID(Random::GenerateUID());
+        newMesh->GenerateCustomFile();
+        meshes.push_back(newMesh->GetUID()); //Generate cff file and add UID to meshes list
+
+
+
+        App->resourceManager->AddResourceToLibrary(newMesh);
 
         RELEASE_ARRAY(newMesh->indices);
         RELEASE_ARRAY(newMesh->normals);

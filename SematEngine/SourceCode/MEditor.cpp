@@ -154,7 +154,19 @@ void MEditor::DrawMainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save")) { App->scene->SaveScene(false); }
+			if (ImGui::MenuItem("Save Scene")) { App->scene->SaveScene(false); }
+			if (ImGui::BeginMenu("Load Scene")) 
+			{
+				std::vector<UID> savedScenes = App->scene->GetSavedScenes();
+				for (auto it = savedScenes.begin(); it != savedScenes.end(); it++)
+				{
+					if ( ImGui::MenuItem(std::to_string(*it).c_str()) )
+					{
+						App->scene->LoadScene(*it);
+					}
+				}
+				ImGui::EndMenu();
+			};
 			if (ImGui::MenuItem("Exit")) { App->ExitApp(); }
 
 			ImGui::EndMenu();

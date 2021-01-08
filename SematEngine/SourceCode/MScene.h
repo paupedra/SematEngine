@@ -22,10 +22,10 @@ public:
 	void OnPlay();
 	void OnStop();
 
-	void SaveScene(bool isPlay); //Serialize and save scene, if isPlay saves it in playSavedScene
+	uint SaveScene(bool isPlay); //Serialize and save scene, if isPlay saves it in playSavedScene
 	uint SerializeScene(JsonNode* node);
-
 	void LoadScene(uint sceneUid);
+	void FindSavedScenes();
 
 	GameObject* CreateGameObject(char* name, GameObject* parent= nullptr, bool isRoot = false);
 	void SetSelectedObject(GameObject* gameObject);
@@ -38,6 +38,8 @@ public:
 	void AddGameObject(GameObject* gameObject);
 
 	uint GetNameRepeats(const char* name); //Return how many times this name is repeated on scene
+
+	inline std::vector<UID> GetSavedScenes()const { return savedScenes; };
 
 public:
 	std::vector<GameObject*> gameObjects;

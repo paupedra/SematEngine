@@ -33,6 +33,20 @@ UID RScene::GenerateCustomFile()
 
 	node.AddNumber("Animation Collection",animationsCollection.GetUID());
 
+	JsonArray meshesJson = node.InitArray("Meshes");
+
+	for (auto it = meshes.begin(); it != meshes.end(); it++)
+	{
+		meshesJson.AddNumber(*it);
+	}
+
+	JsonArray materialsJson = node.InitArray("Materials");
+
+	for (auto it = materials.begin(); it != materials.end(); it++)
+	{
+		materialsJson.AddNumber(*it);
+	}
+
 	JsonArray modelsJson = node.InitArray("Models");
 
 	for(std::vector<RModel>::iterator model = models.begin() ;model != models.end();model++)

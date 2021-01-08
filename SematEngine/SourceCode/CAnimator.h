@@ -43,6 +43,8 @@ public:
 	void OnPlay() override;
 	void OnStop() override;
 
+	static inline ComponentType GetType() { return ComponentType::ANIMATOR; };
+
 	void Serialize(JsonNode* node)override;
 	void Load(JsonNode* node)override;
 

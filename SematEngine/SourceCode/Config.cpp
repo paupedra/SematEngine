@@ -34,6 +34,11 @@ void JsonNode::AddString(const char* name, const char* string)
 	json_object_set_string(node, name, string);
 }
 
+void JsonNode::AddBool(const char* name, bool _bool)
+{
+	json_object_set_boolean(node, name, _bool);
+}
+
 JsonNode JsonNode::AddNode(const char* name)
 {
 	json_object_set_value(node, name, json_value_init_object());
@@ -60,6 +65,13 @@ const char* JsonNode::GetString(const char* name)
 {
 	if (json_object_has_value_of_type(node, name, JSONString))
 		return json_object_get_string(node, name);
+	return 0;
+}
+
+bool JsonNode::GetBool(const char* name)
+{
+	if (json_object_has_value_of_type(node, name, JSONBoolean))
+		return json_object_get_boolean(node, name);
 	return 0;
 }
 

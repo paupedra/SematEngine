@@ -65,7 +65,16 @@ void CTransform::Serialize(JsonNode* node)
 
 void CTransform::Load(JsonNode* node)
 {
+	JsonArray positionJson = node->GetArray("Position");
+	float3 _position = {(float)positionJson.GetNumber(0),(float)positionJson.GetNumber(1),(float)positionJson.GetNumber(2) };
 
+	JsonArray scaleJson = node->GetArray("Scale");
+	float3 _scale = { (float)scaleJson.GetNumber(0),(float)scaleJson.GetNumber(1),(float)scaleJson.GetNumber(2) };
+
+	JsonArray rotationJson = node->GetArray("Rotation");
+	Quat _rotation = { (float)rotationJson.GetNumber(0),(float)rotationJson.GetNumber(1), (float)rotationJson.GetNumber(2), (float)rotationJson.GetNumber(3) };
+
+	SetLocalTransform(_position, _scale, _rotation);
 }
 
 void CTransform::UpdateTRS()
@@ -159,8 +168,9 @@ void CTransform::SetTransform(float3 position, float3 scale, Quat rotation)
 void CTransform::UpdateLocalTransform()
 {
 	transform = float4x4::FromTRS(position, rotation, scale);
-	//RecalculateEuler();
-	updateTransform = true;
+	RecalculateEuler();
+	if(owner->parent != nullptr)
+		updateTransform = true;
 }
 
 void CTransform::RecalculateEuler()

@@ -42,10 +42,7 @@ void RMesh::CleanUp()
 
 UID RMesh::GenerateCustomFile()
 {
-	UID ret = Random::GenerateUID();
-	std::string fileName = MESHES_PATH;
-	fileName += std::to_string(ret);
-	fileName += MESH_EXTENTION;
+	std::string fileName = MESHES_PATH + std::to_string(resourceData.UID) + MESH_EXTENTION;
 	Importer::MeshImporter::Save(*this,fileName.c_str() );
-	return ret;
+	return 0;
 }

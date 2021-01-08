@@ -14,10 +14,12 @@ public:
 
 	void AddNumber(const char* name, double number);
 	void AddString(const char* name, const char* string);
+	void AddBool(const char* name, bool _bool);
 	JsonNode AddNode(const char* name);
 
 	double GetNumber(const char* name);
 	const char* GetString(const char* name);
+	bool GetBool(const char* name);
 
 	JsonArray GetArray(const char* name);
 

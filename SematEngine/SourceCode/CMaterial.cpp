@@ -5,6 +5,7 @@
 #include "Config.h"
 
 #include "MRenderer3D.h"
+#include "MResourceManager.h"
 
 #include "CTransform.h"
 #include "CMaterial.h"
@@ -43,10 +44,9 @@ void CMaterial::Update(float dt)
 
 void CMaterial::CleanUp()
 {
-	material->CleanUp();
+	if(material != nullptr)
+		App->resourceManager->DereferenceResource(material->GetUID());
 
-	delete material;
-	//delete texture;
 }
 
 void CMaterial::OnSave(JsonNode* node)
@@ -58,21 +58,16 @@ void CMaterial::OnSave(JsonNode* node)
 
 void CMaterial::Serialize(JsonNode* node)
 {
-	JsonArray colorJson = node->InitArray("Color");
-
-	Color c = material->GetColor();
-	colorJson.AddNumber(c.r);
-	colorJson.AddNumber(c.g);
-	colorJson.AddNumber(c.b);
-	colorJson.AddNumber(c.a);
-
-	node->AddNumber("Texture UID", material->GetTexture()->GetUID());
+	node->AddNumber("Material UID", material->GetUID());
 
 }
 
 void CMaterial::Load(JsonNode* node)
 {
-
+	if (node->GetNumber("Material UID") != 0)
+	{
+		material = App->resourceManager->LoadMaterial(node->GetNumber("Material UID"));
+	}
 }
 
 void CMaterial::SetTexture(RTexture* texture)

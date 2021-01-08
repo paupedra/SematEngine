@@ -45,6 +45,8 @@ bool MScene::Start()
 
 	App->camera->Move(float3(1.0f, 1.0f, 0.0f));
 	//App->camera->LookAt(float3(0, 0, 0));
+
+	FindSavedScenes();
 	
 	return ret;
 }
@@ -52,7 +54,7 @@ bool MScene::Start()
 // Update
 updateStatus MScene::Update(float dt)
 {
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 
 	App->renderer3D->DrawScenePlane(200);
 
@@ -95,6 +97,10 @@ bool MScene::CleanUp()
 	}
 
 	gameObjects.clear();
+	gameObjects.shrink_to_fit();
+
+	selectedObject = nullptr;
+	rootObject = nullptr;
 
 	return true;
 }
@@ -110,7 +116,7 @@ bool MScene::Save(JsonNode* config)
 
 void MScene::OnPlay()
 {
-	SaveScene(true);
+	playSavedScene = SaveScene(true);
 
 	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
 	{
@@ -121,6 +127,10 @@ void MScene::OnPlay()
 void MScene::OnStop()
 {
 	//load scene
+	LoadScene(playSavedScene);
+
+	std::string file = "Assets/Scenes/" + std::to_string(playSavedScene) + ".scene";
+	App->fileSystem->Remove(file.c_str());
 
 	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
 	{
@@ -128,7 +138,7 @@ void MScene::OnStop()
 	}
 }
 
-void MScene::SaveScene(bool isPlay)
+uint MScene::SaveScene(bool isPlay)
 {
 	LOG("Started saving current scene");
 	JsonNode sceneNode;
@@ -151,6 +161,7 @@ void MScene::SaveScene(bool isPlay)
 	{
 		savedScenes.push_back(id);
 	}
+	return id;
 }
 
 uint MScene::SerializeScene(JsonNode* node)
@@ -179,6 +190,7 @@ void MScene::LoadScene(uint sceneUid)
 	JsonNode sceneNode(buffer);
 	RELEASE_ARRAY(buffer);
 
+	std::multimap<UID, GameObject*> parentObjectsMap; //Used to find parents later
 	std::map<UID, GameObject*> gameObjectsMap; //Used to find parents later
 	JsonArray gameObjectsArray = sceneNode.GetArray("GameObjects");
 
@@ -190,25 +202,42 @@ void MScene::LoadScene(uint sceneUid)
 
 		newGameObject->Load(&gameObjectNode);
 
-		gameObjectsMap.emplace(gameObjectNode.GetNumber("Parent UID"), newGameObject);
+		parentObjectsMap.emplace(gameObjectNode.GetNumber("Parent UID"), newGameObject);
+		gameObjectsMap.emplace(newGameObject->GetUid(), newGameObject);
 	}
-	//parent
 
-	for (auto i = gameObjectsMap.begin(); i != gameObjectsMap.end(); i++)
+	for (auto i = parentObjectsMap.begin(); i != parentObjectsMap.end(); i++)
 	{
-		if (i->first == 0)
-		{
-			continue;
-		}
+		gameObjects.push_back(i->second);
+
 		std::map<UID, GameObject*>::const_iterator it = gameObjectsMap.find(i->first); //Parent
 		if (it != gameObjectsMap.end())
 		{
-			it->second->AddChild(i->second);
+			i->second->SetParent(it->second);
 		}
 
+		//gameObjects.push_back(i->second);	//add to scene
 	}
 
-	//add to scene
+	std::map<UID, GameObject*>::const_iterator it = parentObjectsMap.find(0); //Parent
+	if (it != parentObjectsMap.end())
+	{
+		rootObject = it->second;
+	}
+}
+
+void MScene::FindSavedScenes()
+{
+	std::vector<std::string> files;
+	std::vector<std::string> dirs;
+	App->fileSystem->DiscoverFiles("Assets/Scenes/", files,dirs);
+
+	for (auto i = files.begin(); i != files.end(); i++)
+	{
+		std::string file;
+		App->fileSystem->SplitFilePath(i->c_str(),nullptr,&file);
+		savedScenes.push_back(std::atoi(file.c_str()));
+	}
 }
 
 GameObject* MScene::CreateGameObject(char* name, GameObject* parent, bool isRoot)

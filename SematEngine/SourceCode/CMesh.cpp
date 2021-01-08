@@ -42,7 +42,8 @@ void CMesh::Update(float dt)
 void CMesh::CleanUp()
 {
 	//dereference RMesh
-	App->resourceManager->DereferenceResource(mesh->resourceData.UID);
+	if(mesh != nullptr)
+		App->resourceManager->DereferenceResource(mesh->resourceData.UID);
 }
 
 void CMesh::Serialize(JsonNode* node)
@@ -52,6 +53,11 @@ void CMesh::Serialize(JsonNode* node)
 
 void CMesh::Load(JsonNode* node)
 {
+	if (node->GetNumber("Mesh UID") != 0)
+	{
+		App->resourceManager->LoadMesh(node->GetNumber("Mesh UID"));
+		mesh = (RMesh*)App->resourceManager->RequestResource(node->GetNumber("Mesh UID"));
+	}
 
 }
 

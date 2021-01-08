@@ -4,6 +4,7 @@
 #include "Config.h"
 
 #include "MFileSystem.h"
+#include "MResourceManager.h"
 
 #include "RMaterial.h"
 #include "RTexture.h"
@@ -31,7 +32,7 @@ RMaterial::~RMaterial()
 void RMaterial::CleanUp()
 {
 	if (texture != nullptr)
-		texture->CleanUp();
+		App->resourceManager->DereferenceResource(texture->GetUID());
 }
 
 UID RMaterial::GenerateCustomFile(UID textureUID)

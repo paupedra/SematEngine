@@ -37,39 +37,41 @@ void WResources::Draw()
 		return;
 	}
 
-	ImGui::Text("Resources in Library:");
-
-	std::map<UID, ResourceData>::iterator resourceLib = App->resourceManager->resourcesInLibrary.begin();
-	for (; resourceLib != App->resourceManager->resourcesInLibrary.end(); resourceLib++)
+	if(ImGui::CollapsingHeader("Resources In Library"))
 	{
-		if (ImGui::Button((*resourceLib).second.assetsFile.c_str()))
+		std::map<UID, ResourceData>::iterator resourceLib = App->resourceManager->resourcesInLibrary.begin();
+		for (; resourceLib != App->resourceManager->resourcesInLibrary.end(); resourceLib++)
 		{
-			LOG("Load resource %s", (*resourceLib).second.assetsFile.c_str());
-			App->resourceManager->LoadResource((*resourceLib).second.UID);
-		}
-		ImGui::SameLine();
+			if (ImGui::Button((*resourceLib).second.assetsFile.c_str()))
+			{
+				LOG("Load resource %s", (*resourceLib).second.assetsFile.c_str());
+				App->resourceManager->LoadResource((*resourceLib).second.UID);
+			}
+			
+			ImGui::SameLine();
 
-		switch ((*resourceLib).second.type)
-		{
+			switch ((*resourceLib).second.type)
+			{
 			case ResourceType::texture:		ImGui::Text("Texture"); break;
 			case ResourceType::material:	ImGui::Text("Material"); break;
 			case ResourceType::model:		ImGui::Text("Model"); break;
 			case ResourceType::animation:	ImGui::Text("Animation"); break;
 			case ResourceType::none:		ImGui::Text("none"); break;
+			}
 		}
 	}
-
 	ImGui::Separator();
 
-	ImGui::Text("Resources in Memory:");
-
-	std::map<UID, Resource*>::iterator resource = App->resourceManager->resources.begin();
-	for (; resource != App->resourceManager->resources.end(); resource++)
+	if(ImGui::CollapsingHeader("Resources in Memory:"))
 	{
-		ImGui::Separator();
-		ImGui::Text("UID: %d", (*resource).second->resourceData.UID);
-		ImGui::Text("Name: %s", (*resource).second->resourceData.name.c_str());
-		ImGui::Text("Reference Count: %d", (*resource).second->resourceData.referenceCount);
+		std::map<UID, Resource*>::iterator resource = App->resourceManager->resources.begin();
+		for (; resource != App->resourceManager->resources.end(); resource++)
+		{
+			ImGui::Separator();
+			ImGui::Text("UID: %d", (*resource).second->resourceData.UID);
+			ImGui::Text("Name: %s", (*resource).second->resourceData.name.c_str());
+			ImGui::Text("Reference Count: %d", (*resource).second->resourceData.referenceCount);
+		}
 	}
 
 	if (ImGui::IsWindowHovered())

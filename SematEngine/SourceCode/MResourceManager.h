@@ -54,6 +54,8 @@ public:
 	void AddResourceToLibrary(Resource* resource);
 	int AddResourceToLibraryFromMeta(const char* file); //Adds resource from meta to resourcesInLibrary map
 
+	void AddModelFromMeta(UID uid);
+
 	Resource* RequestResource(uint uid);
 	void ReleaseResource(uint uid);
 	ResourceData RequestLibraryResource(uint uid); //Request ResourceData from resourcesInLibrary

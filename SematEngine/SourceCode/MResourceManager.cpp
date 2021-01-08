@@ -42,13 +42,15 @@ MResourceManager::~MResourceManager()
 bool MResourceManager::Init()
 {
 	ImportAllFoundAssets("Assets");
+
 	return true;
 }
 
 bool MResourceManager::Start()
 {
-	//LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
+	LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
 	LoadResourceFromMeta("Assets/Mesh/aniTest.fbx.meta");
+
 	return true;
 }
 
@@ -246,11 +248,20 @@ UID MResourceManager::LoadResource(UID uid)
 	
 	switch (resource.type)
 	{
-		case ResourceType::model: LoadScene(resource);
+		case ResourceType::model: 
+			LoadScene(resource);
 			break;
-		case ResourceType::texture: LoadTexture(resource);
+		case ResourceType::texture: 
+			LoadTexture(resource);
 			return uid;
 			break;
+		case ResourceType::mesh:
+			LoadMesh(uid);
+			return ret;
+			break;
+		case ResourceType::animation:
+			LoadAnimation(uid);
+			return ret;
 		case ResourceType::none:
 			return ret;
 			break;
@@ -400,6 +411,8 @@ RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when lo
 	//------------------------------------------------
 
 	material->SetTexture((RTexture*)RequestResource(textureData.UID));
+
+	resources.emplace(material->GetUID(), material);
 	
 	RELEASE_ARRAY(buffer);
 	RELEASE_ARRAY(buffer2);
@@ -506,8 +519,6 @@ void MResourceManager::AddResourceToLibrary(Resource* resource)
 
 int MResourceManager::AddResourceToLibraryFromMeta(const char* file)
 {
-	//std::string fullName = file;
-	//fullName += ".meta";
 
 	//Read meta and stor into new ResourceData and sore it
 	char* buffer = nullptr;
@@ -518,6 +529,8 @@ int MResourceManager::AddResourceToLibraryFromMeta(const char* file)
 	}
 
 	JsonNode node(buffer);
+	RELEASE_ARRAY(buffer);
+
 	ResourceData resource;
 	resource.UID = node.GetNumber("UID");
 	uint uid = resource.UID;
@@ -530,15 +543,47 @@ int MResourceManager::AddResourceToLibraryFromMeta(const char* file)
 	}
 
 	int tmp = (int)node.GetNumber("Type");
-	resource.type = (ResourceType)tmp;
+	ResourceType _type = (ResourceType)tmp;
+	resource.type = _type;
 	resource.assetsFile = node.GetString("Assets File");
 	resource.libraryFile = node.GetString("Library File");
 
+	//if typs is model load everything in it
+	switch (_type)
+	{
+		case ResourceType::model:
+			AddModelFromMeta(uid);
+			break;
+	}
+
 	resourcesInLibrary.emplace(resource.UID, resource);
 
+	return uid;
+}
+
+void MResourceManager::AddModelFromMeta(UID uid)
+{
+	std::string file = MODELS_PATH + std::to_string(uid) + MODEL_EXTENTION;
+	char* buffer = nullptr;
+	App->fileSystem->Load(file.c_str(), &buffer);
+
+	JsonNode modelNode(buffer);
 	RELEASE_ARRAY(buffer);
 
-	return uid;
+	//read all meshes, materials and animations
+	JsonArray meshesArray = modelNode.GetArray("Meshes");
+
+	for (uint i = 0; i < meshesArray.size; i++)
+	{
+		AddResourceToLibrary( &RMesh( meshesArray.GetNumber(i,0) ) );
+	}
+
+	JsonArray materialsArray = modelNode.GetArray("Materials");
+
+	for (uint i = 0; i < materialsArray.size; i++)
+	{
+		//AddResourceToLibrary(&RMaterial(materialsArray.GetNumber(i, 0)));
+	}
 }
 
 void MResourceManager::ImportAllFoundAssets(const char* basePath)

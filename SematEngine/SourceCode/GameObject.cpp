@@ -108,10 +108,10 @@ void GameObject::Load(JsonNode* node)
 {
 	JsonArray componentsArray = node->GetArray("Components");
 
-	for (uint comp = 0; componentsArray.size; comp++)
+	for (uint comp = 0; comp < componentsArray.size; comp++)
 	{
 		JsonNode componentNode = componentsArray.GetNode(comp);
-		int typeInt = (int)componentNode.GetString("Type");
+		int typeInt = (int)componentNode.GetNumber("Type");
 		ComponentType type = (ComponentType)typeInt;
 
 		Component* newComponent = nullptr;
@@ -120,37 +120,35 @@ void GameObject::Load(JsonNode* node)
 		{
 		case ComponentType::TRANSFORM:
 			newComponent = AddComponent(ComponentType::TRANSFORM);
-			CTransform* cTrans = (CTransform*)newComponent;
-			cTrans->Load(&componentNode);
 			break;
 		case ComponentType::MESH:
 			newComponent = AddComponent(ComponentType::MESH);
-			CMesh* cTrans = (CMesh*)newComponent;
-			cTrans->Load(&componentNode);
+			
 			break;
 		case ComponentType::MATERIAL:
 			newComponent = AddComponent(ComponentType::MATERIAL);
-			CMaterial* cTrans = (CMaterial*)newComponent;
-			cTrans->Load(&componentNode);
+			
 			break;
 		case ComponentType::CAMERA:
 			newComponent = AddComponent(ComponentType::CAMERA);
-			CCamera* cTrans = (CCamera*)newComponent;
-			cTrans->Load(&componentNode);
+			
 			break;
 		case ComponentType::ANIMATOR:
 			newComponent = AddComponent(ComponentType::ANIMATOR);
-			CAnimator* cTrans = (CAnimator*)newComponent;
-			cTrans->Load(&componentNode);
+			
 			break;
 		}
+
+		newComponent->Load(&componentNode);
 	}
 }
 
 void GameObject::AddChild(GameObject* gameObject)
 {
-	gameObject->SetParent(this);
+	gameObject->parent = this;
 	children.push_back(gameObject);
+	if(parent != nullptr)
+		transform->updateTransform = true;
 }
 
 void GameObject::EraseChild(GameObject* gameObject)
@@ -181,20 +179,32 @@ void GameObject::SetToBeDestroyed()
 Component* GameObject::AddComponent(Component* component)
 {
 	ComponentType type = component->GetType();
+	Component* ret = component;
 	
 	switch (type)
 	{
 		case ComponentType::TRANSFORM:
-
-			components.push_back(component);
-			transform = (CTransform*)component;
+			if (!HasComponentType(ComponentType::TRANSFORM))
+			{
+				components.push_back(component);
+				transform = (CTransform*)component;
+			}
+			else
+			{
+				component = GetComponent<CTransform>();
+			}
 			break;
 
 		case ComponentType::MESH:
 			
-			
-			components.push_back(component);
-			
+			if (!HasComponentType(ComponentType::MESH))
+			{
+				components.push_back(component);
+			}
+			else
+			{
+				component = GetComponent<CMesh>();
+			}
 			
 			break;
 
@@ -219,12 +229,21 @@ Component* GameObject::AddComponent(Component* component)
 				components.push_back(component);
 			}
 			else
+			{
 				LOG("(ERROR) Error adding Camera: Object already has camera");
-
+				component = GetComponent<CCamera>();
+			}
 			break;
 
 		case ComponentType::ANIMATOR:
-			components.push_back(component);
+			if (!HasComponentType(ComponentType::ANIMATOR))
+			{
+				components.push_back(component);
+			}
+			else
+			{
+				component = GetComponent<CAnimator>();
+			}
 			break;
 	}
 
@@ -235,20 +254,27 @@ Component* GameObject::AddComponent(Component* component)
 
 Component* GameObject::AddComponent(ComponentType type)
 {
+	Component* ret = nullptr;
 	switch (type)
 	{
 		case ComponentType::MESH:
-			AddComponent(new CMesh(this));
+			ret = AddComponent(new CMesh(this));
 			break;
 		case ComponentType::MATERIAL:
-			AddComponent(new CMaterial(this));
+			ret = AddComponent(new CMaterial(this));
 			break;
 		case ComponentType::CAMERA:
-			AddComponent(new CCamera(this));
+			ret = AddComponent(new CCamera(this));
+			break;
+		case ComponentType::TRANSFORM:
+			ret = AddComponent(new CTransform(this));
+			break;
+		case ComponentType::ANIMATOR:
+			ret = AddComponent(new CAnimator(this));
 			break;
 	}
 
-	return nullptr;
+	return ret;
 }
 
 void GameObject::OnDelete()
@@ -338,8 +364,8 @@ void GameObject::Reparent(GameObject* newParent)
 
 void GameObject::SetParent(GameObject* newParent)
 {
-	parent = newParent;
-	transform->updateTransform = true;
+	//parent = newParent;
+	newParent->AddChild(this);
 }
 
 bool GameObject::HasChild(GameObject* newParent)

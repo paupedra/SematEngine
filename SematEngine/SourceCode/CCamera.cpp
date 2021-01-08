@@ -48,12 +48,16 @@ void CCamera::CleanUp()
 
 void CCamera::Serialize(JsonNode* node)
 {
-
+	node->AddBool("Is Current Camera", isCurrentCamera);
+	node->AddBool("Is Culling Camera", isCullingCamera);
 }
 
 void CCamera::Load(JsonNode* node)
 {
-
+	if (node->GetBool("Is Current Camera"))
+		App->camera->SetCurrentCamera(this);
+	if (node->GetBool("Is Culling Camera"))
+		App->camera->SetCullingCamera(this);
 }
 
 float* CCamera::GetViewMatrix()

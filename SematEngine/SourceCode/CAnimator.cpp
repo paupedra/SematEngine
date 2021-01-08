@@ -6,6 +6,7 @@
 #include "Resource.h"
 
 #include "MRenderer3D.h"
+#include "MResourceManager.h"
 
 #include "RAnimationCollection.h"
 #include "RAnimation.h"
@@ -96,7 +97,10 @@ void CAnimator::Update(float dt)
 
 void CAnimator::CleanUp()
 {
-
+	for (auto it = animations.begin(); it != animations.end(); it++)
+	{
+		App->resourceManager->DereferenceResource((*it)->GetUID());
+	}
 }
 
 void CAnimator::OnPlay()
