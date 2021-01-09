@@ -441,17 +441,18 @@ std::vector<Component*> GameObject::GetComponents()const
 
 void GameObject::UpdatedTransform()
 {
-	transform->UpdatedTransform(parent->transform->GetGlobalTransform());
+	if(parent != nullptr)
+		transform->UpdatedTransform(parent->transform->GetGlobalTransform());
 
-	if ( GetComponent<CCamera>() != nullptr)
+	/*if ( GetComponent<CCamera>() != nullptr)
 	{
 		GetComponent<CCamera>()->OnUpdateTransform(transform->GetGlobalTransform());
-	}
+	}*/
 
 	//call children's on updateTransforms
-	std::vector<GameObject*>::iterator child = children.begin();
+	/*std::vector<GameObject*>::iterator child = children.begin();
 	for (; child != children.end(); ++child)
 	{
 		(*child)->UpdatedTransform();
-	}
+	}*/
 }

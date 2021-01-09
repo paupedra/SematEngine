@@ -6,7 +6,7 @@ class GameObject;
 class JsonNode;
 class Component;
 
-
+class CAnimator;
 
 class MScene : public Module
 {
@@ -41,6 +41,9 @@ public:
 
 	inline std::vector<UID> GetSavedScenes()const { return savedScenes; };
 
+	//3rd Delivery temporary stuff
+	void SetModifiedAnimation(CAnimator* animator);
+	
 public:
 	std::vector<GameObject*> gameObjects;
 	GameObject* rootObject = nullptr;
@@ -48,4 +51,7 @@ public:
 
 	UID playSavedScene = 0; //UID of the scene saved when hit play to be loaded on stop
 	std::vector<UID> savedScenes;
+
+	//3rd Delivery temporary stuff
+	CAnimator* modifiedAnimation = nullptr;
 };

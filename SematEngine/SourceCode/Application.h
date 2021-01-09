@@ -48,6 +48,7 @@ public:
 	inline void SetTimeMultiplier(float _timeMultiplier) { timeMultiplier = _timeMultiplier; };
 
 	inline bool IsInPlayMode()const { return play; };
+	inline bool IsExiting()const { return wantToExit; };
 
 	inline float GetDt()const		{ return dt; }
 	inline float GetPlayDt()const	{ return playDt; };

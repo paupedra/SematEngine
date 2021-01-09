@@ -32,10 +32,8 @@ Application::Application() : debug(false), dt(0.16f)
 	AddModule(camera);
 	AddModule(input);
 	AddModule(editor);
-	AddModule(fileSystem);
-	
-	// Scenes
 	AddModule(scene);
+	AddModule(fileSystem);
 	AddModule(resourceManager);//Resources must be kept to be dereferenced and released
 
 	// Renderer last!

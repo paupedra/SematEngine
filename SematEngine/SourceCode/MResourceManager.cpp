@@ -422,7 +422,14 @@ RMaterial* MResourceManager::LoadMaterial(UID uid) //this will be called when lo
 
 void MResourceManager::LoadAnimation(UID uid)
 {
+	std::string path = ANIMATIONS_PATH + std::to_string(uid) + ANIMATION_EXTENSION;
+	char* buffer = nullptr;
+	App->fileSystem->Load(path.c_str(), &buffer);
+	RAnimation* res = new RAnimation(uid);
+	Importer::AnimationImporter::Load(buffer, res);
 
+	resources.emplace(uid, res);
+	RELEASE_ARRAY(buffer);
 }
 
 void MResourceManager::LoadTexture(ResourceData resource)

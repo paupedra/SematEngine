@@ -28,10 +28,9 @@ CTransform::~CTransform()
 
 void CTransform::Update(float dt)
 {
-	if (updateTransform)
-	{
-		owner->UpdatedTransform();
-	}
+	
+	owner->UpdatedTransform();
+	
 
 	if (updateTransform)
 	{

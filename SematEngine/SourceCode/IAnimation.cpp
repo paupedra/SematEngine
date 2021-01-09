@@ -280,7 +280,7 @@ std::vector<RAnimation*> Importer::AnimationImporter::LoadAnimationCollection(ui
 
 	JsonNode node(buffer);
 	JsonArray animationsJson = node.GetArray("Animations");
-
+	RELEASE_ARRAY(buffer);
 	std::vector<uint> animationsUID;
 
 	for (int i = 0; i < animationsJson.size; i++)
@@ -299,26 +299,16 @@ std::vector<RAnimation*> Importer::AnimationImporter::LoadAnimationCollection(ui
 		}
 		else
 		{
-			//load it
-			std::string path = ANIMATIONS_PATH;
-			path += std::to_string(uid);
-			path += ANIMATION_EXTENSION;
+			//load animation
+			App->resourceManager->LoadAnimation(uid);
 
-			char* secondBuffer = nullptr;
+			ret.push_back((RAnimation*)App->resourceManager->RequestResource(uid));
 
-			App->fileSystem->Load(path.c_str(),&secondBuffer);
-
-			res = new RAnimation(uid);
-
-			Load(secondBuffer, res);
-
-			ret.push_back(res);
-
-			RELEASE_ARRAY(secondBuffer);
+			
 		}
 	}
 
-	RELEASE_ARRAY(buffer);
+	
 
 	return ret;
 }

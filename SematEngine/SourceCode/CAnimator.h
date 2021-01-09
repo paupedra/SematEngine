@@ -48,9 +48,15 @@ public:
 	void Serialize(JsonNode* node)override;
 	void Load(JsonNode* node)override;
 
+	void SaveAnimation(RAnimation* animation);
+
+	void UpdateAnimationInput();
+
 	void AddAnimation(RAnimation* newAnimation);
 	void AddClip(float startKey, float endKey, float speed);
 	void AddTransition(AnimationClip* clip, float duration);	//Adds an AnimationTransition to the transitionqueue
+
+	void DeleteClip(std::vector<AnimationClip>::iterator clip);
 
 	void LinkBones();											//Fills linked bones list with the game objects corresponding to them
 	void DrawBones();											//Draws lines between bones
@@ -106,6 +112,8 @@ public:
 	uint GetAnimationsSize() const { return animations.size(); };
 	RAnimation* GetAnimation(uint index) const { return animations[index]; }
 
+	inline void SetmodifiedAnimation(bool modifiedAnimation) { isModifiedAnimation = modifiedAnimation; }
+
 private:
 	std::vector<RAnimation*> animations;
 	std::map<std::string,GameObject*> linkedBones;		//These are the game objects linked to the animations (linked by name)
@@ -133,6 +141,9 @@ private:
 	bool transitioning = false;				// State booleans
 	bool paused = true;
 	bool drawBones = false;					//Modified through Inspector
+	bool currentAnimationFinished = false;
+
+	bool isModifiedAnimation = false;
 
 	AnimatorState state = AnimatorState::NONE; //May be deleted
 };

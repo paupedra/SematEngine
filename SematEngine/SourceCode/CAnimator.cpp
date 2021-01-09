@@ -7,9 +7,13 @@
 
 #include "MRenderer3D.h"
 #include "MResourceManager.h"
+#include "MScene.h"
+#include "MInput.h"
 
 #include "RAnimationCollection.h"
 #include "RAnimation.h"
+
+#include "IAnimation.h"
 
 #include "CAnimator.h"
 #include "CTransform.h"
@@ -28,6 +32,9 @@ void CAnimator::Update(float dt)
 {
 	if (currentAnimation == nullptr)
 		return;
+	
+
+	UpdateAnimationInput();
 
 	float thisDt = 0;
 
@@ -54,6 +61,8 @@ void CAnimator::Update(float dt)
 			currentClipTime = transitionClipTime;
 
 			transitionTime = 0;
+			transitionClipTicks = 0;
+			transitionClipTime = 0;
 
 			currentTransition = nullptr;
 			transitioning = false;
@@ -68,24 +77,29 @@ void CAnimator::Update(float dt)
 	//update current animation time/ticks
 	if (!paused && !transitioning)
 	{
-		currentClipTime += thisDt * (double)playbackSpeed;
-
-		durationInSeconds = (currentClip->endKey - currentClip->startKey) / currentClip->speed;
-
-		uint timeMs = currentClipTime * 1000;
-		uint durationMs = (durationInSeconds * 1000);
-
-		if (timeMs > durationMs) //ticks wrap arround the duration
+		if (currentClip != nullptr)
 		{
-			//should take into account amount of times ticks is bigger then duration ( % ?) but they are not int
-			currentClipTime = timeMs % durationMs;
-			currentClipTime /= 1000;
+			currentClipTime += thisDt * (double)playbackSpeed;
+
+			durationInSeconds = (currentClip->endKey - currentClip->startKey) / currentClip->speed;
+
+			uint timeMs = currentClipTime * 1000;
+			uint durationMs = (durationInSeconds * 1000);
+
+			currentAnimationFinished = false;
+
+			if (timeMs > durationMs) //ticks wrap arround the duration
+			{
+				currentClipTime = timeMs % durationMs;
+				currentClipTime /= 1000;
+				currentAnimationFinished = true;
+			}
+
+			currentClipTicks = currentClipTime * currentClip->speed + currentClip->startKey; //augmented ticks
+
+			//update bones positions
+			UpdateBones();
 		}
-
-		currentClipTicks = currentClipTime  * currentClip->speed + currentClip->startKey; //augmented ticks
-
-		//update bones positions
-		UpdateBones();
 	}
 
 	//move and draw the bones according to current animation
@@ -119,11 +133,74 @@ void CAnimator::OnStop()
 
 void CAnimator::Serialize(JsonNode* node)
 {
-	node->AddNumber("Collection UID", collectionUID);
+	JsonArray animationsJson = node->InitArray("Animations UID");
+
+	for(auto it = animations.begin() ; it != animations.end(); it++)
+	{ 
+		animationsJson.AddNumber((*it)->GetUID());
+	}
+
+	node->AddBool("Is Modified Animator", isModifiedAnimation);
 }
 
 void CAnimator::Load(JsonNode* node)
 {
+	if (node->GetBool("Is Modified Animator"))
+	{
+		App->scene->SetModifiedAnimation(this);
+	}
+
+	JsonArray animationsArray = node->GetArray("Animations UID");
+
+	for (uint i = 0; i < animationsArray.size; i++)
+	{
+		RAnimation* anim = (RAnimation*)App->resourceManager->RequestResource(animationsArray.GetNumber(i, 0));
+
+		if(anim == nullptr)
+		{ 
+			App->resourceManager->LoadAnimation(animationsArray.GetNumber(i, 0));
+			anim = (RAnimation*)App->resourceManager->RequestResource(animationsArray.GetNumber(i, 0));
+		}
+		animations.push_back(anim);
+	}
+}
+
+void CAnimator::SaveAnimation(RAnimation* animation)
+{
+	std::string file = ANIMATIONS_PATH + std::to_string(animation->GetUID()) + ANIMATION_EXTENSION;
+	Importer::AnimationImporter::Save(animation,file.c_str());
+}
+
+void CAnimator::UpdateAnimationInput()
+{
+	if (currentAnimation->clips.size() < 2)
+		return;
+
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		AddTransition(&currentAnimation->clips[2], 0.1);
+	}
+
+	if (currentClip == &currentAnimation->clips[2])
+	{
+		if (currentAnimationFinished && !transitioning)
+		{
+			AddTransition(&currentAnimation->clips[0], 0.1);
+		}
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	{
+		if (currentClip != &currentAnimation->clips[1])
+		{
+			AddTransition(&currentAnimation->clips[1], 0.25);
+		}
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_UP)
+	{
+		AddTransition(&currentAnimation->clips[0], 0.25);
+	}
 
 }
 
@@ -141,12 +218,20 @@ void CAnimator::AddClip(float startKey, float endKey, float speed)
 	newClip.SetSpeed(speed);
 
 	currentAnimation->clips.push_back(newClip);
+
+	currentClip = &currentAnimation->clips.front();
 }
 
 void CAnimator::AddTransition(AnimationClip* clip, float duration)
 {
 	AnimationTransition newTransition(clip, duration);
 	transitionQueue.push(newTransition);
+}
+
+void CAnimator::DeleteClip(std::vector<AnimationClip>::iterator clip)
+{
+	if(currentAnimation->clips.size() > 1)
+		currentAnimation->clips.erase(clip);
 }
 
 void CAnimator::LinkBones()
@@ -281,7 +366,7 @@ void CAnimator::UpdateTransitionTime(float dt)
 	}
 	currentClipTicks = currentClipTime * currentClip->speed + currentClip->startKey; //augmented ticks
 
-	//Transition timers -----------------------------------------------------------------------------
+	//Transition animation timers -----------------------------------------------------------------------------
 	transitionClipTime += dt * (double)playbackSpeed;
 	transitionDurationInSeconds = (currentTransition->clip->endKey - currentTransition->clip->startKey) / currentTransition->clip->speed;
 	timeMs = transitionClipTime * 1000;
@@ -384,9 +469,15 @@ float3 CAnimator::ComputeBonePositionInterpolation(std::map<std::string, Bone>::
 		float lerpT = a / b;
 
 		if (lerpT > 1)
+		{
 			lerpT = 1;
+			LOG("lerpT was > 1");
+		}
 		if (lerpT < 0)
+		{
 			lerpT = 0;
+			LOG("lerpT was < 0");
+		}
 
 		finalPosition = float3::Lerp(prevPosition, nextPosition, lerpT); //t is between 0 and 1 (0 is previous key time 1 is next key time)
 	}
@@ -520,9 +611,8 @@ void CAnimator::Stop()
 double CAnimator::TicksToTime(double ticks) //converts animation ticks to equivalent time
 {
 	float ret = 0;
-
+	ticks -= currentClip->startKey;
 	ret = (ticks / currentClip->speed);
-
 	return ret;
 }
 

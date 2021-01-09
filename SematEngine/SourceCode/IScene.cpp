@@ -178,7 +178,9 @@ GameObject* Importer::SceneImporter::LoadSceneResource(ModelNode node, UID anima
 	rootObject->AddComponent(animator);
 
 	for (int i = 0; i < animations.size(); i++)
+	{
 		animator->AddAnimation(animations[i]);
+	}
 
 	LOG("returned %s",rootObject->GetName());
 

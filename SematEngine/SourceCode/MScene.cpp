@@ -16,6 +16,7 @@
 #include "CMaterial.h"
 #include "CTransform.h"
 #include "CCamera.h"
+#include "CAnimator.h"
 
 #include "IMesh.h"
 #include "ITexture.h"
@@ -102,6 +103,12 @@ bool MScene::CleanUp()
 	selectedObject = nullptr;
 	rootObject = nullptr;
 
+	if (playSavedScene != 0 && App->IsExiting())
+	{
+		std::string file = "Assets/Scenes/" + std::to_string(playSavedScene) + ".scene";
+		App->fileSystem->Remove(file.c_str());
+	}
+
 	return true;
 }
 
@@ -131,6 +138,7 @@ void MScene::OnStop()
 
 	std::string file = "Assets/Scenes/" + std::to_string(playSavedScene) + ".scene";
 	App->fileSystem->Remove(file.c_str());
+	playSavedScene = 0;
 
 	for (std::vector<GameObject*>::iterator item = gameObjects.begin(); item != gameObjects.end(); item++)
 	{
@@ -333,4 +341,16 @@ void MScene::EraseGameObject(std::vector<GameObject*>::iterator gameObject)
 void MScene::AddGameObject(GameObject* gameObject)
 {
 	gameObjects.push_back(gameObject);
+}
+
+void MScene::SetModifiedAnimation(CAnimator* animator)
+{
+	if (animator != nullptr)
+	{
+		if (modifiedAnimation != nullptr)
+			modifiedAnimation->SetmodifiedAnimation(false);
+
+		modifiedAnimation = animator;
+		modifiedAnimation->SetmodifiedAnimation(true);
+	}
 }

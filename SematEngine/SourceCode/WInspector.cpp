@@ -264,6 +264,9 @@ void WInspector::DrawAnimator(CAnimator* animator)
 			ImGui::Text("Clips:");
 			ImGui::Separator();
 
+			bool deleted = false;
+			std::vector<AnimationClip>::iterator deletedClip;
+
 			int i = 0;
 			std::vector<AnimationClip>* clips = animator->GetClips();
 			for(std::vector<AnimationClip>::iterator it = clips->begin(); it != clips->end(); it++,i++)
@@ -298,10 +301,18 @@ void WInspector::DrawAnimator(CAnimator* animator)
 				{
 					it->SetSpeed(_speed);
 				}
-				ImGui::Separator();
+				n = "Delete Clip " + std::to_string(i);
+				if (ImGui::Button(n.c_str()))
+				{
+					deleted = true;
+					deletedClip = it;
+				}
 
-				
+				ImGui::Separator();
 			}
+
+			if(deleted)
+				animator->DeleteClip(deletedClip);
 
 			if (ImGui::Button("Add Clip"))
 			{
@@ -357,6 +368,11 @@ void WInspector::DrawAnimator(CAnimator* animator)
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::EndPopup();
+			}
+
+			if (ImGui::Button("Save Animation"))
+			{
+				animator->SaveAnimation(animator->GetCurrentAnimation());
 			}
 		}
 
