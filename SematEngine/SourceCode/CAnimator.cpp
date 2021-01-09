@@ -176,19 +176,6 @@ void CAnimator::UpdateAnimationInput()
 	if (currentAnimation->clips.size() < 2)
 		return;
 
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		AddTransition(&currentAnimation->clips[2], 0.1);
-	}
-
-	if (currentClip == &currentAnimation->clips[2])
-	{
-		if (currentAnimationFinished && !transitioning)
-		{
-			AddTransition(&currentAnimation->clips[0], 0.1);
-		}
-	}
-
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
 		if (currentClip != &currentAnimation->clips[1])
@@ -201,6 +188,26 @@ void CAnimator::UpdateAnimationInput()
 	{
 		AddTransition(&currentAnimation->clips[0], 0.25);
 	}
+
+	if (currentAnimation->clips.size() < 3)
+		return;
+
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		AddTransition(&currentAnimation->clips[2], 0.1);
+		isAttacking = true;
+	}
+
+	if (currentClip == &currentAnimation->clips[2])
+	{
+		if (currentAnimationFinished && !transitioning && isAttacking)
+		{
+			AddTransition(&currentAnimation->clips[0], 0.1);
+			isAttacking = false;
+		}
+	}
+
+	
 
 }
 

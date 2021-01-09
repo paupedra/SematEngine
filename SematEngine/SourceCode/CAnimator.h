@@ -144,6 +144,7 @@ private:
 	bool currentAnimationFinished = false;
 
 	bool isModifiedAnimation = false;
+	bool isAttacking = false;
 
 	AnimatorState state = AnimatorState::NONE; //May be deleted
 };
