@@ -88,7 +88,7 @@ void CAnimator::Update(float dt)
 
 			currentAnimationFinished = false;
 
-			if (timeMs > durationMs) //ticks wrap arround the duration
+			if (timeMs > durationMs && durationMs > 0) //ticks wrap arround the duration
 			{
 				currentClipTime = timeMs % durationMs;
 				currentClipTime /= 1000;

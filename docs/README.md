@@ -13,7 +13,7 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelor'
 
 - Pau Pedra 
 
-<img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Images/my_photo.jpeg?raw=true" alt= "Pau Pedra" height="150">
+<img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Images/my_photo.jpeg?raw=true" alt= "Pau Pedra" height="300">
 
 - GitHub: [@paupedra](https://github.com/paupedra)
 - LinkedIn: [Pau Pedra Bonifacio](https://www.linkedin.com/in/pau-pedra-bonifacio/)
@@ -54,35 +54,33 @@ It is also in charge of importing every single file the user desires to use such
 
 ## Animation 
 
+The animations are managed through the Animator Component inside the Game Objects. The animations are loaded from the .fbx files and are automatically added to the root object of the model.
 
+The menu has the following features:
 
-## Features
+- Select Animation: Under "Animations:" there will be a button for every animation loaded from the fbx file. Click on them to set them as the Current Animation.
 
-- Resource Manager capable of loading .fbx files and have meshes stored in memory only when used using reference counting. Menus showing currently loaded resources and menu that can navigate imported files.
+- Playback Speed: This slider sets the multiplier to the time added to the animation, so the user can modify the speed they play at.
 
-- Custom File Format: There are custom file formats for all the resources. .scene, .material, .mesh and .tex.
+- Play, Pause and Stop: These buttons start, pause and stop the timer of the animation. When pressing Stop the animation goes back to the beggining.
 
-- Serialized Current Scene: Using the save button user can create a serialized Json file of the current scene. It cannot be loaded yet.
+- Current Animation info: Here the user can see information about the currently slected animation.
 
-- Game Object Hierarchy and transformation: Game Objects' transforms can be modified through inspector window, this includes translation, scale and otation. Gae objects's hierarchy is imported and loaded properly.
+- Draw Bones: This checkbox toggles on and off the drawing of the bones of the currently selected animation.
 
-- Street Environment is imported and loaded at the start of the engine.
+- Clips: Here is a list of all the clips that the current animation is divided in. User can choose what clip to play and modify the start and end key as well as the speed they are played at. There is also a button to delete any clip.
 
-- Camera can be added as a component in a game Object and modify it's planes and the FOV. User can swap to another camera using a button inside the inspector.
+- Add Transition: This opens a popup that allows the user to add a transition to the selected clip with the desired duration.
 
-- Objects are culled successfully using frustum culling.
+## Links
 
-- Objects can be picked with the mouse and the selected object is highlighted.
-
-## Additional Features
-
-
+[Repository](https://github.com/paupedra/SematEngine)
 
 ## License
 
 MIT License
 
-Copyright (c) 2020 [missing.md]
+Copyright (c) 2020 [paupedra]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

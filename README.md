@@ -1,8 +1,7 @@
 # SematEngine
 
 ## Description
-
-Semat Engine is a small Game Engine developed in C++ by one student in Bachelors Degree in Video Game Design and Development in CITM Barcelona university.
+Semat Engine is a small Game Engine developed in C++ by one student in Bachelor's degree in Video Game Design and Development in CITM Barcelona.
 
 [Bachelor's degree in Video Game Design and Development](<https://www.citm.upc.edu/ing/estudis/graus-videojocs/>)
 
@@ -12,7 +11,12 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelors
 
 ## Members
 
-- Pau Pedra - GitHub: [@paupedra](https://github.com/paupedra)
+- Pau Pedra 
+
+<img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Images/my_photo.jpeg?raw=true" alt= "Pau Pedra" height="300">
+
+- GitHub: [@paupedra](https://github.com/paupedra)
+- LinkedIn: [Pau Pedra Bonifacio](https://www.linkedin.com/in/pau-pedra-bonifacio/)
 
 ## How to use
 
@@ -80,25 +84,29 @@ Reparent: User can drag game objects in the scene and set them as child of anoth
 
 ## Animations
 
-- The animator component contains the animations a model has. First the user should select one of the animations that could be loaded from the fbx file.
+The animations are managed through the Animator Component inside the Game Objects. The animations are loaded from the .fbx files and are automatically added to the root object of the model.
 
-- There's a button to turn on for the bones to be drawn. These will be drawn with green lines between them.
+The menu has the following features:
 
-- One an animation is selected there will appear the information about it and a list of the clips. Clips are different segments the animation is split in.
+- Select Animation: Under "Animations:" there will be a button for every animation loaded from the fbx file. Click on them to set them as the Current Animation.
 
-- Add clip button opens a popup that allows user to add a new clip selecting its starting key and end key as well as playback speed.
+- Playback Speed: This slider sets the multiplier to the time added to the animation, so the user can modify the speed they play at.
 
-- Add transition button opens a popup that allows the user to create a transition to the selected Clip with the desired duration.
+- Play, Pause and Stop: These buttons start, pause and stop the timer of the animation. When pressing Stop the animation goes back to the beggining.
 
-- Animations transitions play both the previous animation and the animation it's transitioning towards at the same time for the duration of the transition. The longer the transition goes for the more it turns into the new Clip.
+- Current Animation info: Here the user can see information about the currently slected animation.
 
-- Sadly skinning could not be achieved for which the author is very ashamed of.
+- Draw Bones: This checkbox toggles on and off the drawing of the bones of the currently selected animation.
+
+- Clips: Here is a list of all the clips that the current animation is divided in. User can choose what clip to play and modify the start and end key as well as the speed they are played at. There is also a button to delete any clip.
+
+- Add Transition: This opens a popup that allows the user to add a transition to the selected clip with the desired duration.
 
 ## License
 
 MIT License
 
-Copyright (c) 2020 [missing.md]
+Copyright (c) 2020 [paupedra]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
