@@ -62,6 +62,8 @@ The menu has the following features:
 
 - Playback Speed: This slider sets the multiplier to the time added to the animation, so the user can modify the speed they play at.
 
+<img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Gifs/GIF1.gif?raw=true" alt= "Pau Pedra" height="300">
+
 - Play, Pause and Stop: These buttons start, pause and stop the timer of the animation. When pressing Stop the animation goes back to the beggining.
 
 - Current Animation info: Here the user can see information about the currently slected animation.
@@ -72,9 +74,13 @@ The menu has the following features:
 
 - Add Transition: This opens a popup that allows the user to add a transition to the selected clip with the desired duration.
 
+<img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Gifs/GIF2.gif?raw=true" alt= "Pau Pedra" height="300">
+
 ## Links
 
 [Repository](https://github.com/paupedra/SematEngine)
+
+[Latest Release](https://github.com/paupedra/SematEngine/releases)
 
 ## License
 
