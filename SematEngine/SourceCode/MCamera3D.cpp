@@ -80,8 +80,8 @@ updateStatus MCamera3D::Update(float dt)
 
 	if (!App->editor->IsMouseHovering())
 	{
-		/*if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-			RaycastSelect();*/
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+			RaycastSelect();
 	}
 
 	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)

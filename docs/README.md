@@ -15,8 +15,8 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelor'
 
 <img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Images/my_photo.jpeg?raw=true" alt= "Pau Pedra" height="300">
 
-- GitHub: [@paupedra](https://github.com/paupedra)
-- LinkedIn: [Pau Pedra Bonifacio](https://www.linkedin.com/in/pau-pedra-bonifacio/)
+- **GitHub:** [@paupedra](https://github.com/paupedra)
+- **LinkedIn:** [Pau Pedra Bonifacio](https://www.linkedin.com/in/pau-pedra-bonifacio/)
 
 ## Core Sub-Systems
 
@@ -24,15 +24,15 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelor'
 
 Game objects are the different, well, Objects that live inside a scene. They have different Components that add different functionality to the object:
 
-- Transform: Holds the position, rotation and scale of the game objects. User can modify all these parameters. Transform automatically computes the global position of objects that are in tree tructure.
+- **Transform:** Holds the position, rotation and scale of the game objects. User can modify all these parameters. Transform automatically computes the global position of objects that are in tree tructure.
 
-- Mesh: Holds the information of the mesh and calls the draw of the mesh to the Renderer system.
+- **Mesh:** Holds the information of the mesh and calls the draw of the mesh to the Renderer system.
 
-- Material: Holds the information of the image that will be applied as a texture to the Mesh Component. Also the color of a mesh if no texture is drawn.
+- **Material:** Holds the information of the image that will be applied as a texture to the Mesh Component. Also the color of a mesh if no texture is drawn.
 
-- Camera: This is the point of view of the game mode. The camera takes care of the culling and the Field of view (FOV).
+- **Camera:** This is the point of view of the game mode. The camera takes care of the culling and the Field of view (FOV).
 
-- Animator: Allows the user to interact with the different animations that will be loaded from the fbx. The user can cut them into clips and play them.
+- **Animator:** Allows the user to interact with the different animations that will be loaded from the fbx. The user can cut them into clips and play them.
 
 ### Editor
 
@@ -44,7 +44,7 @@ This refers to the general UI that allows the user to manipulate the scene to be
 
 - Game window is a graphical representation of the current scene, showing all the game objects with their meshes and textures drawn on them. User can select a game object by clicking on them.
 
-### Resourcwe manager
+### Resource Manager
 
 The resource manager is in charge of managing the memory usage and resources loading in the engine. To be able to save as much memory as posible we use reference counting to be able to know how many time our game objects and components are using the resources loaded in memory. 
 
@@ -58,21 +58,21 @@ The animations are managed through the Animator Component inside the Game Object
 
 The menu has the following features:
 
-- Select Animation: Under "Animations:" there will be a button for every animation loaded from the fbx file. Click on them to set them as the Current Animation.
+- **Select Animation:** Under "Animations:" there will be a button for every animation loaded from the fbx file. Click on them to set them as the Current Animation.
 
-- Playback Speed: This slider sets the multiplier to the time added to the animation, so the user can modify the speed they play at.
+- **Playback Speed:** This slider sets the multiplier to the time added to the animation, so the user can modify the speed they play at.
 
 <img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Gifs/GIF1.gif?raw=true" alt= "Gif 1" height="400">
 
-- Play, Pause and Stop: These buttons start, pause and stop the timer of the animation. When pressing Stop the animation goes back to the beggining.
+- **Play, Pause and Stop:** These buttons start, pause and stop the timer of the animation. When pressing Stop the animation goes back to the beggining.
 
-- Current Animation info: Here the user can see information about the currently slected animation.
+- **Current Animation info:** Here the user can see information about the currently slected animation.
 
-- Draw Bones: This checkbox toggles on and off the drawing of the bones of the currently selected animation.
+- **Draw Bones:** This checkbox toggles on and off the drawing of the bones of the currently selected animation.
 
-- Clips: Here is a list of all the clips that the current animation is divided in. User can choose what clip to play and modify the start and end key as well as the speed they are played at. There is also a button to delete any clip.
+- **Clips:** Here is a list of all the clips that the current animation is divided in. User can choose what clip to play and modify the start and end key as well as the speed they are played at. There is also a button to delete any clip.
 
-- Add Transition: This opens a popup that allows the user to add a transition to the selected clip with the desired duration.
+- **Add Transition:** This opens a popup that allows the user to add a transition to the selected clip with the desired duration.
 
 <img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Gifs/GIF2.gif?raw=true" alt= "Gif 2" height="400">
 
