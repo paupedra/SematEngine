@@ -51,7 +51,6 @@ bool MResourceManager::Start()
 	LoadResourceFromMeta("Assets/Mesh/Street environment_V01.FBX.meta");
 	LoadResourceFromMeta("Assets/Mesh/aniTest.fbx.meta");
 
-
 	return true;
 }
 
