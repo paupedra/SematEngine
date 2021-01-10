@@ -13,7 +13,7 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelor'
 
 - Pau Pedra 
 
-<img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Images/my_photo.jpeg?raw=true" alt= "Pau Pedra" height="150"
+<img src="https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Images/my_photo.jpeg?raw=true" alt= "Pau Pedra" height="150">
 
 - GitHub: [@paupedra](https://github.com/paupedra)
 - LinkedIn: [Pau Pedra Bonifacio](https://www.linkedin.com/in/pau-pedra-bonifacio/)
