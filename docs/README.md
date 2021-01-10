@@ -15,7 +15,7 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelor'
 - GitHub: [@paupedra](https://github.com/paupedra)
 - LinkedIn: [Pau Pedra Bonifacio](https://www.linkedin.com/in/pau-pedra-bonifacio/)
 
-![Pau Pedra]( https://github.com/paupedra/SematEngine/tree/master/docs/Resources/Images/my_photo.jpeg "That's me!")
+![Pau Pedra]( https://github.com/paupedra/SematEngine/blob/master/docs/Resources/Images/my_photo.jpeg?raw=true "That's me!")
 
 ## Core Sub-Systems
 
