@@ -1,11 +1,12 @@
 # SematEngine
 
 ## Description
-Semat Engine is a small Game Engine developed in C++ by one student in Bachelor's degree in Video Game Design and Development in CITM Barcelona.
+
+Semat Engine is a small Game Engine developed in C++ by one student in Bachelors Degree in Video Game Design and Development in CITM Barcelona university.
 
 [Bachelor's degree in Video Game Design and Development](<https://www.citm.upc.edu/ing/estudis/graus-videojocs/>)
 
-[CITM] (<https://www.citm.upc.edu/>)
+[CITM](<https://www.citm.upc.edu/>)
 
 [Tech Talent Center](<https://www.talent.upc.edu/cat/school/ttc/>)
 
@@ -27,13 +28,7 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelor'
 
 - Shift: Move camera faster.
 
-- Left Click: Rotates camera without moving.
-
-- Alt + Left Click + move mouse: Orbit arround selected Game Object. (This feature has been lost for this release)
-
-- F: Focus on the selected Game Object. (This feature has been lost for this release)
-
-- Mouse Wheel: Zoom In / Out. (This feature has been lost for this release)
+- Left Click: Rotates camera on place.
 
 #### Windows:
 
@@ -55,15 +50,13 @@ Reparent: User can drag game objects in the scene and set them as child of anoth
 
 - Resources: Displays resources in library and the resources loaded in memory and the amount of references they have. User can press a scene file to have it loaded on scene. References will react accordingly as well as when the game objects containing them are deleted.
 
-- Play: Allows the user to start and stop "Game" mode activating game time.
+- Play: Allows the user to start and stop "Game" mode activating game time. When Stopped the scene goes back to how it was when it was 
 
 #### Main Menu Bar:
 
-- File: Option to Exit App. Save option serializes the current scene inside "Library/Scenes/SerializedCurrentScene.scene".
+- File: Option to Exit App. "Save Scene" button serializes the current scene inside Assets/Scenes/, then the "Load Scene" button shows all the previously saved scenes to be loaded.
 
 - Windows: Allows user to open / close engine windows.
-
-- Primitives: Allows users to create primitives shapes as game objects.
 
 - Help: Open About Window showing more info about the engine and License.
 
@@ -85,9 +78,21 @@ Reparent: User can drag game objects in the scene and set them as child of anoth
 
 - Objects can be picked with the mouse and the selected object is highlighted.
 
-## Additional Features
+## Animations
 
+- The animator component contains the animations a model has. First the user should select one of the animations that could be loaded from the fbx file.
 
+- There's a button to turn on for the bones to be drawn. These will be drawn with green lines between them.
+
+- One an animation is selected there will appear the information about it and a list of the clips. Clips are different segments the animation is split in.
+
+- Add clip button opens a popup that allows user to add a new clip selecting its starting key and end key as well as playback speed.
+
+- Add transition button opens a popup that allows the user to create a transition to the selected Clip with the desired duration.
+
+- Animations transitions play both the previous animation and the animation it's transitioning towards at the same time for the duration of the transition. The longer the transition goes for the more it turns into the new Clip.
+
+- Sadly skinning could not be achieved for which the author is very ashamed of.
 
 ## License
 

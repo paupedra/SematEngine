@@ -40,6 +40,8 @@ bool MCamera3D::Start()
 	SetCurrentCamera(currentCamera);
 	SetCullingCamera(currentCamera);
 
+	currentCamera->Setposition(float3(0, 5,-5));
+
 	LOG("Setting up the camera");
 	bool ret = true;
 
@@ -92,6 +94,14 @@ updateStatus MCamera3D::Update(float dt)
 	currentCamera->Setposition(currentCamera->frustum.Pos() + newPos);
 
 	return UPDATE_CONTINUE;
+}
+
+void MCamera3D::SetPosition(float3 newPosition)
+{
+	if (currentCamera != nullptr)
+	{
+		currentCamera->Setposition(newPosition);
+	}
 }
 
 void MCamera3D::RaycastSelect()

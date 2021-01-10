@@ -5,67 +5,55 @@ Semat Engine is a small Game Engine developed in C++ by one student in Bachelor'
 
 [Bachelor's degree in Video Game Design and Development](<https://www.citm.upc.edu/ing/estudis/graus-videojocs/>)
 
-[CITM] (<https://www.citm.upc.edu/>)
+[CITM](<https://www.citm.upc.edu/>)
 
 [Tech Talent Center](<https://www.talent.upc.edu/cat/school/ttc/>)
 
 ## Members
 
-- Pau Pedra - GitHub: [@paupedra](https://github.com/paupedra)
+- Pau Pedra 
+- GitHub: [@paupedra](https://github.com/paupedra)
+- LinkedIn: [Pau Pedra Bonifacio](https://www.linkedin.com/in/pau-pedra-bonifacio/)
 
-## How to use
+![Pau Pedra]( https://github.com/paupedra/SematEngine/tree/master/docs/Resources/Images/my_photo.jpeg "That's me!")
 
-### Controls:
+## Core Sub-Systems
 
-#### General:
+### Game Objects
 
-- Escape: Exit App.
+Game objects are the different, well, Objects that live inside a scene. They have different Components that add different functionality to the object:
 
-#### Camera:
+- Transform: Holds the position, rotation and scale of the game objects. User can modify all these parameters. Transform automatically computes the global position of objects that are in tree tructure.
 
-- WASD: FPS-like controls.
+- Mesh: Holds the information of the mesh and calls the draw of the mesh to the Renderer system.
 
-- Shift: Move camera faster.
+- Material: Holds the information of the image that will be applied as a texture to the Mesh Component. Also the color of a mesh if no texture is drawn.
 
-- Left Click: Rotates camera without moving.
+- Camera: This is the point of view of the game mode. The camera takes care of the culling and the Field of view (FOV).
 
-- Alt + Left Click + move mouse: Orbit arround selected Game Object. (This feature has been lost for this release)
+- Animator: Allows the user to interact with the different animations that will be loaded from the fbx. The user can cut them into clips and play them.
 
-- F: Focus on the selected Game Object. (This feature has been lost for this release)
+### Editor
 
-- Mouse Wheel: Zoom In / Out. (This feature has been lost for this release)
+This refers to the general UI that allows the user to manipulate the scene to be able to add, delete or modify game object and various configurations in the engine. The most notable parts are:
 
-#### Windows:
+- Hierarchy window, that shows all the game objects inside the current scene in a tree-like fashion. The user can reparent, select, add and delete game objects through this window. 
 
-- Console: Shows LOG and general console output of the engine.
+- The inspector window shows the components that the currently selected object has. User can modify and add different components inside it.
 
-- Hierarchy: Shows all game objects inside the scene with their respective children. User can perform the following action:
+- Game window is a graphical representation of the current scene, showing all the game objects with their meshes and textures drawn on them. User can select a game object by clicking on them.
 
-Create Empty: Using right click a pop-up will appear letting the user create an empty child as a child of the currently selected Game Object.
+### Resourcwe manager
 
-Delete: Using right click a pop-up will appear letting the user delete the selected game object as well as all of it's children.
+The resource manager is in charge of managing the memory usage and resources loading in the engine. To be able to save as much memory as posible we use reference counting to be able to know how many time our game objects and components are using the resources loaded in memory. 
 
-Reparent: User can drag game objects in the scene and set them as child of another game object. This cannot be done with dragged object's children.
+The resource manager will only load a resource into memory when it is used in the current scene, if not it will be saved in our different custom file format to be loaded when it is needed.
 
-- Inspector: Shows the components and their values of the selected game object.
+It is also in charge of importing every single file the user desires to use such as .fbx and images.
 
-- Configuration: Allows user to change various modules variables as well as to see crucial information about the engine performance and hardware.
+## Animation 
 
-- Assets: Allows user to see the folders inside Assets of this project. When selecting a folder to the right there will appear the loaded resources inside it.
 
-- Resources: Displays resources in library and the resources loaded in memory and the amount of references they have. User can press a scene file to have it loaded on scene. References will react accordingly as well as when the game objects containing them are deleted.
-
-- Play: Allows the user to start and stop "Game" mode activating game time.
-
-#### Main Menu Bar:
-
-- File: Option to Exit App. Save option serializes the current scene inside "Library/Scenes/SerializedCurrentScene.scene".
-
-- Windows: Allows user to open / close engine windows.
-
-- Primitives: Allows users to create primitives shapes as game objects.
-
-- Help: Open About Window showing more info about the engine and License.
 
 ## Features
 

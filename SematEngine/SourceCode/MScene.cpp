@@ -44,8 +44,7 @@ bool MScene::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->Move(float3(1.0f, 1.0f, 0.0f));
-	//App->camera->LookAt(float3(0, 0, 0));
+	App->camera->SetPosition(float3(0, 5, -5));
 
 	FindSavedScenes();
 	
@@ -265,6 +264,11 @@ GameObject* MScene::CreateGameObject(char* name, GameObject* parent, bool isRoot
 			finalName += "(" + std::to_string(repeats) + ")";
 
 		newGameObject = new GameObject(parent,finalName.c_str());
+
+		if (strcmp(newGameObject->GetName(), "aniTest") == 0)
+		{
+			newGameObject->transform->SetPosition(float3(0.1, 0.1, 0.1));
+		}
 	}
 
 	gameObjects.push_back(newGameObject);
@@ -340,6 +344,11 @@ void MScene::EraseGameObject(std::vector<GameObject*>::iterator gameObject)
 
 void MScene::AddGameObject(GameObject* gameObject)
 {
+	if (strcmp(gameObject->GetName(), "aniTest") == 0)
+	{
+		gameObject->transform->SetScale(float3(0.1, 0.1, 0.1));
+	}
+
 	gameObjects.push_back(gameObject);
 }
 
